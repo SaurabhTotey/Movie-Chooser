@@ -1,0 +1,6 @@
+{
+	"name": "Movie-Chooser",
+	"workspaces": [
+		"src/frontend/"
+	]
+}
