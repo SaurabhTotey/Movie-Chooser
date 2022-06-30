@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 
-const Home: NextPage = () => {
+const Account: NextPage = () => {
 	return (
 		<>
 			<Head>
@@ -10,11 +10,11 @@ const Home: NextPage = () => {
 			</Head>
 			<main>
 				<Navbar />
-				<h1>Hello, world!</h1>
+				<h1>Account Page</h1>
 			</main>
 			<footer></footer>
 		</>
 	);
 };
 
-export default Home;
+export default Account;
