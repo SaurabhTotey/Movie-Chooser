@@ -35,7 +35,7 @@ const CreateAccount: NextPage = () => {
 							if (
 								passwordElement.value != (document.getElementById("confirm-password-input") as HTMLInputElement).value
 							) {
-								alert("Passwords don't match.");
+								alert("Passwords don't match."); // TODO: better way of alerting
 								submitButton.disabled = false;
 							}
 
@@ -51,10 +51,11 @@ const CreateAccount: NextPage = () => {
 
 							// Handle response.
 							if (response.ok) {
-								// TODO: correctly handle that the user's been created by prompting going to a profile page or something and setting session information
-								alert(await response.text());
+								document.cookie = "session=" + window.escape(await response.text());
+								alert("Success!");
+								// TODO: remove alert and prompt user to go to profile page
 							} else {
-								alert(await response.text());
+								alert(await response.text()); // TODO: better way of alerting
 							}
 							submitButton.disabled = false;
 						}}

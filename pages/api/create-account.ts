@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
-import { PrismaClient, User } from "@prisma/client";
+import crypto from "crypto";
+import { PrismaClient, User, Session } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
@@ -20,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 	// Send query to database to create the user.
 	const hashedPassword = await bcrypt.hash(requestObject.password, 10);
-	const userCreationPromise = prisma.user.create({
+	const createdUser = await prisma.user.create({
 		data: {
 			name: requestObject.name,
 			password: hashedPassword,
@@ -28,12 +29,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		},
 	});
 
+	// Create a session for the new user.
+	const sessionToken = String.fromCharCode(...Array.from(Array(16).keys()).map(() => crypto.randomInt(32, 127)));
+	const createdSessionEntry = await prisma.session.create({
+		data: {
+			userId: createdUser.id,
+			token: sessionToken,
+		},
+	});
+
 	// Send response back to client.
-	userCreationPromise
-		.then((createdUser) => {
-			res.status(200).json(createdUser); // TODO: return a session id or something for storage as a cookie
-		})
-		.catch((error) => {
-			res.status(500).json(error);
-		});
+	res.status(200).json(sessionToken);
 }
