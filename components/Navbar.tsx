@@ -8,8 +8,8 @@ const Navbar: FC = () => {
 				<a>Home</a>
 			</Link>
 			<br />
-			<Link href="/account">
-				<a>Account</a>
+			<Link href="/create-account">
+				<a>Create Account</a>
 			</Link>
 		</>
 	);
