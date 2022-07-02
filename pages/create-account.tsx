@@ -25,37 +25,47 @@ const CreateAccount: NextPage = () => {
 						id="submit-button"
 						onClick={async (event) => {
 							event.preventDefault();
+							const updateTextContainer = document.getElementById("form-status") as HTMLParagraphElement;
 
 							// Disable button.
 							const submitButton = document.getElementById("submit-button") as HTMLButtonElement;
 							submitButton.disabled = true;
 
-							// Verify password fields match.
-							const passwordElement = document.getElementById("password-input") as HTMLInputElement;
-							if (
-								passwordElement.value != (document.getElementById("confirm-password-input") as HTMLInputElement).value
-							) {
-								alert("Passwords don't match."); // TODO: better way of alerting
+							// Ensure all fields are filled.
+							const nameInput = document.getElementById("name-input") as HTMLInputElement;
+							const passwordInput = document.getElementById("password-input") as HTMLInputElement;
+							const confirmPasswordInput = document.getElementById("confirm-password-input") as HTMLInputElement;
+							const emailInput = document.getElementById("email-input") as HTMLInputElement;
+							if (!nameInput.value || !passwordInput.value || !confirmPasswordInput.value || !emailInput.value) {
+								updateTextContainer.textContent = "Please fill out all fields";
 								submitButton.disabled = false;
+								return;
+							}
+
+							// Verify password fields match.
+							if (passwordInput.value != confirmPasswordInput.value) {
+								updateTextContainer.textContent = "Passwords don't match.";
+								submitButton.disabled = false;
+								return;
 							}
 
 							// Send request.
 							const response = await fetch("/api/create-account", {
 								method: "POST",
 								body: JSON.stringify({
-									name: (document.getElementById("name-input") as HTMLInputElement).value,
-									password: passwordElement.value,
-									email: (document.getElementById("email-input") as HTMLInputElement).value,
+									name: nameInput.value,
+									password: passwordInput.value,
+									email: emailInput.value,
 								}),
 							});
 
 							// Handle response.
 							if (response.ok) {
 								document.cookie = "session=" + window.escape(await response.text());
-								alert("Success!");
-								// TODO: remove alert and prompt user to go to profile page
+								updateTextContainer.textContent =
+									"Account successfully created! You're now signed in! Do you want to go to TODO?";
 							} else {
-								alert(await response.text()); // TODO: better way of alerting
+								updateTextContainer.textContent = `Error: "${await response.text()}"`;
 							}
 							submitButton.disabled = false;
 						}}
@@ -63,6 +73,7 @@ const CreateAccount: NextPage = () => {
 						Submit
 					</button>
 				</form>
+				<p id="form-status">Please fill out the form to create an account.</p>
 			</main>
 			<footer></footer>
 		</>
