@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<User | string>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate request.
 	const requestObject = JSON.parse(req.body);
 	if (

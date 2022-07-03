@@ -1,15 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
+import { useCookies } from "react-cookie";
 
-const CreateAccount: NextPage = () => {
+const CreateAccount: NextPage = ({ sessionId }: any) => {
+	const [cookie, setCookie] = useCookies(["session"]);
 	return (
 		<>
 			<Head>
 				<title>Movie Chooser!</title>
 			</Head>
 			<main>
-				<Navbar />
+				<Navbar sessionId={sessionId} />
 				<h1>Create Account Page</h1>
 				<form>
 					<label htmlFor="name-input">Name</label>
@@ -61,7 +63,11 @@ const CreateAccount: NextPage = () => {
 
 							// Handle response.
 							if (response.ok) {
-								document.cookie = "session=" + window.escape(await response.text());
+								setCookie("session", await response.text(), {
+									path: "/",
+									maxAge: 60 * 60 * 24 * 7,
+									sameSite: true,
+								});
 								updateTextContainer.textContent =
 									"Account successfully created! You're now signed in! Do you want to go to TODO?";
 							} else {
