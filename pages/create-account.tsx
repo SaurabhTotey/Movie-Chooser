@@ -3,7 +3,7 @@ import Head from "next/head";
 import Navbar from "../components/Navbar";
 import { useCookies } from "react-cookie";
 
-const CreateAccount: NextPage = ({ sessionId }: any) => {
+const CreateAccount: NextPage = ({ userClientInfo }: any) => {
 	const [cookie, setCookie] = useCookies(["session"]);
 	return (
 		<>
@@ -11,7 +11,7 @@ const CreateAccount: NextPage = ({ sessionId }: any) => {
 				<title>Movie Chooser!</title>
 			</Head>
 			<main>
-				<Navbar sessionId={sessionId} />
+				<Navbar userClientInfo={userClientInfo} />
 				<h1>Create Account Page</h1>
 				<form>
 					<label htmlFor="name-input">Name</label>
