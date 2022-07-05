@@ -1,5 +1,5 @@
-import React, { FC } from "react";
 import Link from "next/link";
+import { FC } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {

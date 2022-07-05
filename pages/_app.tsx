@@ -1,7 +1,6 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { CookiesProvider } from "react-cookie";
-import App from "next/app";
+import "../styles/globals.css";
 
 function MovieChooserApp({ Component, pageProps }: AppProps) {
 	return (

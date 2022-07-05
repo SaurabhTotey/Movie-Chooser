@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { AppContext } from "next/app";
-import UserClientInfo from "./UserClientInfo";
 import { GetServerSideProps } from "next";
 import Cookies from "universal-cookie";
+import UserClientInfo from "./UserClientInfo";
 
 const prisma = new PrismaClient();
 

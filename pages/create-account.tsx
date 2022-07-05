@@ -1,7 +1,7 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
-import Navbar from "../components/Navbar";
 import { useCookies } from "react-cookie";
+import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
 function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {

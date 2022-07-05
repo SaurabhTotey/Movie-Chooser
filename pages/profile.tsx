@@ -1,6 +1,6 @@
+import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
-import { InferGetServerSidePropsType } from "next";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
 function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
