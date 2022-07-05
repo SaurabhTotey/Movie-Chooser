@@ -5,7 +5,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "npx prettier . --write; npx eslint . --fix"
+		"lint": "npx prettier . --write; npx eslint . --fix",
+		"reload-prisma": "npx prisma db pull && npx prisma generate"
 	},
 	"dependencies": {
 		"@prisma/client": "^4.0.0",

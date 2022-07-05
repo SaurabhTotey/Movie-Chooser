@@ -80,7 +80,9 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 						Submit
 					</button>
 				</form>
-				<p id="form-status">Please fill out the form to create an account.</p>
+				<p id="form-status" aria-live="polite">
+					Please fill out the form to create an account.
+				</p>
 			</main>
 			<footer></footer>
 		</>
