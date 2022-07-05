@@ -1,8 +1,9 @@
-import type { NextPage } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
+import { InferGetServerSidePropsType } from "next";
+import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
-const Profile: NextPage = ({ userClientInfo }: any) => {
+function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	return (
 		<>
 			<Head>
@@ -10,11 +11,14 @@ const Profile: NextPage = ({ userClientInfo }: any) => {
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<h1>TODO</h1>
+				<p>Hello {userClientInfo ? userClientInfo.name : "NOT SIGNED IN"}</p>
+				<p>Email {userClientInfo ? userClientInfo.email : "NOT SIGNED IN"}</p>
+				<p>SessionId {userClientInfo ? userClientInfo.sessionId : "NOT SIGNED IN"}</p>
 			</main>
 			<footer></footer>
 		</>
 	);
-};
+}
 
+export const getServerSideProps = getUserAsServerSideProp;
 export default Profile;

@@ -1,9 +1,10 @@
-import type { NextPage } from "next";
+import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 import { useCookies } from "react-cookie";
+import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
-const CreateAccount: NextPage = ({ userClientInfo }: any) => {
+function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const [cookie, setCookie] = useCookies(["session"]);
 	return (
 		<>
@@ -84,6 +85,7 @@ const CreateAccount: NextPage = ({ userClientInfo }: any) => {
 			<footer></footer>
 		</>
 	);
-};
+}
 
+export const getServerSideProps = getUserAsServerSideProp;
 export default CreateAccount;
