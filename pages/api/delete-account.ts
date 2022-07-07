@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "universal-cookie";
 
@@ -13,7 +14,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		return;
 	}
 
-	// TODO: Check that the given password corresponds to the user given by the token (if the given token corresponds to a user).
+	// Get the user to delete if it exists.
+	const userToDelete = await prisma.session
+		.findUnique({
+			where: {
+				token: token,
+			},
+		})
+		.User();
+	if (!userToDelete) {
+		res.status(400).json("Couldn't find a user corresponding to the session token given by the request cookie.");
+		return;
+	}
 
-	// TODO: Delete the user.
+	// Ensure the given password matches the user's password.
+	if (!(await bcrypt.compare(password, userToDelete.password))) {
+		res.status(400).json("The given password isn't correct.");
+		return;
+	}
+
+	// Delete all database entries related to the user.
+	const sessionDeletionResults = await prisma.session.deleteMany({
+		where: {
+			userId: userToDelete.id,
+		},
+	});
+	const userDeletionResults = await prisma.user.delete({
+		where: {
+			id: userToDelete.id,
+		},
+	});
+
+	res.status(200).json("Success!");
 }
