@@ -1,5 +1,6 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
@@ -19,7 +20,13 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 					</>
 				) : (
 					<>
-						<p>User not logged in</p>
+						<p>
+							You are not logged in. You can log in or create an account{" "}
+							<Link href="./log-in-or-create-account">
+								<a>here</a>
+							</Link>
+							.
+						</p>
 					</>
 				)}
 			</main>

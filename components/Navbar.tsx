@@ -3,8 +3,8 @@ import { FC } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
-	const accountPath = userClientInfo ? "/profile" : "/create-account";
-	const linkName = userClientInfo ? "Profile" : "Create Account";
+	const accountPath = userClientInfo ? "/profile" : "/log-in-or-create-account";
+	const linkName = userClientInfo ? "Profile" : "Log In/Create Account";
 	return (
 		<>
 			<Link href="/">
