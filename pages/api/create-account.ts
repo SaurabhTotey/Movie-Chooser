@@ -2,10 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+import UserClientInfo from "../../helpers/UserClientInfo";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
 	const requestObject = JSON.parse(req.body);
 	if (
@@ -39,5 +40,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	});
 
 	// Send response back to client.
-	res.status(200).json(sessionToken);
+	res.status(200).json(new UserClientInfo(createdUser.name, createdUser.email, sessionToken));
 }

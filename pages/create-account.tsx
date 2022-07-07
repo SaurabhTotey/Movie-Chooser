@@ -1,19 +1,36 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
+import Link from "next/link";
+import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
+import UserClientInfo from "../helpers/UserClientInfo";
 
 function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const [cookie, setCookie] = useCookies(["session"]);
+	const [userInfo, setUserInfo] = useState(userClientInfo);
 	return (
 		<>
 			<Head>
 				<title>Movie Chooser!</title>
 			</Head>
 			<main>
-				<Navbar userClientInfo={userClientInfo} />
-				<h1>Create Account Page</h1>
+				<Navbar userClientInfo={userInfo} />
+				{userInfo && (
+					<>
+						<p>
+							You are signed in! Would you like to go to the{" "}
+							<Link href="./profile">
+								<a>profile page</a>
+							</Link>
+							?
+						</p>
+					</>
+				)}
+				<h1>Login</h1>
+				<p>TODO:</p>
+				<h1>Create Account</h1>
 				<form>
 					<label htmlFor="name-input">Name</label>
 					<input id="name-input" type="text" />
@@ -64,13 +81,19 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 
 							// Handle response.
 							if (response.ok) {
-								setCookie("session", await response.text(), {
+								let responseObject = await response.json();
+								if (!responseObject.name || !responseObject.email || !responseObject.sessionId) {
+									updateTextContainer.textContent = "Server returned a malformed response.";
+									submitButton.disabled = false;
+									return;
+								}
+								setCookie("session", responseObject.sessionId, {
 									path: "/",
 									maxAge: 60 * 60 * 24 * 7,
 									sameSite: true,
 								});
-								updateTextContainer.textContent =
-									"Account successfully created! You're now signed in! Do you want to go to TODO?";
+								setUserInfo(new UserClientInfo(responseObject.name, responseObject.email, responseObject.sessionId));
+								updateTextContainer.textContent = "Account successfully created! You are now signed in!";
 							} else {
 								updateTextContainer.textContent = `Error: "${await response.text()}"`;
 							}

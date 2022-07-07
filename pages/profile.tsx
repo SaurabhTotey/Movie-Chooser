@@ -11,9 +11,17 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<p>Hello {userClientInfo ? userClientInfo.name : "NOT SIGNED IN"}</p>
-				<p>Email {userClientInfo ? userClientInfo.email : "NOT SIGNED IN"}</p>
-				<p>SessionId {userClientInfo ? userClientInfo.sessionId : "NOT SIGNED IN"}</p>
+				{userClientInfo ? (
+					<>
+						<p>Hello {userClientInfo.name}</p>
+						<p>Email {userClientInfo.email}</p>
+						<p>SessionId {userClientInfo.sessionId}</p>
+					</>
+				) : (
+					<>
+						<p>User not logged in</p>
+					</>
+				)}
 			</main>
 			<footer></footer>
 		</>
