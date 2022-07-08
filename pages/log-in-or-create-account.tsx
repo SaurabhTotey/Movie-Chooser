@@ -17,8 +17,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 			</Head>
 			<main>
 				<Navbar userClientInfo={userInfo} />
-				{userInfo && (
-					<>
+				<div aria-live="polite">
+					{userInfo && (
 						<p>
 							You are signed in! Would you like to go to the{" "}
 							<Link href="./profile">
@@ -26,8 +26,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							</Link>
 							?
 						</p>
-					</>
-				)}
+					)}
+				</div>
 				<h1>Login</h1>
 				<p>TODO:</p>
 				<h1>Create Account</h1>
