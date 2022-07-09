@@ -1,33 +1,36 @@
 interface FormPropType {
-	submitHandler: (inputs: Map<string, HTMLInputElement>) => void;
 	fieldNamesToFieldTypes: Map<string, string>;
+	submitHandler: (button: HTMLButtonElement, inputs: Map<string, HTMLInputElement>) => void;
 }
 
-function Form({ submitHandler, fieldNamesToFieldTypes }: FormPropType) {
-	const htmlValidFieldNameFor = (fieldName: string) => fieldName.toLowerCase().replaceAll(" ", "-");
+function Form({ fieldNamesToFieldTypes, submitHandler }: FormPropType) {
+	const htmlValidFieldNameFor = (fieldName: string) => `${fieldName.toLowerCase().replaceAll(" ", "-")}-input`;
 	return (
 		<form>
 			{Array.from(fieldNamesToFieldTypes.entries()).map(([fieldName, fieldType]) => {
 				const htmlValidFieldName = htmlValidFieldNameFor(fieldName);
 				return (
-					<>
+					<div key={fieldName}>
 						<label htmlFor={htmlValidFieldName}>{fieldName}</label>
 						<input id={htmlValidFieldName} type={fieldType} />
-					</>
+					</div>
 				);
 			})}
 			<button
 				type="submit"
+				id="submit-button"
 				onClick={(event) => {
 					event.preventDefault();
 					const fieldNameToFormInputElements = new Map();
-					fieldNamesToFieldTypes.forEach((fieldName) => {
+					console.log(`testing: ${fieldNamesToFieldTypes}`);
+					Array.from(fieldNamesToFieldTypes.keys()).forEach((fieldName) => {
+						console.log(`name: ${fieldName}`);
 						fieldNameToFormInputElements.set(
 							fieldName,
 							document.getElementById(htmlValidFieldNameFor(fieldName)) as HTMLInputElement,
 						);
 					});
-					submitHandler(fieldNameToFormInputElements);
+					submitHandler(document.getElementById("submit-button") as HTMLButtonElement, fieldNameToFormInputElements);
 				}}
 			>
 				Submit
