@@ -1,6 +1,7 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Form from "../components/Form";
@@ -9,6 +10,7 @@ import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 import UserClientInfo from "../helpers/UserClientInfo";
 
 function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
+	const router = useRouter();
 	const [cookie, setCookie] = useCookies(["session"]);
 	const [userInfo, setUserInfo] = useState(userClientInfo);
 	return (
@@ -89,7 +91,9 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 								sameSite: true,
 							});
 							setUserInfo(new UserClientInfo(responseObject.name, responseObject.email, responseObject.sessionId));
-							updateTextContainer.textContent = "Account successfully created! You are now signed in!";
+							updateTextContainer.textContent =
+								"Account successfully created! You are now signed in! You are being redirected to the profile page.";
+							router.push("/profile");
 						} else {
 							updateTextContainer.textContent = `Error: "${await response.text()}"`;
 						}
