@@ -30,8 +30,58 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 						</p>
 					)}
 				</div>
-				<h1>Login</h1>
-				<p>TODO:</p>
+				<Form
+					title={"Log In"}
+					initialDirective={"Please fill out the form to log in."}
+					fieldNamesToFieldTypes={
+						new Map([
+							["Email", "email"],
+							["Password", "password"],
+						])
+					}
+					submitHandler={async (submitButton, updateTextContainer, inputs) => {
+						// Disable button.
+						submitButton.disabled = true;
+
+						// Ensure all fields are filled.
+						const emailInput = inputs.get("Email");
+						const passwordInput = inputs.get("Password");
+						if (!emailInput || !passwordInput) {
+							updateTextContainer.textContent = "Please fill out all fields";
+							submitButton.disabled = false;
+							return;
+						}
+
+						// Send request.
+						const response = await fetch("/api/log-in", {
+							method: "POST",
+							body: JSON.stringify({
+								email: emailInput.value,
+								password: passwordInput.value,
+							}),
+						});
+
+						// Handle response.
+						if (response.ok) {
+							const responseObject = await response.json();
+							if (!responseObject.name || !responseObject.email || !responseObject.sessionId) {
+								updateTextContainer.textContent = "Server returned a malformed response.";
+								submitButton.disabled = false;
+								return;
+							}
+							setCookie("session", responseObject.sessionId, {
+								path: "/",
+								maxAge: 60 * 60 * 24 * 7,
+								sameSite: true,
+							});
+							updateTextContainer.textContent = "You are now signed in! You are being redirected to the profile page.";
+							router.push("/profile");
+						} else {
+							updateTextContainer.textContent = `Error: ${await response.text()}`;
+							submitButton.disabled = false;
+						}
+					}}
+				/>
 				<Form
 					title={"Create Account"}
 					initialDirective={"Please fill out the form to create an account."}
@@ -40,7 +90,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							["Name", "text"],
 							["Password", "password"],
 							["Confirm Password", "password"],
-							["Email", "text"],
+							["Email", "email"],
 						])
 					}
 					submitHandler={async (submitButton, updateTextContainer, inputs) => {
@@ -77,7 +127,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 
 						// Handle response.
 						if (response.ok) {
-							let responseObject = await response.json();
+							const responseObject = await response.json();
 							if (!responseObject.name || !responseObject.email || !responseObject.sessionId) {
 								updateTextContainer.textContent = "Server returned a malformed response.";
 								submitButton.disabled = false;
@@ -92,7 +142,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 								"Account successfully created! You are now signed in! You are being redirected to the profile page.";
 							router.push("/profile");
 						} else {
-							updateTextContainer.textContent = `Error: "${await response.text()}"`;
+							updateTextContainer.textContent = `Error: ${await response.text()}`;
 							submitButton.disabled = false;
 						}
 					}}

@@ -55,7 +55,7 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 										"Account has been deleted. You are being redirected to the account creation page.";
 									router.push("/log-in-or-create-account");
 								} else {
-									updateTextContainer.textContent = `Error: "${await response.text()}"`;
+									updateTextContainer.textContent = `Error: ${await response.text()}`;
 									submitButton.disabled = false;
 								}
 							}}
