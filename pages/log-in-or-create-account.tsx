@@ -97,10 +97,11 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							submitButton.disabled = false;
 						}
 					}}
-				/>
-				<p id="form-status" aria-live="polite">
-					Please fill out the form to create an account.
-				</p>
+				>
+					<p id="form-status" aria-live="polite">
+						Please fill out the form to create an account.
+					</p>
+				</Form>
 			</main>
 			<footer></footer>
 		</>

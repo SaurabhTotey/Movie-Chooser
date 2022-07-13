@@ -60,10 +60,11 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 									submitButton.disabled = false;
 								}
 							}}
-						/>
-						<p id="form-status" aria-live="polite">
-							Enter your password to delete your account.
-						</p>
+						>
+							<p id="form-status" aria-live="polite">
+								Enter your password to delete your account.
+							</p>
+						</Form>
 					</>
 				) : (
 					<>

@@ -1,15 +1,19 @@
+import { FC, ReactNode } from "react";
+
 interface FormPropType {
 	title: string;
 	fieldNamesToFieldTypes: Map<string, string>;
 	submitHandler: (button: HTMLButtonElement, inputs: Map<string, HTMLInputElement>) => void;
+	children?: ReactNode;
 }
 
-function Form({ title, fieldNamesToFieldTypes, submitHandler }: FormPropType) {
+const Form: FC<FormPropType> = ({ title, fieldNamesToFieldTypes, submitHandler, children }) => {
 	const htmlValidFieldNameFor = (fieldName: string) =>
 		`${fieldName.toLowerCase().replaceAll(" ", "-")}-input-for-${title.toLowerCase().replaceAll(" ", "-")}`;
 	return (
 		<>
 			<h1>{title}</h1>
+			{children}
 			<form>
 				{Array.from(fieldNamesToFieldTypes.entries()).map(([fieldName, fieldType]) => {
 					const htmlValidFieldName = htmlValidFieldNameFor(fieldName);
@@ -42,6 +46,6 @@ function Form({ title, fieldNamesToFieldTypes, submitHandler }: FormPropType) {
 			</form>
 		</>
 	);
-}
+};
 
 export default Form;
