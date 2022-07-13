@@ -34,6 +34,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 				<p>TODO:</p>
 				<Form
 					title={"Create Account"}
+					initialDirective={"Please fill out the form to create an account."}
 					fieldNamesToFieldTypes={
 						new Map([
 							["Name", "text"],
@@ -42,9 +43,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							["Email", "text"],
 						])
 					}
-					submitHandler={async (submitButton, inputs) => {
-						const updateTextContainer = document.getElementById("form-status") as HTMLParagraphElement;
-
+					submitHandler={async (submitButton, updateTextContainer, inputs) => {
 						// Disable button.
 						submitButton.disabled = true;
 
@@ -97,11 +96,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							submitButton.disabled = false;
 						}
 					}}
-				>
-					<p id="form-status" aria-live="polite">
-						Please fill out the form to create an account.
-					</p>
-				</Form>
+				/>
 			</main>
 			<footer></footer>
 		</>

@@ -28,10 +28,9 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 						<p>TODO:</p>
 						<Form
 							title={"Delete Account"}
+							initialDirective={"Enter your password to delete your account."}
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
-							submitHandler={async (submitButton, inputs) => {
-								const updateTextContainer = document.getElementById("form-status") as HTMLParagraphElement;
-
+							submitHandler={async (submitButton, updateTextContainer, inputs) => {
 								// Disable button.
 								submitButton.disabled = true;
 
@@ -60,11 +59,7 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 									submitButton.disabled = false;
 								}
 							}}
-						>
-							<p id="form-status" aria-live="polite">
-								Enter your password to delete your account.
-							</p>
-						</Form>
+						/>
 					</>
 				) : (
 					<>
