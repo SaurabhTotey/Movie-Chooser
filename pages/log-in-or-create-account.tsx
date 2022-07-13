@@ -2,7 +2,6 @@ import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Form from "../components/Form";
 import Navbar from "../components/Navbar";
@@ -11,16 +10,15 @@ import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const router = useRouter();
 	const [cookie, setCookie] = useCookies(["session"]);
-	const [userInfo, setUserInfo] = useState(userClientInfo);
 	return (
 		<>
 			<Head>
 				<title>Movie Chooser!</title>
 			</Head>
 			<main>
-				<Navbar userClientInfo={userInfo} />
+				<Navbar userClientInfo={userClientInfo} />
 				<div aria-live="polite">
-					{userInfo && (
+					{userClientInfo && (
 						<p>
 							You are signed in! Would you like to go to the{" "}
 							<Link href="./profile">
@@ -50,7 +48,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							return;
 						}
 
-						const response = await fetch("/api/log-in", {
+						const response = await fetch("/api/account/log-in", {
 							method: "POST",
 							body: JSON.stringify({
 								email: emailInput.value,
@@ -103,7 +101,7 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							return;
 						}
 
-						const response = await fetch("/api/create-account", {
+						const response = await fetch("/api/account/create-account", {
 							method: "POST",
 							body: JSON.stringify({
 								name: nameInput.value,

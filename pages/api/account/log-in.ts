@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
-import makeSessionToken from "../../helpers/MakeSessionToken";
-import UserClientInfo from "../../helpers/UserClientInfo";
+import makeSessionToken from "../../../helpers/MakeSessionToken";
+import UserClientInfo from "../../../helpers/UserClientInfo";
 
 const prisma = new PrismaClient();
 

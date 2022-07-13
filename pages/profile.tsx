@@ -2,28 +2,26 @@ import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Form from "../components/Form";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
 function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
-	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
-	const [userInfo, setUserInfo] = useState(userClientInfo);
 	const router = useRouter();
+	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
 	return (
 		<>
 			<Head>
 				<title>Movie Chooser!</title>
 			</Head>
 			<main>
-				<Navbar userClientInfo={userInfo} />
-				{userInfo ? (
+				<Navbar userClientInfo={userClientInfo} />
+				{userClientInfo ? (
 					<>
-						<p>Hello {userInfo.name}</p>
-						<p>Email {userInfo.email}</p>
-						<p>SessionId {userInfo.sessionId}</p>
+						<p>Hello {userClientInfo.name}</p>
+						<p>Email {userClientInfo.email}</p>
+						<p>SessionId {userClientInfo.sessionId}</p>
 						<Form
 							title={"Log Out"}
 							initialDirective={"Press button to log out."}
@@ -31,7 +29,7 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 							submitHandler={async (submitButton, updateTextContainer) => {
 								submitButton.disabled = true;
 
-								const response = await fetch("/api/log-out", {
+								const response = await fetch("/api/account/log-out", {
 									method: "POST",
 								});
 
@@ -60,7 +58,7 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 									return;
 								}
 
-								const response = await fetch("/api/delete-account", {
+								const response = await fetch("/api/account/delete-account", {
 									method: "POST",
 									body: passwordInput.value,
 								});
