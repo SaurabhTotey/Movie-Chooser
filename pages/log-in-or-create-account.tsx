@@ -7,7 +7,6 @@ import { useCookies } from "react-cookie";
 import Form from "../components/Form";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
-import UserClientInfo from "../helpers/UserClientInfo";
 
 function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const router = useRouter();
@@ -33,8 +32,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 				</div>
 				<h1>Login</h1>
 				<p>TODO:</p>
-				<h1>Create Account</h1>
 				<Form
+					title={"Create Account"}
 					fieldNamesToFieldTypes={
 						new Map([
 							["Name", "text"],
@@ -90,14 +89,13 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 								maxAge: 60 * 60 * 24 * 7,
 								sameSite: true,
 							});
-							setUserInfo(new UserClientInfo(responseObject.name, responseObject.email, responseObject.sessionId));
 							updateTextContainer.textContent =
 								"Account successfully created! You are now signed in! You are being redirected to the profile page.";
 							router.push("/profile");
 						} else {
 							updateTextContainer.textContent = `Error: "${await response.text()}"`;
+							submitButton.disabled = false;
 						}
-						submitButton.disabled = false;
 					}}
 				/>
 				<p id="form-status" aria-live="polite">

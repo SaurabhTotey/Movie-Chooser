@@ -1,6 +1,7 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Form from "../components/Form";
@@ -10,6 +11,7 @@ import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
 	const [userInfo, setUserInfo] = useState(userClientInfo);
+	const router = useRouter();
 	return (
 		<>
 			<Head>
@@ -24,18 +26,19 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 						<p>SessionId {userInfo.sessionId}</p>
 						<h1>Log Out</h1>
 						<p>TODO:</p>
-						<h1>Delete Account</h1>
 						<Form
+							title={"Delete Account"}
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							submitHandler={async (submitButton, inputs) => {
+								const updateTextContainer = document.getElementById("form-status") as HTMLParagraphElement;
+
 								// Disable button.
 								submitButton.disabled = true;
 
 								// Ensure password has been given.
 								const passwordInput = inputs.get("Password")!;
 								if (!passwordInput.value) {
-									// TODO: alert user that the password field is empty in a better way
-									alert("Cannot delete an account without the password.");
+									updateTextContainer.textContent = "Cannot delete an account without the password.";
 									submitButton.disabled = false;
 									return;
 								}
@@ -48,15 +51,19 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 
 								// Handle response.
 								if (response.ok) {
-									alert(await response.text()); // TODO: handle this better
 									removeCookie("session");
-									setUserInfo(null);
+									updateTextContainer.textContent =
+										"Account has been deleted. You are being redirected to the account creation page.";
+									router.push("/log-in-or-create-account");
 								} else {
-									alert(await response.text()); // TODO: handle this better
+									updateTextContainer.textContent = `Error: "${await response.text()}"`;
+									submitButton.disabled = false;
 								}
-								submitButton.disabled = false;
 							}}
 						/>
+						<p id="form-status" aria-live="polite">
+							Enter your password to delete your account.
+						</p>
 					</>
 				) : (
 					<>
