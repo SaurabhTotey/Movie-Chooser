@@ -24,17 +24,35 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 						<p>Hello {userInfo.name}</p>
 						<p>Email {userInfo.email}</p>
 						<p>SessionId {userInfo.sessionId}</p>
-						<h1>Log Out</h1>
-						<p>TODO:</p>
+						<Form
+							title={"Log Out"}
+							initialDirective={"Press button to log out."}
+							fieldNamesToFieldTypes={new Map()}
+							submitHandler={async (submitButton, updateTextContainer) => {
+								submitButton.disabled = true;
+
+								const response = await fetch("/api/log-out", {
+									method: "POST",
+								});
+
+								if (response.ok) {
+									removeCookie("session");
+									updateTextContainer.textContent =
+										"You have been signed out. You are being redirected to the account creation page.";
+									router.push("/log-in-or-create-account");
+								} else {
+									updateTextContainer.textContent = `Error: ${await response.text()}`;
+									submitButton.disabled = false;
+								}
+							}}
+						/>
 						<Form
 							title={"Delete Account"}
 							initialDirective={"Enter your password to delete your account."}
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {
-								// Disable button.
 								submitButton.disabled = true;
 
-								// Ensure password has been given.
 								const passwordInput = inputs.get("Password")!;
 								if (!passwordInput.value) {
 									updateTextContainer.textContent = "Cannot delete an account without the password.";
@@ -42,13 +60,11 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 									return;
 								}
 
-								// Send request.
 								const response = await fetch("/api/delete-account", {
 									method: "POST",
 									body: passwordInput.value,
 								});
 
-								// Handle response.
 								if (response.ok) {
 									removeCookie("session");
 									updateTextContainer.textContent =

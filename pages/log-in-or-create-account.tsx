@@ -40,10 +40,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 						])
 					}
 					submitHandler={async (submitButton, updateTextContainer, inputs) => {
-						// Disable button.
 						submitButton.disabled = true;
 
-						// Ensure all fields are filled.
 						const emailInput = inputs.get("Email");
 						const passwordInput = inputs.get("Password");
 						if (!emailInput || !passwordInput) {
@@ -52,7 +50,6 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							return;
 						}
 
-						// Send request.
 						const response = await fetch("/api/log-in", {
 							method: "POST",
 							body: JSON.stringify({
@@ -61,14 +58,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							}),
 						});
 
-						// Handle response.
 						if (response.ok) {
 							const responseObject = await response.json();
-							if (!responseObject.name || !responseObject.email || !responseObject.sessionId) {
-								updateTextContainer.textContent = "Server returned a malformed response.";
-								submitButton.disabled = false;
-								return;
-							}
 							setCookie("session", responseObject.sessionId, {
 								path: "/",
 								maxAge: 60 * 60 * 24 * 7,
@@ -94,10 +85,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 						])
 					}
 					submitHandler={async (submitButton, updateTextContainer, inputs) => {
-						// Disable button.
 						submitButton.disabled = true;
 
-						// Ensure all fields are filled.
 						const nameInput = inputs.get("Name")!;
 						const passwordInput = inputs.get("Password")!;
 						const confirmPasswordInput = inputs.get("Confirm Password")!;
@@ -108,14 +97,12 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							return;
 						}
 
-						// Verify password fields match.
 						if (passwordInput.value != confirmPasswordInput.value) {
 							updateTextContainer.textContent = "Passwords don't match.";
 							submitButton.disabled = false;
 							return;
 						}
 
-						// Send request.
 						const response = await fetch("/api/create-account", {
 							method: "POST",
 							body: JSON.stringify({
@@ -125,14 +112,8 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 							}),
 						});
 
-						// Handle response.
 						if (response.ok) {
 							const responseObject = await response.json();
-							if (!responseObject.name || !responseObject.email || !responseObject.sessionId) {
-								updateTextContainer.textContent = "Server returned a malformed response.";
-								submitButton.disabled = false;
-								return;
-							}
 							setCookie("session", responseObject.sessionId, {
 								path: "/",
 								maxAge: 60 * 60 * 24 * 7,
