@@ -1,4 +1,5 @@
 import { FC } from "react";
+import style from "../styles/Form.module.css";
 
 interface FormPropType {
 	title: string;
@@ -18,7 +19,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 	const directiveParagraphName = `${uniformifyName(title)}-form-status`;
 	const submitButtonName = `${uniformifyName(title)}-form-submit-button`;
 	return (
-		<>
+		<div className={style["form"]}>
 			<h1>{title}</h1>
 			<p id={directiveParagraphName} aria-live={"polite"}>
 				{initialDirective}
@@ -57,7 +58,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 					Submit
 				</button>
 			</form>
-		</>
+		</div>
 	);
 };
 
