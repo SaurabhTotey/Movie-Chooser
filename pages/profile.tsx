@@ -19,9 +19,8 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 				<Navbar userClientInfo={userClientInfo} />
 				{userClientInfo ? (
 					<>
-						<p>Hello {userClientInfo.name}</p>
-						<p>Email {userClientInfo.email}</p>
-						<p>SessionId {userClientInfo.sessionId}</p>
+						<h1>Hello, {userClientInfo.name}</h1>
+						<p>Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a></p>
 						<Form
 							title={"Log Out"}
 							initialDirective={"Press button to log out."}
