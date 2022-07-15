@@ -1,4 +1,49 @@
-.navLink {
-	margin: 1em;
+.logo {
 	display: inline-block;
+	width: 90%;
+	text-align: center;
+}
+
+.mobileHamburgerButton {
+	display: inline-block;
+	width: 10%;
+}
+
+.navList {
+	padding: 0;
+}
+
+.navList > li {
+	display: block;
+}
+
+.navList > li > a {
+	display: block;
+	text-align: center;
+	width: 100%;
+}
+
+.navList > li > a:hover {
+	background-color: silver;
+}
+
+@media (min-width: 900px) {
+	.logo {
+		width: 25%;
+		text-align: left;
+	}
+
+	.mobileHamburgerButton {
+		display: none;
+	}
+
+	.navList {
+		display: inline-block;
+		width: 75%;
+	}
+
+	.navList > li {
+		display: inline-block;
+		width: 50%;
+	}
 }
