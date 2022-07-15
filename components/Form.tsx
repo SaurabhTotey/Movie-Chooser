@@ -40,9 +40,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 					onClick={(event) => {
 						event.preventDefault();
 						const fieldNameToFormInputElements = new Map();
-						console.log(`testing: ${fieldNamesToFieldTypes}`);
 						Array.from(fieldNamesToFieldTypes.keys()).forEach((fieldName) => {
-							console.log(`name: ${fieldName}`);
 							fieldNameToFormInputElements.set(
 								fieldName,
 								document.getElementById(htmlValidFieldNameFor(fieldName)) as HTMLInputElement,
