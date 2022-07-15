@@ -3,15 +3,31 @@ import { FC } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/Navbar.module.css";
 
-// TODO: hamburger button doesn't do anything right now and the navbar isn't hidden on mobile yet
+// TODO: ensure that navigation shows up when javascript is disabled
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const accountPath = userClientInfo ? "/profile" : "/log-in-or-create-account";
 	const linkName = userClientInfo ? "Profile" : "Log In/Create Account";
 	return (
-		<nav className={style["navContainer"]}>
-			<h1 className={style["logo"]}>MOVIE CHOOSER</h1>
-			<button className={style["mobileHamburgerButton"]}>☰</button>
-			<ul className={style["navList"]}>
+		<nav id={style["navContainer"]} aria-live={"polite"}>
+			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
+			<button
+				id={style["mobileHamburgerButton"]}
+				onClick={(event) => {
+					event.preventDefault();
+					const navListElement = document.getElementById(style["navList"]) as HTMLUListElement;
+					const currentNavListMobileDisplay = window
+						.getComputedStyle(navListElement)
+						.getPropertyValue("--nav-mobile-display");
+					if (currentNavListMobileDisplay == "block") {
+						navListElement.style.setProperty("--nav-mobile-display", "none");
+					} else {
+						navListElement.style.setProperty("--nav-mobile-display", "block");
+					}
+				}}
+			>
+				☰
+			</button>
+			<ul id={style["navList"]}>
 				<li>
 					<Link href="/">
 						<a>Home</a>

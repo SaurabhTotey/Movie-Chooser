@@ -1,48 +1,54 @@
-.logo {
+#logo {
 	display: inline-block;
 	width: 90%;
 	text-align: center;
+	margin: 0;
 }
 
-.mobileHamburgerButton {
+#mobileHamburgerButton {
 	display: inline-block;
 	width: 10%;
-}
-
-.navList {
 	padding: 0;
+	border: 0;
 }
 
-.navList > li {
+#navList {
+	padding: 0;
+	margin: 0;
+	--nav-mobile-display: none;
+	display: var(--nav-mobile-display);
+}
+
+#navList > li {
 	display: block;
 }
 
-.navList > li > a {
+#navList > li > a {
 	display: block;
 	text-align: center;
 	width: 100%;
 }
 
-.navList > li > a:hover {
-	background-color: silver;
+#navList > li > a:hover {
+	background-color: lightblue;
 }
 
 @media (min-width: 900px) {
-	.logo {
+	#logo {
 		width: 25%;
 		text-align: left;
 	}
 
-	.mobileHamburgerButton {
+	#mobileHamburgerButton {
 		display: none;
 	}
 
-	.navList {
+	#navList {
 		display: inline-block;
 		width: 75%;
 	}
 
-	.navList > li {
+	#navList > li {
 		display: inline-block;
 		width: 50%;
 	}
