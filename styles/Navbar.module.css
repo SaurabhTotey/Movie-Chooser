@@ -1,3 +1,8 @@
+#navContainer {
+	margin-top: 1rem;
+	margin-bottom: 2rem;
+}
+
 #logo {
 	display: inline-block;
 	width: 90%;
