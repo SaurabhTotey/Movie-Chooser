@@ -7,6 +7,7 @@ import Form from "../components/Form";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
+// TODO: do not allow user to create account or log in if they're already logged in: allow them to log out instead
 function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const router = useRouter();
 	const [cookie, setCookie] = useCookies(["session"]);

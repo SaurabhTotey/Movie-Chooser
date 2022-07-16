@@ -20,7 +20,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 	const submitButtonName = `${uniformifyName(title)}-form-submit-button`;
 	return (
 		<div className={style["form"]}>
-			<h1>{title}</h1>
+			<h2>{title}</h2>
 			<p id={directiveParagraphName} aria-live={"polite"}>
 				{initialDirective}
 			</p>

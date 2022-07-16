@@ -11,7 +11,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<h1>Hello, world!</h1>
+				<h2>Hello, world!</h2>
 			</main>
 			<footer></footer>
 		</>

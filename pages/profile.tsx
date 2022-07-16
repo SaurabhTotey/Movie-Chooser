@@ -19,7 +19,7 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 				<Navbar userClientInfo={userClientInfo} />
 				{userClientInfo ? (
 					<>
-						<h1>Hello, {userClientInfo.name}</h1>
+						<h2>Hello, {userClientInfo.name}</h2>
 						<p>
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
