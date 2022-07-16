@@ -1,2 +1,42 @@
 .form {
+	border: 1px solid black;
+	margin-bottom: 1rem;
+	padding: 1rem;
+}
+
+.formTitle {
+	text-align: center;
+}
+
+.formDescription {
+	text-align: center;
+}
+
+.fieldSet > label {
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+
+.fieldSet > input {
+	border: 1px solid black;
+	width: calc(100% - 2px);
+	margin-bottom: 1rem;
+}
+
+.submitButton {
+	width: 100%;
+	margin-top: 1rem;
+}
+
+@media (min-width: 900px) {
+	.fieldSet > label {
+		width: 17.5%;
+		display: inline-block;
+	}
+
+	.fieldSet > input {
+		width: calc(82.5% - 2px);
+		padding: 0;
+	}
 }

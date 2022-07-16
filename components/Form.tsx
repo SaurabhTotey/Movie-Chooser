@@ -20,15 +20,15 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 	const submitButtonName = `${uniformifyName(title)}-form-submit-button`;
 	return (
 		<div className={style["form"]}>
-			<h2>{title}</h2>
-			<p id={directiveParagraphName} aria-live={"polite"}>
+			<h2 className={style["formTitle"]}>{title}</h2>
+			<p id={directiveParagraphName} className={style["formDescription"]} aria-live={"polite"}>
 				{initialDirective}
 			</p>
 			<form>
 				{Array.from(fieldNamesToFieldTypes.entries()).map(([fieldName, fieldType]) => {
 					const htmlValidFieldName = htmlValidFieldNameFor(fieldName);
 					return (
-						<div key={fieldName}>
+						<div key={fieldName} className={style["fieldSet"]}>
 							<label htmlFor={htmlValidFieldName}>{fieldName}</label>
 							<input id={htmlValidFieldName} type={fieldType} />
 						</div>
@@ -36,6 +36,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 				})}
 				<button
 					type="submit"
+					className={style["submitButton"]}
 					id={submitButtonName}
 					onClick={(event) => {
 						event.preventDefault();
