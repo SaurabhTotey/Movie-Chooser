@@ -39,6 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			userId: userToDelete.id,
 		},
 	});
+	const toWatchEntryDeletionResults = await prisma.toWatchEntry.deleteMany({
+		where: {
+			userId: userToDelete.id,
+		},
+	});
 	const userDeletionResults = await prisma.user.delete({
 		where: {
 			id: userToDelete.id,
