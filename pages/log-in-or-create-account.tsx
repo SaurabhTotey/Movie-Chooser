@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
+import Footer from "../components/Footer";
 import Form from "../components/Form";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
@@ -129,7 +130,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 					</>
 				)}
 			</main>
-			<footer></footer>
+			<Footer />
 		</>
 	);
 }
