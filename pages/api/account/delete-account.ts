@@ -35,22 +35,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	}
 
 	// Delete all database entries related to the user.
-	const sessionDeletionResults = await prisma.session.deleteMany({
+	const sessionDeletionPromise = prisma.session.deleteMany({
 		where: {
 			userId: userToDelete.id,
 		},
 	});
-	const toWatchEntryDeletionResults = await prisma.toWatchEntry.deleteMany({
+	const toWatchEntryDeletionPromise = prisma.toWatchEntry.deleteMany({
 		where: {
 			userId: userToDelete.id,
 		},
 	});
-	await deleteUnneededMovies();
-	const userDeletionResults = await prisma.user.delete({
+	const movieDeletionPromise = deleteUnneededMovies();
+	const userDeletionPromise = prisma.user.delete({
 		where: {
 			id: userToDelete.id,
 		},
 	});
+	await prisma.$transaction([sessionDeletionPromise, toWatchEntryDeletionPromise, userDeletionPromise]);
+	await movieDeletionPromise;
 
 	res.status(200).json("Success!");
 }
