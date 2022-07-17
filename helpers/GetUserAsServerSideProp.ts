@@ -1,13 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Cookies from "universal-cookie";
+import deleteStaleSessions from "./DeleteStaleSessions";
 import UserClientInfo from "./UserClientInfo";
 
 const prisma = new PrismaClient();
 
 const getUserAsServerSideProp: GetServerSideProps = async (context) => {
 	const sessionId = new Cookies(context.req.headers.cookie).get("session");
-	// TODO: we probably want to make sure the token isn't stale and/or delete stale sessions
+	await deleteStaleSessions();
 	const user = sessionId
 		? await prisma.session
 				.findUnique({
