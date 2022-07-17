@@ -7,8 +7,7 @@ import Form from "../components/Form";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
-// TODO: do not allow user to create account or log in if they're already logged in: allow them to log out instead
-function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
+function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const router = useRouter();
 	const [cookie, setCookie] = useCookies(["session"]);
 	return (
@@ -18,115 +17,117 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<div aria-live="polite">
-					{userClientInfo && (
-						<p>
-							You are signed in! Would you like to go to the{" "}
-							<Link href="./profile">
-								<a>profile page</a>
-							</Link>
-							?
-						</p>
-					)}
-				</div>
-				<Form
-					title={"Log In"}
-					initialDirective={"Please fill out the form to log in."}
-					fieldNamesToFieldTypes={
-						new Map([
-							["Email", "email"],
-							["Password", "password"],
-						])
-					}
-					submitHandler={async (submitButton, updateTextContainer, inputs) => {
-						submitButton.disabled = true;
+				{userClientInfo ? (
+					<p>
+						You are signed in! Would you like to go to the{" "}
+						<Link href="./profile">
+							<a>profile page</a>
+						</Link>
+						?
+					</p>
+				) : (
+					<>
+						<Form
+							title={"Log In"}
+							initialDirective={"Please fill out the form to log in."}
+							fieldNamesToFieldTypes={
+								new Map([
+									["Email", "email"],
+									["Password", "password"],
+								])
+							}
+							submitHandler={async (submitButton, updateTextContainer, inputs) => {
+								submitButton.disabled = true;
 
-						const emailInput = inputs.get("Email");
-						const passwordInput = inputs.get("Password");
-						if (!emailInput || !passwordInput) {
-							updateTextContainer.textContent = "Please fill out all fields";
-							submitButton.disabled = false;
-							return;
-						}
+								const emailInput = inputs.get("Email");
+								const passwordInput = inputs.get("Password");
+								if (!emailInput || !passwordInput) {
+									updateTextContainer.textContent = "Please fill out all fields";
+									submitButton.disabled = false;
+									return;
+								}
 
-						const response = await fetch("/api/account/log-in", {
-							method: "POST",
-							body: JSON.stringify({
-								email: emailInput.value,
-								password: passwordInput.value,
-							}),
-						});
+								const response = await fetch("/api/account/log-in", {
+									method: "POST",
+									body: JSON.stringify({
+										email: emailInput.value,
+										password: passwordInput.value,
+									}),
+								});
 
-						if (response.ok) {
-							const responseObject = await response.json();
-							setCookie("session", responseObject.sessionId, {
-								path: "/",
-								maxAge: 60 * 60 * 24 * 7,
-								sameSite: true,
-							});
-							updateTextContainer.textContent = "You are now signed in! You are being redirected to the profile page.";
-							router.push("/profile");
-						} else {
-							updateTextContainer.textContent = `Error: ${await response.text()}`;
-							submitButton.disabled = false;
-						}
-					}}
-				/>
-				<Form
-					title={"Create Account"}
-					initialDirective={"Please fill out the form to create an account."}
-					fieldNamesToFieldTypes={
-						new Map([
-							["Name", "text"],
-							["Password", "password"],
-							["Confirm Password", "password"],
-							["Email", "email"],
-						])
-					}
-					submitHandler={async (submitButton, updateTextContainer, inputs) => {
-						submitButton.disabled = true;
+								if (response.ok) {
+									const responseObject = await response.json();
+									setCookie("session", responseObject.sessionId, {
+										path: "/",
+										maxAge: 60 * 60 * 24 * 7,
+										sameSite: true,
+									});
+									updateTextContainer.textContent =
+										"You are now signed in! You are being redirected to the profile page.";
+									router.push("/profile");
+								} else {
+									updateTextContainer.textContent = `Error: ${await response.text()}`;
+									submitButton.disabled = false;
+								}
+							}}
+						/>
+						<Form
+							title={"Create Account"}
+							initialDirective={"Please fill out the form to create an account."}
+							fieldNamesToFieldTypes={
+								new Map([
+									["Name", "text"],
+									["Password", "password"],
+									["Confirm Password", "password"],
+									["Email", "email"],
+								])
+							}
+							submitHandler={async (submitButton, updateTextContainer, inputs) => {
+								submitButton.disabled = true;
 
-						const nameInput = inputs.get("Name")!;
-						const passwordInput = inputs.get("Password")!;
-						const confirmPasswordInput = inputs.get("Confirm Password")!;
-						const emailInput = inputs.get("Email")!;
-						if (!nameInput.value || !passwordInput.value || !confirmPasswordInput.value || !emailInput.value) {
-							updateTextContainer.textContent = "Please fill out all fields";
-							submitButton.disabled = false;
-							return;
-						}
+								const nameInput = inputs.get("Name")!;
+								const passwordInput = inputs.get("Password")!;
+								const confirmPasswordInput = inputs.get("Confirm Password")!;
+								const emailInput = inputs.get("Email")!;
+								if (!nameInput.value || !passwordInput.value || !confirmPasswordInput.value || !emailInput.value) {
+									updateTextContainer.textContent = "Please fill out all fields";
+									submitButton.disabled = false;
+									return;
+								}
 
-						if (passwordInput.value != confirmPasswordInput.value) {
-							updateTextContainer.textContent = "Passwords don't match.";
-							submitButton.disabled = false;
-							return;
-						}
+								if (passwordInput.value != confirmPasswordInput.value) {
+									updateTextContainer.textContent = "Passwords don't match.";
+									submitButton.disabled = false;
+									return;
+								}
 
-						const response = await fetch("/api/account/create-account", {
-							method: "POST",
-							body: JSON.stringify({
-								name: nameInput.value,
-								password: passwordInput.value,
-								email: emailInput.value,
-							}),
-						});
+								const response = await fetch("/api/account/create-account", {
+									method: "POST",
+									body: JSON.stringify({
+										name: nameInput.value,
+										password: passwordInput.value,
+										email: emailInput.value,
+									}),
+								});
 
-						if (response.ok) {
-							const responseObject = await response.json();
-							setCookie("session", responseObject.sessionId, {
-								path: "/",
-								maxAge: 60 * 60 * 24 * 7,
-								sameSite: true,
-							});
-							updateTextContainer.textContent =
-								"Account successfully created! You are now signed in! You are being redirected to the profile page.";
-							router.push("/profile");
-						} else {
-							updateTextContainer.textContent = `Error: ${await response.text()}`;
-							submitButton.disabled = false;
-						}
-					}}
-				/>
+								if (response.ok) {
+									const responseObject = await response.json();
+									setCookie("session", responseObject.sessionId, {
+										path: "/",
+										maxAge: 60 * 60 * 24 * 7,
+										sameSite: true,
+									});
+									updateTextContainer.textContent =
+										"Account successfully created! You are now signed in! You are being redirected to the profile page.";
+									router.push("/profile");
+								} else {
+									updateTextContainer.textContent = `Error: ${await response.text()}`;
+									submitButton.disabled = false;
+								}
+							}}
+						/>
+					</>
+				)}
 			</main>
 			<footer></footer>
 		</>
@@ -134,4 +135,4 @@ function CreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof ge
 }
 
 export const getServerSideProps = getUserAsServerSideProp;
-export default CreateAccount;
+export default LogInOrCreateAccount;

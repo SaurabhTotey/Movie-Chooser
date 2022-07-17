@@ -38,5 +38,6 @@
 	.fieldSet > input {
 		width: calc(82.5% - 2px);
 		padding: 0;
+		margin-bottom: 0.25rem;
 	}
 }
