@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "universal-cookie";
+import deleteUnneededMovies from "../../../helpers/DeleteUnneededMovies";
 
 const prisma = new PrismaClient();
 
@@ -44,6 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			userId: userToDelete.id,
 		},
 	});
+	await deleteUnneededMovies();
 	const userDeletionResults = await prisma.user.delete({
 		where: {
 			id: userToDelete.id,
