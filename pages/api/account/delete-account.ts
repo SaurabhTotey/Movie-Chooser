@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "universal-cookie";
-import deleteUnneededMovies from "../../../helpers/DeleteUnneededMovies";
 
 const prisma = new PrismaClient();
 
@@ -45,14 +44,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			userId: userToDelete.id,
 		},
 	});
-	const movieDeletionPromise = deleteUnneededMovies();
+	const watchedEntryDeletionPromise = prisma.watchedEntry.deleteMany({
+		where: {
+			userId: userToDelete.id,
+		},
+	});
 	const userDeletionPromise = prisma.user.delete({
 		where: {
 			id: userToDelete.id,
 		},
 	});
-	await prisma.$transaction([sessionDeletionPromise, toWatchEntryDeletionPromise, userDeletionPromise]);
-	await movieDeletionPromise;
+	await prisma.$transaction([
+		sessionDeletionPromise,
+		toWatchEntryDeletionPromise,
+		watchedEntryDeletionPromise,
+		userDeletionPromise,
+	]);
 
 	res.status(200).json("Success!");
 }

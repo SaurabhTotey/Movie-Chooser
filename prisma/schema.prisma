@@ -14,6 +14,7 @@ model User {
   email        String         @unique @db.VarChar(255)
   Session      Session[]
   ToWatchEntry ToWatchEntry[]
+  WatchedEntry WatchedEntry[]
 }
 
 model Session {
@@ -24,18 +25,22 @@ model Session {
   User         User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model Movie {
-  id           Int            @id @default(autoincrement())
-  tmdbApiId    Int
-  ToWatchEntry ToWatchEntry[]
-}
-
 model ToWatchEntry {
   userId  Int
   movieId Int
   weight  Float @db.Real
-  Movie   Movie @relation(fields: [movieId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   User    User  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([userId, movieId])
+}
+
+model WatchedEntry {
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  movieId Int
+  rating  Float?   @db.Real
+  time    DateTime @db.Timestamp(6)
+  User    User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([userId, time])
 }
