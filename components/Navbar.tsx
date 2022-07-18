@@ -3,10 +3,22 @@ import { FC } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/Navbar.module.css";
 
+const namesToPathsWhenLoggedIn = new Map([
+	["Home", ""],
+	["Profile", "profile"],
+	["Stats", "statistics"],
+	["Add Movie", "add-movie"],
+	["Party!", "party"],
+]);
+const namesToPathsWhenNotLoggedIn = new Map([
+	["Home", ""],
+	["Log In / Create Account", "log-in-or-create-account"],
+	["Stats", "statistics"],
+]);
+
 // TODO: ensure that navigation shows up when javascript is disabled
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
-	const accountPath = userClientInfo ? "/profile" : "/log-in-or-create-account";
-	const linkName = userClientInfo ? "Profile" : "Log In/Create Account";
+	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 	return (
 		<nav id={style["navContainer"]} aria-live={"polite"}>
 			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
@@ -28,16 +40,16 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 				☰
 			</button>
 			<ul id={style["navList"]}>
-				<li>
-					<Link href="/">
-						<a>Home</a>
-					</Link>
-				</li>
-				<li>
-					<Link href={accountPath}>
-						<a>{linkName}</a>
-					</Link>
-				</li>
+				{Array.from(mappingToUse.keys()).map((name) => {
+					const path = mappingToUse.get(name);
+					return (
+						<li id={style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"]} key={name}>
+							<Link href={`/${path}`}>
+								<a>{name}</a>
+							</Link>
+						</li>
+					);
+				})}
 			</ul>
 		</nav>
 	);

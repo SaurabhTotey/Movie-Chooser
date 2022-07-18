@@ -24,6 +24,14 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 						<p>
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
+						<p>
+							TODO: this page will be used to display the user's current movie list and allow them to change weights or
+							remove movies.
+						</p>
+						<p>
+							TODO: this page will be used to display the user's watched movie list and allow them to change ratings or
+							remove movies.
+						</p>
 						<Form
 							title={"Log Out"}
 							initialDirective={"Press button to log out."}

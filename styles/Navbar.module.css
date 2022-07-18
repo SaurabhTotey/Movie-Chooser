@@ -55,6 +55,13 @@
 
 	#navList > li {
 		display: inline-block;
-		width: 50%;
+	}
+
+	#navListItemLoggedIn {
+		width: calc(100% / 5);
+	}
+
+	#navListItemNotLoggedIn {
+		width: calc(100% / 3);
 	}
 }
