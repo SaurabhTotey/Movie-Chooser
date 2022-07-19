@@ -6,6 +6,8 @@ import UserClientInfo from "../../../helpers/UserClientInfo";
 
 const prisma = new PrismaClient();
 
+// Create a new account. Creating an account also creates a session. Request must be a POST request with the body
+// containing a JSON object specifying the new account's name, password, and email. The UserClientInfo is returned.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
 	const requestObject = JSON.parse(req.body);

@@ -16,7 +16,6 @@ const namesToPathsWhenNotLoggedIn = new Map([
 	["Stats", "statistics"],
 ]);
 
-// TODO: ensure that navigation shows up when javascript is disabled
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 	return (

@@ -5,6 +5,9 @@ import Cookies from "universal-cookie";
 
 const prisma = new PrismaClient();
 
+// Delete an account. Request must be a POST request with a cookie header with a session token corresponding to
+// the account to delete (essentially requiring that the requester be signed in) and with the request body containing
+// the user's password. Deleting an account also deletes all information tied to the account from the database.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate that request has a cookie that gives a session token and a body (that will be interpretted as the user's password).
 	const token = new Cookies(req.headers.cookie).get("session");

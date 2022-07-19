@@ -4,6 +4,8 @@ import Cookies from "universal-cookie";
 
 const prisma = new PrismaClient();
 
+// Log the user out by deleting their session token from the database. Request must be a POST request with a cookie
+// header containing a session token for the user to be logged out.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate request.
 	const token = new Cookies(req.headers.cookie).get("session");

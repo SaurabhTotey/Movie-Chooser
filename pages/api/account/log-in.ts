@@ -6,6 +6,9 @@ import UserClientInfo from "../../../helpers/UserClientInfo";
 
 const prisma = new PrismaClient();
 
+// Generate a new session token for a user given by their email and password. Request must be a POST request with the
+// body being a JSON object specifying the user's email and password. If the email and password correspond to an
+// account, a session token is generated, and the UserClientInfo is sent back.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
 	const requestObject = JSON.parse(req.body);
