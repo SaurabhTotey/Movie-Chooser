@@ -1,0 +1,21 @@
+#movieSearchLabel {
+	width: 100%;
+	display: block;
+	text-align: center;
+	font-size: 1.2rem;
+}
+
+#movieSearchInput {
+	border: 1px solid black;
+	width: calc(90% - 2px);
+	display: inline-block;
+	padding: 0;
+	margin-right: 1%;
+}
+
+#movieSearchButton {
+	border: 1px solid black;
+	width: calc(9% - 2px);
+	display: inline-block;
+	padding: 0;
+}
