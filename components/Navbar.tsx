@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FC } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/Navbar.module.css";
@@ -17,6 +18,7 @@ const namesToPathsWhenNotLoggedIn = new Map([
 ]);
 
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
+	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 	return (
 		<nav id={style["navContainer"]} aria-live={"polite"}>
@@ -42,7 +44,13 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 				{Array.from(mappingToUse.keys()).map((name) => {
 					const path = mappingToUse.get(name);
 					return (
-						<li id={style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"]} key={name}>
+						<li
+							className={
+								style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"] +
+								(router.pathname == `/${path}` ? ` ${style["active"]}` : "")
+							}
+							key={name}
+						>
 							<Link href={`/${path}`}>
 								<a>{name}</a>
 							</Link>

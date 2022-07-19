@@ -34,8 +34,12 @@
 	width: 100%;
 }
 
+.active {
+	background-color: dodgerblue;
+}
+
 #navList > li > a:hover {
-	background-color: lightblue;
+	background-color: deepskyblue;
 }
 
 @media (min-width: 900px) {
@@ -57,11 +61,11 @@
 		display: inline-block;
 	}
 
-	#navListItemLoggedIn {
+	.navListItemLoggedIn {
 		width: calc(100% / 5);
 	}
 
-	#navListItemNotLoggedIn {
+	.navListItemNotLoggedIn {
 		width: calc(100% / 3);
 	}
 }
