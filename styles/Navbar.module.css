@@ -12,9 +12,8 @@
 
 #mobileHamburgerButton {
 	display: inline-block;
-	width: 10%;
+	width: calc(10% - 2px);
 	padding: 0;
-	border: 0;
 }
 
 #navList {

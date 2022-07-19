@@ -18,9 +18,8 @@
 }
 
 .fieldSet > input {
-	border: 1px solid black;
 	width: calc(100% - 2px);
-	margin-bottom: 1rem;
+	margin-bottom: 0.5rem;
 }
 
 .submitButton {
