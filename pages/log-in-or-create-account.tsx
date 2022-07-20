@@ -1,3 +1,4 @@
+import axios from "axios";
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -48,28 +49,26 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 									return;
 								}
 
-								const response = await fetch("/api/account/log-in", {
-									method: "POST",
-									body: JSON.stringify({
+								axios
+									.post("/api/account/log-in", {
 										email: emailInput.value,
 										password: passwordInput.value,
-									}),
-								});
-
-								if (response.ok) {
-									const responseObject = await response.json();
-									setCookie("session", responseObject.sessionId, {
-										path: "/",
-										maxAge: 60 * 60 * 24 * 7,
-										sameSite: true,
+									})
+									.then((response) => {
+										const responseObject = response.data;
+										setCookie("session", responseObject.sessionId, {
+											path: "/",
+											maxAge: 60 * 60 * 24 * 7,
+											sameSite: true,
+										});
+										updateTextContainer.textContent =
+											"You are now signed in! You are being redirected to the profile page.";
+										router.push("/profile");
+									})
+									.catch((error) => {
+										updateTextContainer.textContent = `${error?.response?.data}`;
+										submitButton.disabled = false;
 									});
-									updateTextContainer.textContent =
-										"You are now signed in! You are being redirected to the profile page.";
-									router.push("/profile");
-								} else {
-									updateTextContainer.textContent = `Error: ${await response.text()}`;
-									submitButton.disabled = false;
-								}
 							}}
 						/>
 						<Form
@@ -102,29 +101,27 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 									return;
 								}
 
-								const response = await fetch("/api/account/create-account", {
-									method: "POST",
-									body: JSON.stringify({
+								axios
+									.post("/api/account/create-account", {
 										name: nameInput.value,
 										password: passwordInput.value,
 										email: emailInput.value,
-									}),
-								});
-
-								if (response.ok) {
-									const responseObject = await response.json();
-									setCookie("session", responseObject.sessionId, {
-										path: "/",
-										maxAge: 60 * 60 * 24 * 7,
-										sameSite: true,
+									})
+									.then((response) => {
+										const responseObject = response.data;
+										setCookie("session", responseObject.sessionId, {
+											path: "/",
+											maxAge: 60 * 60 * 24 * 7,
+											sameSite: true,
+										});
+										updateTextContainer.textContent =
+											"Account successfully created! You are now signed in! You are being redirected to the profile page.";
+										router.push("/profile");
+									})
+									.catch((error) => {
+										updateTextContainer.textContent = `${error?.response?.data}`;
+										submitButton.disabled = false;
 									});
-									updateTextContainer.textContent =
-										"Account successfully created! You are now signed in! You are being redirected to the profile page.";
-									router.push("/profile");
-								} else {
-									updateTextContainer.textContent = `Error: ${await response.text()}`;
-									submitButton.disabled = false;
-								}
 							}}
 						/>
 					</>

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -39,19 +40,18 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 							submitHandler={async (submitButton, updateTextContainer) => {
 								submitButton.disabled = true;
 
-								const response = await fetch("/api/account/log-out", {
-									method: "POST",
-								});
-
-								if (response.ok) {
-									removeCookie("session");
-									updateTextContainer.textContent =
-										"You have been signed out. You are being redirected to the account creation page.";
-									router.push("/log-in-or-create-account");
-								} else {
-									updateTextContainer.textContent = `Error: ${await response.text()}`;
-									submitButton.disabled = false;
-								}
+								axios
+									.post("/api/account/log-out")
+									.then((response) => {
+										removeCookie("session");
+										updateTextContainer.textContent =
+											"You have been signed out. You are being redirected to the account creation page.";
+										router.push("/log-in-or-create-account");
+									})
+									.catch((error) => {
+										updateTextContainer.textContent = `${error?.response?.data}`;
+										submitButton.disabled = false;
+									});
 							}}
 						/>
 						<Form
@@ -68,20 +68,18 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 									return;
 								}
 
-								const response = await fetch("/api/account/delete-account", {
-									method: "POST",
-									body: passwordInput.value,
-								});
-
-								if (response.ok) {
-									removeCookie("session");
-									updateTextContainer.textContent =
-										"Account has been deleted. You are being redirected to the account creation page.";
-									router.push("/log-in-or-create-account");
-								} else {
-									updateTextContainer.textContent = `Error: ${await response.text()}`;
-									submitButton.disabled = false;
-								}
+								axios
+									.post("/api/account/delete-account", { password: passwordInput.value })
+									.then((response) => {
+										removeCookie("session");
+										updateTextContainer.textContent =
+											"Account has been deleted. You are being redirected to the account creation page.";
+										router.push("/log-in-or-create-account");
+									})
+									.catch((error) => {
+										updateTextContainer.textContent = `${error?.response?.data}`;
+										submitButton.disabled = false;
+									});
 							}}
 						/>
 					</>

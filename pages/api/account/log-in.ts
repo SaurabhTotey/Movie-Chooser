@@ -11,8 +11,7 @@ const prisma = new PrismaClient();
 // account, a session token is generated, and the UserClientInfo is sent back.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
-	const requestObject = JSON.parse(req.body);
-	if (req.method != "POST" || !requestObject || !requestObject.email || !requestObject.password) {
+	if (req.method != "POST" || !req.body?.email || !req.body?.password) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
@@ -20,10 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	// Ensure that the given password matches the account corresponding to the given email.
 	const userToLogIn = await prisma.user.findUnique({
 		where: {
-			email: requestObject.email,
+			email: req.body.email,
 		},
 	});
-	if (!userToLogIn || !(await bcrypt.compare(requestObject.password, userToLogIn.password))) {
+	if (!userToLogIn || !(await bcrypt.compare(req.body.password, userToLogIn.password))) {
 		res.status(400).json("Couldn't find corresponding email and password combo.");
 		return;
 	}

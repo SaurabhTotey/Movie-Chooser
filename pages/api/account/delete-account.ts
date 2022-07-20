@@ -11,8 +11,7 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate that request has a cookie that gives a session token and a body (that will be interpretted as the user's password).
 	const token = new Cookies(req.headers.cookie).get("session");
-	const password = req.body;
-	if (req.method != "POST" || !token || !password) {
+	if (req.method != "POST" || !token || !req.body?.password) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
@@ -31,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	}
 
 	// Ensure the given password matches the user's password.
-	if (!(await bcrypt.compare(password, userToDelete.password))) {
+	if (!(await bcrypt.compare(req.body.password, userToDelete.password))) {
 		res.status(400).json("The given password isn't correct.");
 		return;
 	}

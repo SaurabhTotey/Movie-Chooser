@@ -10,37 +10,34 @@ const prisma = new PrismaClient();
 // containing a JSON object specifying the new account's name, password, and email. The UserClientInfo is returned.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
-	const requestObject = JSON.parse(req.body);
-	if (
-		req.method != "POST" ||
-		!requestObject ||
-		!requestObject.name ||
-		!requestObject.password ||
-		!requestObject.email
-	) {
+	if (req.method != "POST" || !req.body?.name || !req.body?.password || !req.body?.email) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
 
-	// Send query to database to create the user.
-	const hashedPassword = await bcrypt.hash(requestObject.password, 10);
-	const createdUser = await prisma.user.create({
-		data: {
-			name: requestObject.name,
-			password: hashedPassword,
-			email: requestObject.email,
-		},
-	});
+	try {
+		// Send query to database to create the user.
+		const hashedPassword = await bcrypt.hash(req.body.password, 10);
+		const createdUser = await prisma.user.create({
+			data: {
+				name: req.body.name,
+				password: hashedPassword,
+				email: req.body.email,
+			},
+		});
 
-	// Create a session for the new user.
-	const sessionToken = makeSessionToken();
-	const createdSessionEntry = await prisma.session.create({
-		data: {
-			userId: createdUser.id,
-			token: sessionToken,
-		},
-	});
+		// Create a session for the new user.
+		const sessionToken = makeSessionToken();
+		const createdSessionEntry = await prisma.session.create({
+			data: {
+				userId: createdUser.id,
+				token: sessionToken,
+			},
+		});
 
-	// Send response back to client.
-	res.status(200).json(new UserClientInfo(createdUser.name, createdUser.email, sessionToken));
+		// Send response back to client.
+		res.status(200).json(new UserClientInfo(createdUser.name, createdUser.email, sessionToken));
+	} catch (e) {
+		res.status(400).json("Couldn't create user. Check that the given email is unused.");
+	}
 }
