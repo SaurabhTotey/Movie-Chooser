@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "universal-cookie";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../helpers/GetPrismaClient";
 
 // Delete an account. Request must be a POST request with a cookie header with a session token corresponding to
 // the account to delete (essentially requiring that the requester be signed in) and with the request body containing

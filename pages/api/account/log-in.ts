@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../../../helpers/GetPrismaClient";
 import makeSessionToken from "../../../helpers/MakeSessionToken";
 import UserClientInfo from "../../../helpers/UserClientInfo";
-
-const prisma = new PrismaClient();
 
 // Generate a new session token for a user given by their email and password. Request must be a POST request with the
 // body being a JSON object specifying the user's email and password. If the email and password correspond to an

@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../../../helpers/GetPrismaClient";
 import makeSessionToken from "../../../helpers/MakeSessionToken";
 import UserClientInfo from "../../../helpers/UserClientInfo";
-
-const prisma = new PrismaClient();
 
 // Create a new account. Creating an account also creates a session. Request must be a POST request with the body
 // containing a JSON object specifying the new account's name, password, and email. The UserClientInfo is returned.

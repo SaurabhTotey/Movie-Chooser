@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "universal-cookie";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../helpers/GetPrismaClient";
 
 // Log the user out by deleting their session token from the database. Request must be a POST request with a cookie
 // header containing a session token for the user to be logged out.

@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Cookies from "universal-cookie";
 import deleteStaleSessions from "./DeleteStaleSessions";
+import { prisma } from "./GetPrismaClient";
 import UserClientInfo from "./UserClientInfo";
-
-const prisma = new PrismaClient();
 
 // Get the user that corresponds to the given session (if any exist) for use as a prop to be used by pages.
 // This is useful because many pages have different appearances and behaviours depending on whether the user is signed
