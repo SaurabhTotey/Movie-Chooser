@@ -9,7 +9,7 @@ import { prisma } from "../../../helpers/GetPrismaClient";
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate that request has a cookie that gives a session token and a body (that will be interpretted as the user's password).
 	const token = new Cookies(req.headers.cookie).get("session");
-	if (req.method != "POST" || !token || !req.body?.password) {
+	if (req.method != "POST" || !token || !req.body.password) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}

@@ -8,7 +8,7 @@ import UserClientInfo from "../../../helpers/UserClientInfo";
 // containing a JSON object specifying the new account's name, password, and email. The UserClientInfo is returned.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
-	if (req.method != "POST" || !req.body?.name || !req.body?.password || !req.body?.email) {
+	if (req.method != "POST" || !req.body.name || !req.body.password || !req.body.email) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}

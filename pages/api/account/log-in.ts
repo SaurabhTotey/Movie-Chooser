@@ -9,7 +9,7 @@ import UserClientInfo from "../../../helpers/UserClientInfo";
 // account, a session token is generated, and the UserClientInfo is sent back.
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | UserClientInfo>) {
 	// Validate request.
-	if (req.method != "POST" || !req.body?.email || !req.body?.password) {
+	if (req.method != "POST" || !req.body.email || !req.body.password) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
