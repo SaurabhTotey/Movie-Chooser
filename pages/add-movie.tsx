@@ -1,5 +1,6 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
@@ -18,21 +19,33 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 					list. In the case of the former, the weight must be selected, and in the case of the latter, the date must be
 					selected.
 				</p>
-				<form>
-					<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
-						Search for Movie to Add
-					</label>
-					<input id={style["movieSearchInput"]} type={"search"} />
-					<button
-						id={style["movieSearchButton"]}
-						type="submit"
-						onClick={(event) => {
-							event.preventDefault();
-						}}
-					>
-						🔍
-					</button>
-				</form>
+				{userClientInfo ? (
+					<form>
+						<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
+							Search for Movie to Add
+						</label>
+						<input id={style["movieSearchInput"]} type={"search"} />
+						<button
+							id={style["movieSearchButton"]}
+							type="submit"
+							onClick={(event) => {
+								event.preventDefault();
+							}}
+						>
+							🔍
+						</button>
+					</form>
+				) : (
+					<>
+						<p>
+							You are not logged in. You can log in or create an account{" "}
+							<Link href="./log-in-or-create-account">
+								<a>here</a>
+							</Link>
+							.
+						</p>
+					</>
+				)}
 			</main>
 			<Footer />
 		</>
