@@ -22,7 +22,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 					<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
 						Search for Movie to Add
 					</label>
-					<input id={style["movieSearchInput"]}></input>
+					<input id={style["movieSearchInput"]} type={"search"} />
 					<button
 						id={style["movieSearchButton"]}
 						type="submit"
