@@ -1,12 +1,16 @@
+import axios from "axios";
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
+import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
 import style from "../styles/add-movie.module.css";
 
 function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
+	const [searchedMovies, setSearchedMovies] = useState<MovieApiMovieInformation[] | null>(null);
 	return (
 		<>
 			<Head>
@@ -20,21 +24,41 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 					selected.
 				</p>
 				{userClientInfo ? (
-					<form>
-						<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
-							Search for Movie to Add
-						</label>
-						<input id={style["movieSearchInput"]} type={"search"} />
-						<button
-							id={style["movieSearchButton"]}
-							type="submit"
-							onClick={(event) => {
-								event.preventDefault();
-							}}
-						>
-							🔍
-						</button>
-					</form>
+					<>
+						<form>
+							<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
+								Search for Movie to Add
+							</label>
+							<input id={style["movieSearchInput"]} type={"search"} />
+							<button
+								id={style["movieSearchButton"]}
+								type="submit"
+								onClick={async (event) => {
+									event.preventDefault();
+									// TODO: error handling:
+									setSearchedMovies(
+										(
+											await axios.get(
+												`/api/movie/search-for-movie?searchTerm=${
+													(document.getElementById(style["movieSearchInput"]) as HTMLInputElement).value
+												}`,
+											)
+										).data,
+									);
+								}}
+							>
+								🔍
+							</button>
+						</form>
+						<div aria-live={"polite"}>
+							{searchedMovies &&
+								searchedMovies.map((movie) => (
+									<>
+										<p>{movie.title}</p>
+									</>
+								))}
+						</div>
+					</>
 				) : (
 					<>
 						<p>
