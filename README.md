@@ -14,6 +14,6 @@
 
 ## TODO
 
-* This README
-* Aria `controlled-by`
-* Styling
+- This README
+- Aria `controlled-by`
+- Styling

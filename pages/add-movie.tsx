@@ -4,6 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import Footer from "../components/Footer";
+import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
@@ -51,12 +52,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 							</button>
 						</form>
 						<div aria-live={"polite"}>
-							{searchedMovies &&
-								searchedMovies.map((movie) => (
-									<>
-										<p>{movie.title}</p>
-									</>
-								))}
+							{searchedMovies && searchedMovies.map((movie) => <MovieCard movie={movie} key={movie.id} />)}
 						</div>
 					</>
 				) : (
