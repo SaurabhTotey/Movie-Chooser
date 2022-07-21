@@ -1,7 +1,5 @@
 # Movie Chooser
 
-TODO: make this README
-
 ## Features
 
 ## How to Set Up
@@ -13,3 +11,9 @@ TODO: make this README
 ### Commands
 
 ## Workflow
+
+## TODO
+
+* This README
+* Aria `controlled-by`
+* Styling
