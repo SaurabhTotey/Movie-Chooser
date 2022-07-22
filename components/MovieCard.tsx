@@ -10,17 +10,21 @@ interface MovieCardPropType {
 const MovieCard: FC<MovieCardPropType> = ({ movie }) => {
 	return (
 		<div className={style["movieCard"]}>
-			<h3>{movie.title}</h3>
-			{movie.posterPath && (
-				<Image
-					src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
-					alt={`Poster for ${movie.title}.`}
-					width={500}
-					height={750}
-				/>
-			)}
-			<p>{movie.summary}</p>
-			<p>{movie.release}</p>
+			<h3 className={style["movieCardTitle"]}>{movie.title}</h3>
+			<div className={style["movieCardImageContainer"]}>
+				{movie.posterPath && (
+					<Image
+						src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
+						alt={`Poster for ${movie.title}.`}
+						width={500}
+						height={750}
+					/>
+				)}
+			</div>
+			<div className={style["movieCardInformationContainer"]}>
+				<p>{movie.summary}</p>
+				<p>Released: {new Intl.DateTimeFormat("en-US").format(new Date(movie.release))}</p>
+			</div>
 		</div>
 	);
 };

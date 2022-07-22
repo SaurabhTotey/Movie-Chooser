@@ -2,4 +2,33 @@
 	border: 1px solid black;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
+	padding: 1rem;
+}
+
+.movieCardTitle {
+	text-align: center;
+}
+
+.movieCardImageContainer {
+	display: flex;
+	justify-content: center;
+}
+
+.movieCardInformationContainer {
+	text-align: center;
+}
+
+@media (min-width: 900px) {
+	.movieCardImageContainer {
+		display: inline-block;
+		width: 20%;
+	}
+
+	.movieCardInformationContainer {
+		display: inline-block;
+		margin-left: 1rem;
+		width: calc(80% - 1rem);
+		vertical-align: top;
+		text-align: left;
+	}
 }
