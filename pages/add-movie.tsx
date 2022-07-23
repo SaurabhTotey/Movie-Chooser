@@ -36,21 +36,41 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 								type="submit"
 								onClick={async (event) => {
 									event.preventDefault();
-									// TODO: error handling:
-									setSearchedMovies(
-										(
-											await axios.get(
-												`/api/movie/search-for-movie?searchTerm=${
-													(document.getElementById(style["movieSearchInput"]) as HTMLInputElement).value
-												}`,
-											)
-										).data,
-									);
+									const searchStatusElement = document.getElementById(style["searchStatus"]) as HTMLParagraphElement;
+
+									const searchTerm = (document.getElementById(style["movieSearchInput"]) as HTMLInputElement).value;
+									if (!searchTerm) {
+										searchStatusElement.textContent = "Cannot search without a search query.";
+										setSearchedMovies(null);
+										return;
+									}
+
+									await axios
+										.get(`/api/movie/search-for-movie?searchTerm=${searchTerm}`)
+										.then((response) => {
+											if (!response.data || !Array.isArray(response.data)) {
+												searchStatusElement.textContent = "Couldn't understand server response for search.";
+												setSearchedMovies(null);
+											} else if (response.data.length == 0) {
+												searchStatusElement.textContent = "Search yielded no results.";
+												setSearchedMovies(null);
+											} else {
+												searchStatusElement.textContent = "Search results shown below.";
+												setSearchedMovies(response.data);
+											}
+										})
+										.catch((error) => {
+											searchStatusElement.textContent = `${error}`;
+											setSearchedMovies(null);
+										});
 								}}
 							>
 								🔍
 							</button>
 						</form>
+						<p id={style["searchStatus"]} aria-live={"polite"}>
+							Search results will be shown below.
+						</p>
 						<div aria-live={"polite"}>
 							{searchedMovies && searchedMovies.map((movie) => <MovieCard movie={movie} key={movie.id} />)}
 						</div>

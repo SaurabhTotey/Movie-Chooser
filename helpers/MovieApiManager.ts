@@ -1,5 +1,4 @@
 import axios from "axios";
-import "dotenv/config";
 
 const tmdbApiKey = process.env.TMDB_KEY;
 
