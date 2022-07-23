@@ -15,5 +15,4 @@
 ## TODO
 
 - This README
-- Aria `controlled-by`
 - Styling

@@ -34,6 +34,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 							<button
 								id={style["movieSearchButton"]}
 								type="submit"
+								aria-controls={`${style["searchStatus"]} movieListContainer`}
 								onClick={async (event) => {
 									event.preventDefault();
 									const searchStatusElement = document.getElementById(style["searchStatus"]) as HTMLParagraphElement;
@@ -71,7 +72,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 						<p id={style["searchStatus"]} aria-live={"polite"}>
 							Search results will be shown below.
 						</p>
-						<div aria-live={"polite"}>
+						<div id={"movieListContainer"} aria-live={"polite"}>
 							{searchedMovies && searchedMovies.map((movie) => <MovieCard movie={movie} key={movie.id} />)}
 						</div>
 					</>

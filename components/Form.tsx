@@ -38,6 +38,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 					type="submit"
 					className={style["submitButton"]}
 					id={submitButtonName}
+					aria-controls={directiveParagraphName}
 					onClick={(event) => {
 						event.preventDefault();
 						const fieldNameToFormInputElements = new Map();

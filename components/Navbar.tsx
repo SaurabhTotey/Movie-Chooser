@@ -25,8 +25,15 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
 			<button
 				id={style["mobileHamburgerButton"]}
+				aria-controls={style["navList"]}
+				aria-expanded={"false"}
 				onClick={(event) => {
 					event.preventDefault();
+
+					const self = document.getElementById(style["mobileHamburgerButton"]) as HTMLButtonElement;
+					const isExpanded = self.getAttribute("aria-expanded");
+					self.setAttribute("aria-expanded", isExpanded == "true" ? "false" : "true");
+
 					const navListElement = document.getElementById(style["navList"]) as HTMLUListElement;
 					const currentNavListMobileDisplay = window
 						.getComputedStyle(navListElement)
