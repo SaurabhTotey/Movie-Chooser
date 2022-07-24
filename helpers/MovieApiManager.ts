@@ -22,7 +22,7 @@ export class MovieApiMovieInformation {
 // This has no safeguards in case TMDB fails or returns results in an odd format.
 export const searchMovies = async (searchTerm: string) => {
 	const response = await axios.get(
-		`https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${searchTerm}`,
+		`https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&include_adult=true&query=${searchTerm}`,
 	);
 	return response.data.results.map(
 		(result: any) =>

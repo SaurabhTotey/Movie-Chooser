@@ -76,22 +76,66 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 							{searchedMovies &&
 								searchedMovies.map((movie) => (
 									<MovieCard movie={movie} key={movie.id}>
-										<button className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}>
+										{/* TODO: the first button should be disabled to disallow adding a movie to the to watch list if it's already there */}
+										<button
+											className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}
+											aria-controls={`movieCardFormSpaceFor${movie.id}`}
+											onClick={(event) => {
+												event.preventDefault();
+												const addToWatchListForm = document.getElementById(
+													`formToAdd${movie.id}ToWatchList`,
+												) as HTMLFormElement;
+												const addToWatchedListForm = document.getElementById(
+													`formToAdd${movie.id}ToWatchedList`,
+												) as HTMLFormElement;
+												const isAddToWatchListFormVisible =
+													window.getComputedStyle(addToWatchListForm).display != "none";
+												addToWatchedListForm.style.setProperty("display", "none");
+												addToWatchListForm.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "block");
+											}}
+										>
 											Add to To-Watch List
 										</button>
-										<button className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}>
+										<button
+											className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}
+											aria-controls={`movieCardFormSpaceFor${movie.id}`}
+											onClick={(event) => {
+												event.preventDefault();
+												const addToWatchListForm = document.getElementById(
+													`formToAdd${movie.id}ToWatchList`,
+												) as HTMLFormElement;
+												const addToWatchedListForm = document.getElementById(
+													`formToAdd${movie.id}ToWatchedList`,
+												) as HTMLFormElement;
+												const isAddToWatchedListFormVisible =
+													window.getComputedStyle(addToWatchedListForm).display != "none";
+												addToWatchListForm.style.setProperty("display", "none");
+												addToWatchedListForm.style.setProperty(
+													"display",
+													isAddToWatchedListFormVisible ? "none" : "block",
+												);
+											}}
+										>
 											Add to Watched List
 										</button>
-										<form id={`formToAdd${movie.id}ToWatchList`}>
-											<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
-											<input id={`weightWhenAdding${movie.id}ToWatchList`} type={"number"} min={0} defaultValue={1} step={0.1}/>
-											<button type="submit">Submit</button>
-										</form>
-										<form id={`formToAdd${movie.id}ToWatchedList`}>
-											<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
-											<input id={`dateWhenAdding${movie.id}ToWatchedList`} type="date" />
-											<button type="submit">Submit</button>
-										</form>
+										<div id={`movieCardFormSpaceFor${movie.id}`} aria-live={"polite"}>
+											<form id={`formToAdd${movie.id}ToWatchList`} className={style["movieCardForm"]}>
+												<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
+												<input
+													id={`weightWhenAdding${movie.id}ToWatchList`}
+													type={"number"}
+													min={0}
+													defaultValue={1}
+													step={0.1}
+												/>
+												<button type="submit">Submit</button>
+											</form>
+											<form id={`formToAdd${movie.id}ToWatchedList`} className={style["movieCardForm"]}>
+												<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
+												<input id={`dateWhenAdding${movie.id}ToWatchedList`} type="date" />
+												<button type="submit">Submit</button>
+											</form>
+										</div>
 									</MovieCard>
 								))}
 						</div>
