@@ -39,8 +39,6 @@ model WatchedEntry {
   userId  Int
   movieId Int
   rating  Float?   @db.Real
-  time    DateTime @db.Timestamp(6)
+  watched DateTime @db.Date
   User    User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([userId, time])
 }

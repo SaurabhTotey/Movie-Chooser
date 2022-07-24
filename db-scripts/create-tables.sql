@@ -24,6 +24,5 @@ CREATE TABLE IF NOT EXISTS "public"."WatchedEntry"(
 	"userId" INTEGER NOT NULL, FOREIGN KEY ("userId") REFERENCES "public"."User"(id),
 	"movieId" INTEGER NOT NULL,
 	rating REAL,
-	time TIMESTAMP NOT NULL,
-	UNIQUE ("userId", time)
+	watched DATE NOT NULL
 );

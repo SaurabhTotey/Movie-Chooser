@@ -73,7 +73,17 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 							Search results will be shown below.
 						</p>
 						<div id={"movieListContainer"} aria-live={"polite"}>
-							{searchedMovies && searchedMovies.map((movie) => <MovieCard movie={movie} key={movie.id} />)}
+							{searchedMovies &&
+								searchedMovies.map((movie) => (
+									<MovieCard movie={movie} key={movie.id}>
+										<button className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}>
+											Add to To-Watch List
+										</button>
+										<button className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}>
+											Add to Watched List
+										</button>
+									</MovieCard>
+								))}
 						</div>
 					</>
 				) : (
