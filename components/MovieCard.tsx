@@ -24,7 +24,7 @@ const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 			</div>
 			<div className={style["movieCardInformationContainer"]}>
 				<p>{movie.summary}</p>
-				{movie.release && <p>Released: {new Intl.DateTimeFormat("en-US").format(new Date(movie.release))}</p>}
+				{movie.release && <p>Release: {new Intl.DateTimeFormat("en-US").format(new Date(movie.release))}</p>}
 			</div>
 			{children && <hr />}
 			{children}

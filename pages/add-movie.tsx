@@ -82,6 +82,16 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 										<button className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}>
 											Add to Watched List
 										</button>
+										<form id={`formToAdd${movie.id}ToWatchList`}>
+											<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
+											<input id={`weightWhenAdding${movie.id}ToWatchList`} type={"number"} min={0} defaultValue={1} step={0.1}/>
+											<button type="submit">Submit</button>
+										</form>
+										<form id={`formToAdd${movie.id}ToWatchedList`}>
+											<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
+											<input id={`dateWhenAdding${movie.id}ToWatchedList`} type="date" />
+											<button type="submit">Submit</button>
+										</form>
 									</MovieCard>
 								))}
 						</div>
