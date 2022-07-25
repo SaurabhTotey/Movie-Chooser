@@ -89,10 +89,12 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												const addToWatchedListForm = document.getElementById(
 													`formToAdd${movie.id}ToWatchedList`,
 												) as HTMLFormElement;
+												const formStatusElement = document.getElementById(`formsStatusFor${movie.id}`)!;
 												const isAddToWatchListFormVisible =
 													window.getComputedStyle(addToWatchListForm).display != "none";
 												addToWatchedListForm.style.setProperty("display", "none");
 												addToWatchListForm.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "block");
+												formStatusElement.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "block");
 											}}
 										>
 											Add to To-Watch List
@@ -108,10 +110,15 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												const addToWatchedListForm = document.getElementById(
 													`formToAdd${movie.id}ToWatchedList`,
 												) as HTMLFormElement;
+												const formStatusElement = document.getElementById(`formsStatusFor${movie.id}`)!;
 												const isAddToWatchedListFormVisible =
 													window.getComputedStyle(addToWatchedListForm).display != "none";
 												addToWatchListForm.style.setProperty("display", "none");
 												addToWatchedListForm.style.setProperty(
+													"display",
+													isAddToWatchedListFormVisible ? "none" : "block",
+												);
+												formStatusElement.style.setProperty(
 													"display",
 													isAddToWatchedListFormVisible ? "none" : "block",
 												);
@@ -135,10 +142,19 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 													step={0.1}
 												/>
 												<button
+													id={`addToWatchListSubmitButtonFor${movie.id}`}
 													type="submit"
 													onClick={(event) => {
 														event.preventDefault();
+														const self = document.getElementById(
+															`addToWatchListSubmitButtonFor${movie.id}`,
+														) as HTMLButtonElement;
+														self.disabled = true;
+														const weight = (
+															document.getElementById(`weightWhenAdding${movie.id}ToWatchList`) as HTMLInputElement
+														).value;
 														// TODO: submit to api endpoint
+														self.disabled = false;
 													}}
 												>
 													Submit
@@ -152,15 +168,27 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 													defaultValue={new Date().toISOString().substring(0, 10)}
 												/>
 												<button
+													id={`addToWatchedListSubmitButtonFor${movie.id}`}
 													type="submit"
 													onClick={(event) => {
 														event.preventDefault();
+														const self = document.getElementById(
+															`addToWatchedListSubmitButtonFor${movie.id}`,
+														) as HTMLButtonElement;
+														self.disabled = true;
+														const dateString = (
+															document.getElementById(`dateWhenAdding${movie.id}ToWatchedList`) as HTMLInputElement
+														).value;
 														// TODO: submit to api endpoint
+														self.disabled = false;
 													}}
 												>
 													Submit
 												</button>
 											</form>
+											<p id={`formsStatusFor${movie.id}`} className={style["formsStatus"]}>
+												Submit to add movie.
+											</p>
 										</div>
 									</MovieCard>
 								))}
