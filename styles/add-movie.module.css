@@ -37,4 +37,17 @@
 
 .movieCardForm {
 	display: none;
+	justify-content: center;
+}
+
+.movieCardFormFields {
+}
+
+.movieCardWeightInput {
+}
+
+.movieCardDateInput {
+}
+
+@media (min-width: 900px) {
 }

@@ -91,7 +91,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												const isAddToWatchListFormVisible =
 													window.getComputedStyle(addToWatchListForm).display != "none";
 												addToWatchedListForm.style.setProperty("display", "none");
-												addToWatchListForm.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "block");
+												addToWatchListForm.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "flex");
 											}}
 										>
 											Add to To-Watch List
@@ -112,7 +112,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												addToWatchListForm.style.setProperty("display", "none");
 												addToWatchedListForm.style.setProperty(
 													"display",
-													isAddToWatchedListFormVisible ? "none" : "block",
+													isAddToWatchedListFormVisible ? "none" : "flex",
 												);
 											}}
 										>
@@ -120,20 +120,46 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 										</button>
 										<div id={`movieCardFormSpaceFor${movie.id}`} aria-live={"polite"}>
 											<form id={`formToAdd${movie.id}ToWatchList`} className={style["movieCardForm"]}>
-												<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
-												<input
-													id={`weightWhenAdding${movie.id}ToWatchList`}
-													type={"number"}
-													min={0}
-													defaultValue={1}
-													step={0.1}
-												/>
-												<button type="submit">Submit</button>
+												<div className={style["movieCardFormFields"]}>
+													<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
+													<input
+														id={`weightWhenAdding${movie.id}ToWatchList`}
+														className={style["movieCardWeightInput"]}
+														type={"number"}
+														min={0}
+														defaultValue={1}
+														step={0.1}
+													/>
+												</div>
+												<button
+													type="submit"
+													onClick={(event) => {
+														event.preventDefault();
+														// TODO: submit to api endpoint
+													}}
+												>
+													Submit
+												</button>
 											</form>
 											<form id={`formToAdd${movie.id}ToWatchedList`} className={style["movieCardForm"]}>
-												<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
-												<input id={`dateWhenAdding${movie.id}ToWatchedList`} type="date" />
-												<button type="submit">Submit</button>
+												<div className={style["movieCardFormFields"]}>
+													<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
+													<input
+														id={`dateWhenAdding${movie.id}ToWatchedList`}
+														className={style["movieCardDateInput"]}
+														type="date"
+														defaultValue={new Date().toISOString().substring(0, 10)}
+													/>
+												</div>
+												<button
+													type="submit"
+													onClick={(event) => {
+														event.preventDefault();
+														// TODO: submit to api endpoint
+													}}
+												>
+													Submit
+												</button>
 											</form>
 										</div>
 									</MovieCard>
