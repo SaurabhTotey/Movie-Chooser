@@ -38,6 +38,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 								onClick={async (event) => {
 									event.preventDefault();
 									const searchStatusElement = document.getElementById(style["searchStatus"]) as HTMLParagraphElement;
+									searchStatusElement.textContent = "Searching...";
 
 									const searchTerm = (document.getElementById(style["movieSearchInput"]) as HTMLInputElement).value;
 									if (!searchTerm) {
@@ -91,7 +92,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												const isAddToWatchListFormVisible =
 													window.getComputedStyle(addToWatchListForm).display != "none";
 												addToWatchedListForm.style.setProperty("display", "none");
-												addToWatchListForm.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "flex");
+												addToWatchListForm.style.setProperty("display", isAddToWatchListFormVisible ? "none" : "block");
 											}}
 										>
 											Add to To-Watch List
@@ -112,25 +113,27 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												addToWatchListForm.style.setProperty("display", "none");
 												addToWatchedListForm.style.setProperty(
 													"display",
-													isAddToWatchedListFormVisible ? "none" : "flex",
+													isAddToWatchedListFormVisible ? "none" : "block",
 												);
 											}}
 										>
 											Add to Watched List
 										</button>
-										<div id={`movieCardFormSpaceFor${movie.id}`} aria-live={"polite"}>
+										<div
+											id={`movieCardFormSpaceFor${movie.id}`}
+											className={style["movieCardFormSpace"]}
+											aria-live={"polite"}
+										>
 											<form id={`formToAdd${movie.id}ToWatchList`} className={style["movieCardForm"]}>
-												<div className={style["movieCardFormFields"]}>
-													<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
-													<input
-														id={`weightWhenAdding${movie.id}ToWatchList`}
-														className={style["movieCardWeightInput"]}
-														type={"number"}
-														min={0}
-														defaultValue={1}
-														step={0.1}
-													/>
-												</div>
+												<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
+												<input
+													id={`weightWhenAdding${movie.id}ToWatchList`}
+													className={style["movieCardWeightInput"]}
+													type={"number"}
+													min={0}
+													defaultValue={1}
+													step={0.1}
+												/>
 												<button
 													type="submit"
 													onClick={(event) => {
@@ -142,15 +145,12 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 												</button>
 											</form>
 											<form id={`formToAdd${movie.id}ToWatchedList`} className={style["movieCardForm"]}>
-												<div className={style["movieCardFormFields"]}>
-													<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
-													<input
-														id={`dateWhenAdding${movie.id}ToWatchedList`}
-														className={style["movieCardDateInput"]}
-														type="date"
-														defaultValue={new Date().toISOString().substring(0, 10)}
-													/>
-												</div>
+												<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
+												<input
+													id={`dateWhenAdding${movie.id}ToWatchedList`}
+													type="date"
+													defaultValue={new Date().toISOString().substring(0, 10)}
+												/>
 												<button
 													type="submit"
 													onClick={(event) => {

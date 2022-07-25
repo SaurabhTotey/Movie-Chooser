@@ -33,21 +33,38 @@
 .movieCardButton {
 	vertical-align: top;
 	width: calc(50% - 2px - 0.5rem);
+	margin-bottom: 1rem;
+}
+
+.movieCardFormSpace {
+	text-align: center;
 }
 
 .movieCardForm {
 	display: none;
-	justify-content: center;
 }
 
-.movieCardFormFields {
+.movieCardForm > label {
+	margin-right: 1rem;
+}
+
+.movieCardForm > button {
+	display: block;
+	margin: auto;
+	margin-top: 0.5rem;
+	width: 33%;
 }
 
 .movieCardWeightInput {
-}
-
-.movieCardDateInput {
+	width: 15%;
 }
 
 @media (min-width: 900px) {
+	.movieCardWeightInput {
+		width: 5%;
+	}
+
+	.movieCardForm > button {
+		width: 15%;
+	}
 }
