@@ -1,15 +1,54 @@
 import axios from "axios";
-import { InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
+import { Cookies, useCookies } from "react-cookie";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
 import Navbar from "../components/Navbar";
-import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
+import deleteStaleSessions from "../helpers/DeleteStaleSessions";
+import { prisma } from "../helpers/GetPrismaClient";
+import UserClientInfo from "../helpers/UserClientInfo";
 
-function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
+const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
+	const sessionId = new Cookies(context.req.headers.cookie).get("session");
+	await deleteStaleSessions();
+	if (!sessionId) {
+		return {
+			props: {
+				userClientInfo: null,
+				userToWatchList: null,
+				userAlreadyWatchedList: null,
+			},
+		};
+	}
+	const getUserPromise = prisma.session
+		.findUnique({
+			where: {
+				token: sessionId,
+			},
+		})
+		.User();
+	const user = (await getUserPromise)!;
+	const toWatchList = await getUserPromise.ToWatchEntry();
+	const alreadyWatchedList = await getUserPromise.WatchedEntry();
+	return {
+		props: {
+			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
+			userToWatchList: Object.fromEntries(toWatchList.map((entry) => [entry.movieId, entry.weight])),
+			userAlreadyWatchedList: Object.fromEntries(
+				alreadyWatchedList.map((entry) => [entry.movieId, { date: entry.watched, rating: entry.rating }]),
+			),
+		},
+	};
+};
+
+function Profile({
+	userClientInfo,
+	userToWatchList,
+	userAlreadyWatchedList,
+}: InferGetServerSidePropsType<typeof getUserAndListsServerSideProps>) {
 	const router = useRouter();
 	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
 	return (
@@ -100,5 +139,5 @@ function Profile({ userClientInfo }: InferGetServerSidePropsType<typeof getUserA
 	);
 }
 
-export const getServerSideProps = getUserAsServerSideProp;
+export const getServerSideProps = getUserAndListsServerSideProps;
 export default Profile;
