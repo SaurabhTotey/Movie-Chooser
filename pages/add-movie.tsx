@@ -149,11 +149,24 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 														const self = document.getElementById(
 															`addToWatchListSubmitButtonFor${movie.id}`,
 														) as HTMLButtonElement;
+														const statusTextElement = document.getElementById(
+															`formsStatusFor${movie.id}`,
+														) as HTMLParagraphElement;
 														self.disabled = true;
 														const weight = (
 															document.getElementById(`weightWhenAdding${movie.id}ToWatchList`) as HTMLInputElement
-														).value;
-														// TODO: submit to api endpoint
+														).valueAsNumber;
+														axios
+															.post("/api/movie/add-to-watch-list", {
+																id: movie.id,
+																weight: weight,
+															})
+															.then((response) => {
+																statusTextElement.textContent = "Successfully added move to your to-watch list.";
+															})
+															.catch((error) => {
+																statusTextElement.textContent = error.response.data;
+															});
 														self.disabled = false;
 													}}
 												>
