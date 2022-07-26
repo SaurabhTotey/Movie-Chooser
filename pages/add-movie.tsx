@@ -77,7 +77,6 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 							{searchedMovies &&
 								searchedMovies.map((movie) => (
 									<MovieCard movie={movie} key={movie.id}>
-										{/* TODO: the first button should be disabled to disallow adding a movie to the to watch list if it's already there */}
 										<button
 											className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}
 											aria-controls={`movieCardFormSpaceFor${movie.id}`}
@@ -149,10 +148,10 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 														const self = document.getElementById(
 															`addToWatchListSubmitButtonFor${movie.id}`,
 														) as HTMLButtonElement;
+														self.disabled = true;
 														const statusTextElement = document.getElementById(
 															`formsStatusFor${movie.id}`,
 														) as HTMLParagraphElement;
-														self.disabled = true;
 														const weight = (
 															document.getElementById(`weightWhenAdding${movie.id}ToWatchList`) as HTMLInputElement
 														).valueAsNumber;
@@ -189,10 +188,24 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 															`addToWatchedListSubmitButtonFor${movie.id}`,
 														) as HTMLButtonElement;
 														self.disabled = true;
+														const statusTextElement = document.getElementById(
+															`formsStatusFor${movie.id}`,
+														) as HTMLParagraphElement;
 														const dateString = (
 															document.getElementById(`dateWhenAdding${movie.id}ToWatchedList`) as HTMLInputElement
 														).value;
-														// TODO: submit to api endpoint
+														axios
+															.post("/api/movie/add-to-watched-list", {
+																id: movie.id,
+																date: dateString,
+															})
+															.then((response) => {
+																statusTextElement.textContent =
+																	"Successfully added move to your watched list. You can rate it in your profile page.";
+															})
+															.catch((error) => {
+																statusTextElement.textContent = error.response.data;
+															});
 														self.disabled = false;
 													}}
 												>
