@@ -19,11 +19,6 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<p>
-					TODO: this page will allow users to search for movies and add it to their to-watch list or already-watched
-					list. In the case of the former, the weight must be selected, and in the case of the latter, the date must be
-					selected.
-				</p>
 				{userClientInfo ? (
 					<>
 						<form>
