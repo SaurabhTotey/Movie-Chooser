@@ -30,11 +30,11 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 				onClick={(event) => {
 					event.preventDefault();
 
-					const self = document.getElementById(style["mobileHamburgerButton"]) as HTMLButtonElement;
+					const self = document.getElementById(style["mobileHamburgerButton"])!;
 					const isExpanded = self.getAttribute("aria-expanded");
 					self.setAttribute("aria-expanded", isExpanded == "true" ? "false" : "true");
 
-					const navListElement = document.getElementById(style["navList"]) as HTMLUListElement;
+					const navListElement = document.getElementById(style["navList"])!;
 					const currentNavListMobileDisplay = window
 						.getComputedStyle(navListElement)
 						.getPropertyValue("--nav-mobile-display");

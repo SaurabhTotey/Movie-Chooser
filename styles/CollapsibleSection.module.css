@@ -1,0 +1,21 @@
+.headingButton {
+	all: unset;
+	cursor: pointer;
+	width: 100%;
+	text-align: center;
+}
+
+.headingButton > h2 {
+	display: inline-block;
+	width: 90%;
+}
+
+.headingButton > p {
+	display: inline-block;
+	width: 10%;
+	background-color: ButtonFace;
+}
+
+.content {
+	display: none;
+}

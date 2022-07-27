@@ -4,6 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Cookies, useCookies } from "react-cookie";
+import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
 import Navbar from "../components/Navbar";
@@ -72,6 +73,8 @@ function Profile({
 							TODO: this page will be used to display the user&apos;s watched movie list and allow them to change
 							ratings or remove movies.
 						</p>
+						<CollapsibleSection title={"Watch List"}>TODO: watch list</CollapsibleSection>
+						<CollapsibleSection title={"Already Watched List"}>TODO: already watched list</CollapsibleSection>
 						<Form
 							title={"Log Out"}
 							initialDirective={"Press button to log out."}
