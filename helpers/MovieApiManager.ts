@@ -30,5 +30,14 @@ export const searchMovies = async (searchTerm: string) => {
 	);
 };
 
-// TODO:
-export const getMovieInformationFor = (id: number) => {};
+// Query TMDB about a specific movie and get its information based on its TMDB ID.
+export const getMovieInformationFor = async (id: number) => {
+	const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}`);
+	return new MovieApiMovieInformation(
+		response.data.id,
+		response.data.title,
+		response.data.overview,
+		response.data.poster_path,
+		response.data.release_date,
+	);
+};

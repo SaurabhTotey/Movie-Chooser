@@ -7,9 +7,11 @@ import { Cookies, useCookies } from "react-cookie";
 import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
+import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
 import deleteStaleSessions from "../helpers/DeleteStaleSessions";
 import { prisma } from "../helpers/GetPrismaClient";
+import { getMovieInformationFor } from "../helpers/MovieApiManager";
 import UserClientInfo from "../helpers/UserClientInfo";
 
 const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
@@ -32,15 +34,23 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 		})
 		.User();
 	const user = (await getUserPromise)!;
-	const toWatchList = await getUserPromise.ToWatchEntry();
-	const alreadyWatchedList = await getUserPromise.WatchedEntry();
+	const toWatchEntries = await getUserPromise.ToWatchEntry();
+	const watchedEntries = await getUserPromise.WatchedEntry();
+	const userToWatchList = await Promise.all(
+		toWatchEntries.map(async (entry) => {
+			return { movie: await getMovieInformationFor(entry.movieId), weight: entry.weight };
+		}),
+	);
+	const userAlreadyWatchedList = await Promise.all(
+		watchedEntries.map(async (entry) => {
+			return { movie: await getMovieInformationFor(entry.movieId), date: entry.watched, rating: entry.rating };
+		}),
+	);
 	return {
 		props: {
 			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
-			userToWatchList: Object.fromEntries(toWatchList.map((entry) => [entry.movieId, entry.weight])),
-			userAlreadyWatchedList: Object.fromEntries(
-				alreadyWatchedList.map((entry) => [entry.movieId, { date: entry.watched, rating: entry.rating }]),
-			),
+			userToWatchList: JSON.parse(JSON.stringify(userToWatchList)),
+			userAlreadyWatchedList: JSON.parse(JSON.stringify(userAlreadyWatchedList)),
 		},
 	};
 };
@@ -73,8 +83,18 @@ function Profile({
 							TODO: this page will be used to display the user&apos;s watched movie list and allow them to change
 							ratings or remove movies.
 						</p>
-						<CollapsibleSection title={"Watch List"}>TODO: watch list</CollapsibleSection>
-						<CollapsibleSection title={"Already Watched List"}>TODO: already watched list</CollapsibleSection>
+						<CollapsibleSection title={"Watch List"}>
+							{userToWatchList &&
+								userToWatchList.map((entry: any) => <MovieCard movie={entry.movie} key={entry.movie.id} />)}
+						</CollapsibleSection>
+						<CollapsibleSection title={"Already Watched List"}>
+							{
+								userAlreadyWatchedList &&
+									userAlreadyWatchedList.map((entry: any) => (
+										<MovieCard movie={entry.movie} />
+									)) /* TODO: figure out a good key for this */
+							}
+						</CollapsibleSection>
 						<Form
 							title={"Log Out"}
 							initialDirective={"Press button to log out."}
