@@ -12,7 +12,7 @@ interface CollapsibleSectionPropType {
 const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, children }) => {
 	const htmlValidFieldNameFor = (inputName: string) => inputName.toLowerCase().replaceAll(" ", "-");
 	return (
-		<div>
+		<div className={style["collapsibleSection"]}>
 			<button
 				id={`expandToggleButtonFor${htmlValidFieldNameFor(title)}`}
 				className={style["headingButton"]}
