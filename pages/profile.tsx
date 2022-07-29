@@ -80,21 +80,21 @@ function Profile({
 						<p>
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
-						<p>
-							TODO: this page will be used to display the user&apos;s current movie list and allow them to change
-							weights or remove movies.
-						</p>
-						<p>
-							TODO: this page will be used to display the user&apos;s watched movie list and allow them to change
-							ratings or remove movies.
-						</p>
 						<CollapsibleSection title={"Watch List"}>
 							{userToWatchList &&
-								userToWatchList.map((entry: any) => <MovieCard movie={entry.movie} key={entry.movie.id} />)}
+								userToWatchList.map((entry: any) => (
+									<MovieCard movie={entry.movie} key={entry.movie.id}>
+										TODO: allow changes to weights or removal of this movie
+									</MovieCard>
+								))}
 						</CollapsibleSection>
 						<CollapsibleSection title={"Already Watched List"}>
 							{userAlreadyWatchedList &&
-								userAlreadyWatchedList.map((entry: any) => <MovieCard movie={entry.movie} key={entry.id} />)}
+								userAlreadyWatchedList.map((entry: any) => (
+									<MovieCard movie={entry.movie} key={entry.id}>
+										TODO: allow changes to ratings or removal of this movie
+									</MovieCard>
+								))}
 						</CollapsibleSection>
 						<Form
 							title={"Log Out"}
