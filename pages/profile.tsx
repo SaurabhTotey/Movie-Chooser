@@ -43,7 +43,12 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	);
 	const userAlreadyWatchedList = await Promise.all(
 		watchedEntries.map(async (entry) => {
-			return { movie: await getMovieInformationFor(entry.movieId), date: entry.watched, rating: entry.rating };
+			return {
+				id: entry.id,
+				movie: await getMovieInformationFor(entry.movieId),
+				date: entry.watched,
+				rating: entry.rating,
+			};
 		}),
 	);
 	return {
@@ -88,12 +93,8 @@ function Profile({
 								userToWatchList.map((entry: any) => <MovieCard movie={entry.movie} key={entry.movie.id} />)}
 						</CollapsibleSection>
 						<CollapsibleSection title={"Already Watched List"}>
-							{
-								userAlreadyWatchedList &&
-									userAlreadyWatchedList.map((entry: any) => (
-										<MovieCard movie={entry.movie} />
-									)) /* TODO: figure out a good key for this */
-							}
+							{userAlreadyWatchedList &&
+								userAlreadyWatchedList.map((entry: any) => <MovieCard movie={entry.movie} key={entry.id} />)}
 						</CollapsibleSection>
 						<Form
 							title={"Log Out"}
