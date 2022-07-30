@@ -47,7 +47,7 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 			return {
 				id: entry.id,
 				movie: await getMovieInformationFor(entry.movieId),
-				date: entry.watched,
+				date: new Intl.DateTimeFormat("en-US").format(entry.watched),
 				rating: entry.rating,
 			};
 		}),
@@ -100,6 +100,7 @@ function Profile({
 							{userAlreadyWatchedList &&
 								userAlreadyWatchedList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.id}>
+										<p>Watched on {entry.date}.</p>
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Rating</label>
