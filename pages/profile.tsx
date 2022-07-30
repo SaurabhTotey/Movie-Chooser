@@ -94,7 +94,23 @@ function Profile({
 												<input type={"number"} defaultValue={entry.weight} min={0} step={0.1} />
 												<button type={"submit"}>Submit New Weight</button>
 											</form>
-											<button>❌</button>
+											<button
+												id={`deleteFromWatchListButtonFor${entry.movie.id}`}
+												onClick={async (event) => {
+													event.preventDefault();
+													const self = document.getElementById(
+														`deleteFromWatchListButtonFor${entry.movie.id}`,
+													) as HTMLButtonElement;
+													self.disabled = true;
+
+													await axios.post("/api/movie/remove-from-watch-list", {
+														id: entry.movie.id,
+													});
+													setToWatchList(toWatchList.filter((e: any) => e.movie.id != entry.movie.id));
+												}}
+											>
+												❌
+											</button>
 										</div>
 									</MovieCard>
 								))}
@@ -110,7 +126,23 @@ function Profile({
 												<input type={"number"} defaultValue={entry.rating} min={0} max={10} step={0.1} />
 												<button type={"submit"}>Submit New Rating</button>
 											</form>
-											<button>❌</button>
+											<button
+												id={`deleteFromWatchedListButtonFor${entry.id}`}
+												onClick={async (event) => {
+													event.preventDefault();
+													const self = document.getElementById(
+														`deleteFromWatchedListButtonFor${entry.id}`,
+													) as HTMLButtonElement;
+													self.disabled = true;
+
+													await axios.post("/api/movie/remove-from-watched-list", {
+														id: entry.id,
+													});
+													setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
+												}}
+											>
+												❌
+											</button>
 										</div>
 									</MovieCard>
 								))}
