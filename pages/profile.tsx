@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { Cookies, useCookies } from "react-cookie";
 import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
@@ -67,6 +68,8 @@ function Profile({
 	userAlreadyWatchedList,
 }: InferGetServerSidePropsType<typeof getUserAndListsServerSideProps>) {
 	const router = useRouter();
+	const [toWatchList, setToWatchList] = useState(userToWatchList);
+	const [alreadyWatchedList, setAlreadyWatchedList] = useState(userAlreadyWatchedList);
 	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
 	return (
 		<>
@@ -82,8 +85,8 @@ function Profile({
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
 						<CollapsibleSection title={"Watch List"}>
-							{userToWatchList &&
-								userToWatchList.map((entry: any) => (
+							{toWatchList &&
+								toWatchList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.movie.id}>
 										<div className={style["movieCardFormContainer"]}>
 											<form>
@@ -97,8 +100,8 @@ function Profile({
 								))}
 						</CollapsibleSection>
 						<CollapsibleSection title={"Already Watched List"}>
-							{userAlreadyWatchedList &&
-								userAlreadyWatchedList.map((entry: any) => (
+							{alreadyWatchedList &&
+								alreadyWatchedList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.id}>
 										<p>Watched on {entry.date}.</p>
 										<div className={style["movieCardFormContainer"]}>

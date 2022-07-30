@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	}
 
 	// Insert the new movie into the database.
-	const watchedEntryPromise = await prisma.watchedEntry.create({
+	await prisma.watchedEntry.create({
 		data: {
 			userId: user.id,
 			movieId: req.body.id as number,

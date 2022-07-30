@@ -5,12 +5,7 @@ import { prisma } from "../../../helpers/GetPrismaClient";
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate request.
 	const token = new Cookies(req.headers.cookie).get("session");
-	if (
-		req.method != "POST" ||
-		(!req.body.id && req.body.id !== 0) ||
-		(!req.body.weight && req.body.weight !== 0.0) ||
-		!token
-	) {
+	if (req.method != "POST" || !req.body.id || (!req.body.weight && req.body.weight !== 0) || !token) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
@@ -28,20 +23,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		return;
 	}
 
-	// Insert the new movie into the database.
-	await prisma.toWatchEntry.upsert({
+	// Update the movie's weight in the database.
+	await prisma.toWatchEntry.update({
 		where: {
 			userId_movieId: {
 				userId: user.id,
 				movieId: req.body.id,
 			},
 		},
-		update: {
-			weight: req.body.weight,
-		},
-		create: {
-			userId: user.id,
-			movieId: req.body.id,
+		data: {
 			weight: req.body.weight,
 		},
 	});
