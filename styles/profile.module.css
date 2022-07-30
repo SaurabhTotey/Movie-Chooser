@@ -1,0 +1,18 @@
+.movieCardFormContainer > form {
+	display: inline-block;
+	width: 90%;
+}
+
+.movieCardFormContainer > button {
+	display: inline-block;
+	width: 10%;
+}
+
+.movieCardFormContainer > form > label {
+	margin-right: 1rem;
+}
+
+.movieCardFormContainer > form > input {
+	width: 3rem;
+	margin-right: 1rem;
+}

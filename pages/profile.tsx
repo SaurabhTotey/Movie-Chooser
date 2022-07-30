@@ -13,6 +13,7 @@ import deleteStaleSessions from "../helpers/DeleteStaleSessions";
 import { prisma } from "../helpers/GetPrismaClient";
 import { getMovieInformationFor } from "../helpers/MovieApiManager";
 import UserClientInfo from "../helpers/UserClientInfo";
+import style from "../styles/profile.module.css";
 
 const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	const sessionId = new Cookies(context.req.headers.cookie).get("session");
@@ -84,7 +85,7 @@ function Profile({
 							{userToWatchList &&
 								userToWatchList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.movie.id}>
-										<div>
+										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Weight</label>
 												<input type={"number"} defaultValue={entry.weight}/>
@@ -99,7 +100,7 @@ function Profile({
 							{userAlreadyWatchedList &&
 								userAlreadyWatchedList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.id}>
-										<div>
+										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Rating</label>
 												<input type={"number"} defaultValue={entry.rating}/>
