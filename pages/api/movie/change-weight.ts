@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			},
 		},
 		data: {
-			weight: req.body.weight,
+			weight: Math.max(req.body.weight, 0),
 		},
 	});
 

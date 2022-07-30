@@ -108,7 +108,7 @@ function Profile({
 														) as HTMLButtonElement;
 														self.disabled = true;
 
-														// TODO: error handling
+														// TODO: error handling, and also set the value of the input element because it can be incorrect to what the database set
 														const newWeight = (
 															document.getElementById(`weightInputFor${entry.movie.id}`) as HTMLInputElement
 														).valueAsNumber;
@@ -171,7 +171,7 @@ function Profile({
 														) as HTMLButtonElement;
 														self.disabled = true;
 
-														// TODO: error handling
+														// TODO: error handling, and also set the value of the input element because it can be incorrect to what the database set
 														const newRating = (document.getElementById(`ratingInputFor${entry.id}`) as HTMLInputElement)
 															.valueAsNumber;
 														await axios.post("/api/movie/change-rating", {

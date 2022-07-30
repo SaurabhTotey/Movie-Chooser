@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			id: req.body.id,
 		},
 		data: {
-			rating: req.body.rating,
+			rating: Math.min(Math.max(req.body.rating, 0), 10),
 		},
 	});
 
