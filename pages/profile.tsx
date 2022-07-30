@@ -91,8 +91,37 @@ function Profile({
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Weight</label>
-												<input type={"number"} defaultValue={entry.weight} min={0} step={0.1} />
-												<button type={"submit"}>Submit New Weight</button>
+												<input
+													type={"number"}
+													id={`weightInputFor${entry.movie.id}`}
+													defaultValue={entry.weight}
+													min={0}
+													step={0.1}
+												/>
+												<button
+													id={`changeWeightButtonFor${entry.movie.id}`}
+													type={"submit"}
+													onClick={async (event) => {
+														event.preventDefault();
+														const self = document.getElementById(
+															`changeWeightButtonFor${entry.movie.id}`,
+														) as HTMLButtonElement;
+														self.disabled = true;
+
+														// TODO: error handling
+														const newWeight = (
+															document.getElementById(`weightInputFor${entry.movie.id}`) as HTMLInputElement
+														).valueAsNumber;
+														await axios.post("/api/movie/change-weight", {
+															id: entry.movie.id,
+															weight: newWeight,
+														});
+
+														self.disabled = false;
+													}}
+												>
+													Submit New Weight
+												</button>
 											</form>
 											<button
 												id={`deleteFromWatchListButtonFor${entry.movie.id}`}
@@ -103,6 +132,7 @@ function Profile({
 													) as HTMLButtonElement;
 													self.disabled = true;
 
+													// TODO: error handling
 													await axios.post("/api/movie/remove-from-watch-list", {
 														id: entry.movie.id,
 													});
@@ -135,6 +165,7 @@ function Profile({
 													) as HTMLButtonElement;
 													self.disabled = true;
 
+													// TODO: error handling
 													await axios.post("/api/movie/remove-from-watched-list", {
 														id: entry.id,
 													});
