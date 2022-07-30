@@ -84,7 +84,14 @@ function Profile({
 							{userToWatchList &&
 								userToWatchList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.movie.id}>
-										TODO: allow changes to weights or removal of this movie
+										<div>
+											<form>
+												<label>Weight</label>
+												<input type={"number"} defaultValue={entry.weight}/>
+												<button type={"submit"}>Submit New Weight</button>
+											</form>
+											<button>❌</button>
+										</div>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
@@ -92,7 +99,14 @@ function Profile({
 							{userAlreadyWatchedList &&
 								userAlreadyWatchedList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.id}>
-										TODO: allow changes to ratings or removal of this movie
+										<div>
+											<form>
+												<label>Rating</label>
+												<input type={"number"} defaultValue={entry.rating}/>
+												<button type={"submit"}>Submit New Rating</button>
+											</form>
+											<button>❌</button>
+										</div>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
