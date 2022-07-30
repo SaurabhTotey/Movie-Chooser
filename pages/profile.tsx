@@ -153,8 +153,37 @@ function Profile({
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Rating</label>
-												<input type={"number"} defaultValue={entry.rating} min={0} max={10} step={0.1} />
-												<button type={"submit"}>Submit New Rating</button>
+												<input
+													type={"number"}
+													id={`ratingInputFor${entry.id}`}
+													defaultValue={entry.rating}
+													min={0}
+													max={10}
+													step={0.1}
+												/>
+												<button
+													id={`changeRatingButtonFor${entry.id}`}
+													type={"submit"}
+													onClick={async (event) => {
+														event.preventDefault();
+														const self = document.getElementById(
+															`changeRatingButtonFor${entry.id}`,
+														) as HTMLButtonElement;
+														self.disabled = true;
+
+														// TODO: error handling
+														const newRating = (document.getElementById(`ratingInputFor${entry.id}`) as HTMLInputElement)
+															.valueAsNumber;
+														await axios.post("/api/movie/change-rating", {
+															id: entry.id,
+															rating: newRating,
+														});
+
+														self.disabled = false;
+													}}
+												>
+													Submit New Rating
+												</button>
 											</form>
 											<button
 												id={`deleteFromWatchedListButtonFor${entry.id}`}
