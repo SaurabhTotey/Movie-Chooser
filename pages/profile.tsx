@@ -88,7 +88,7 @@ function Profile({
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Weight</label>
-												<input type={"number"} defaultValue={entry.weight}/>
+												<input type={"number"} defaultValue={entry.weight} />
 												<button type={"submit"}>Submit New Weight</button>
 											</form>
 											<button>❌</button>
@@ -103,7 +103,7 @@ function Profile({
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Rating</label>
-												<input type={"number"} defaultValue={entry.rating}/>
+												<input type={"number"} defaultValue={entry.rating} />
 												<button type={"submit"}>Submit New Rating</button>
 											</form>
 											<button>❌</button>

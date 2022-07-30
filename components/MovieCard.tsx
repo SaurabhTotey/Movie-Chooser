@@ -12,14 +12,17 @@ const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 	return (
 		<div className={style["movieCard"]}>
 			<h3 className={style["movieCardTitle"]}>{movie.title}</h3>
-			<div className={style["movieCardImageContainer"]}>
+			<div className={style["movieCardImageContainerContainer"]}>
 				{movie.posterPath && (
-					<Image
-						src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
-						alt={`Poster for ${movie.title}.`}
-						width={500}
-						height={750}
-					/>
+					<div className={style["movieCardImageContainer"]}>
+						<Image
+							src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
+							alt={`Poster for ${movie.title}.`}
+							layout={"responsive"}
+							width={500}
+							height={750}
+						/>
+					</div>
 				)}
 			</div>
 			<div className={style["movieCardInformationContainer"]}>

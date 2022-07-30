@@ -9,9 +9,13 @@
 	text-align: center;
 }
 
-.movieCardImageContainer {
+.movieCardImageContainerContainer {
 	display: flex;
 	justify-content: center;
+}
+
+.movieCardImageContainer {
+	width: 25%;
 }
 
 .movieCardInformationContainer {
@@ -19,9 +23,13 @@
 }
 
 @media (min-width: 900px) {
-	.movieCardImageContainer {
+	.movieCardImageContainerContainer {
 		display: inline-block;
 		width: 20%;
+	}
+
+	.movieCardImageContainer {
+		width: unset;
 	}
 
 	.movieCardInformationContainer {
