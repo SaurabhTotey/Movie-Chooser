@@ -101,7 +101,7 @@ function Profile({
 												/>
 												<button
 													id={`changeWeightButtonFor${entry.movie.id}`}
-													aria-controls={`weightInputFor${entry.movie.id}`}
+													aria-controls={`weightInputFor${entry.movie.id} formStatusForToWatchMovie${entry.movie.id}`}
 													type={"submit"}
 													onClick={(event) => {
 														event.preventDefault();
@@ -113,6 +113,7 @@ function Profile({
 														const weightInput = document.getElementById(
 															`weightInputFor${entry.movie.id}`,
 														) as HTMLInputElement;
+														const formStatus = document.getElementById(`formStatusForToWatchMovie${entry.movie.id}`)!;
 														axios
 															.post("/api/movie/change-weight", {
 																id: entry.movie.id,
@@ -120,9 +121,10 @@ function Profile({
 															})
 															.then((response) => {
 																weightInput.valueAsNumber = response.data;
+																formStatus.innerText = `Successfully set weight to ${response.data}.`;
 															})
 															.catch((error) => {
-																alert(error.response.data); // TODO: better error handling
+																formStatus.innerText = error.response.data;
 															});
 
 														self.disabled = false;
@@ -133,23 +135,31 @@ function Profile({
 											</form>
 											<button
 												id={`deleteFromWatchListButtonFor${entry.movie.id}`}
-												onClick={async (event) => {
+												aria-controls={`formStatusForToWatchMovie${entry.movie.id}`}
+												onClick={(event) => {
 													event.preventDefault();
 													const self = document.getElementById(
 														`deleteFromWatchListButtonFor${entry.movie.id}`,
 													) as HTMLButtonElement;
 													self.disabled = true;
 
-													// TODO: error handling
-													await axios.post("/api/movie/remove-from-watch-list", {
-														id: entry.movie.id,
-													});
-													setToWatchList(toWatchList.filter((e: any) => e.movie.id != entry.movie.id));
+													axios
+														.post("/api/movie/remove-from-watch-list", {
+															id: entry.movie.id,
+														})
+														.then(() => {
+															setToWatchList(toWatchList.filter((e: any) => e.movie.id != entry.movie.id));
+														})
+														.catch((error) => {
+															document.getElementById(`formStatusForToWatchMovie${entry.movie.id}`)!.innerText =
+																error.response.data;
+														});
 												}}
 											>
 												❌
 											</button>
 										</div>
+										<p id={`formStatusForToWatchMovie${entry.movie.id}`} aria-live={"polite"}></p>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
@@ -172,7 +182,7 @@ function Profile({
 												/>
 												<button
 													id={`changeRatingButtonFor${entry.id}`}
-													aria-controls={`ratingInputFor${entry.id}`}
+													aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
 													type={"submit"}
 													onClick={(event) => {
 														event.preventDefault();
@@ -184,6 +194,7 @@ function Profile({
 														const ratingInput = document.getElementById(
 															`ratingInputFor${entry.id}`,
 														) as HTMLInputElement;
+														const formStatus = document.getElementById(`formStatusForWatchedEntry${entry.id}`)!;
 														axios
 															.post("/api/movie/change-rating", {
 																id: entry.id,
@@ -191,9 +202,10 @@ function Profile({
 															})
 															.then((response) => {
 																ratingInput.valueAsNumber = response.data;
+																formStatus.innerText = `Successfully set rating to ${response.data}.`;
 															})
 															.catch((error) => {
-																alert(error.response.data); // TODO: better error handling
+																formStatus.innerText = error.response.data;
 															});
 
 														self.disabled = false;
@@ -204,23 +216,31 @@ function Profile({
 											</form>
 											<button
 												id={`deleteFromWatchedListButtonFor${entry.id}`}
-												onClick={async (event) => {
+												aria-controls={`formStatusForWatchedEntry${entry.id}`}
+												onClick={(event) => {
 													event.preventDefault();
 													const self = document.getElementById(
 														`deleteFromWatchedListButtonFor${entry.id}`,
 													) as HTMLButtonElement;
 													self.disabled = true;
 
-													// TODO: error handling
-													await axios.post("/api/movie/remove-from-watched-list", {
-														id: entry.id,
-													});
-													setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
+													axios
+														.post("/api/movie/remove-from-watched-list", {
+															id: entry.id,
+														})
+														.then(() => {
+															setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
+														})
+														.catch((error) => {
+															document.getElementById(`formStatusForWatchedEntry${entry.id}`)!.innerText =
+																error.response.data;
+														});
 												}}
 											>
 												❌
 											</button>
 										</div>
+										<p id={`formStatusForWatchedEntry${entry.id}`} aria-live={"polite"}></p>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
