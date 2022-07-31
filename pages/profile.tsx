@@ -97,25 +97,33 @@ function Profile({
 													defaultValue={entry.weight}
 													min={0}
 													step={0.1}
+													aria-live={"polite"}
 												/>
 												<button
 													id={`changeWeightButtonFor${entry.movie.id}`}
+													aria-controls={`weightInputFor${entry.movie.id}`}
 													type={"submit"}
-													onClick={async (event) => {
+													onClick={(event) => {
 														event.preventDefault();
 														const self = document.getElementById(
 															`changeWeightButtonFor${entry.movie.id}`,
 														) as HTMLButtonElement;
 														self.disabled = true;
 
-														// TODO: error handling, and also set the value of the input element because it can be incorrect to what the database set
-														const newWeight = (
-															document.getElementById(`weightInputFor${entry.movie.id}`) as HTMLInputElement
-														).valueAsNumber;
-														await axios.post("/api/movie/change-weight", {
-															id: entry.movie.id,
-															weight: newWeight,
-														});
+														const weightInput = document.getElementById(
+															`weightInputFor${entry.movie.id}`,
+														) as HTMLInputElement;
+														axios
+															.post("/api/movie/change-weight", {
+																id: entry.movie.id,
+																weight: weightInput.valueAsNumber,
+															})
+															.then((response) => {
+																weightInput.valueAsNumber = response.data;
+															})
+															.catch((error) => {
+																alert(error.response.data); // TODO: better error handling
+															});
 
 														self.disabled = false;
 													}}
@@ -160,24 +168,33 @@ function Profile({
 													min={0}
 													max={10}
 													step={0.1}
+													aria-live={"polite"}
 												/>
 												<button
 													id={`changeRatingButtonFor${entry.id}`}
+													aria-controls={`ratingInputFor${entry.id}`}
 													type={"submit"}
-													onClick={async (event) => {
+													onClick={(event) => {
 														event.preventDefault();
 														const self = document.getElementById(
 															`changeRatingButtonFor${entry.id}`,
 														) as HTMLButtonElement;
 														self.disabled = true;
 
-														// TODO: error handling, and also set the value of the input element because it can be incorrect to what the database set
-														const newRating = (document.getElementById(`ratingInputFor${entry.id}`) as HTMLInputElement)
-															.valueAsNumber;
-														await axios.post("/api/movie/change-rating", {
-															id: entry.id,
-															rating: newRating,
-														});
+														const ratingInput = document.getElementById(
+															`ratingInputFor${entry.id}`,
+														) as HTMLInputElement;
+														axios
+															.post("/api/movie/change-rating", {
+																id: entry.id,
+																rating: ratingInput.valueAsNumber,
+															})
+															.then((response) => {
+																ratingInput.valueAsNumber = response.data;
+															})
+															.catch((error) => {
+																alert(error.response.data); // TODO: better error handling
+															});
 
 														self.disabled = false;
 													}}
