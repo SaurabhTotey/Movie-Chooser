@@ -40,6 +40,7 @@ const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
 			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
 			userInformation: userList.map((userEntry) => {
 				return {
+					id: userEntry.id,
 					name: userEntry.name,
 					email: userEntry.email,
 				};
@@ -64,14 +65,15 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 							After a movie is selected, the page allows the current selection to be marked as watched and another
 							selection to be made.
 						</p>
-						<select multiple>
+						<form>
 							{userInformation &&
 								userInformation.map((info: any) => (
-									<option value={info.email} key={info.email}>
-										{info.name}
-									</option>
+									<div key={info.id}>
+										<label htmlFor={`checkboxFor${info.id}`}>{info.name}</label>
+										<input id={`checkboxFor${info.id}`} type={"checkbox"} value={info.id} />
+									</div>
 								))}
-						</select>
+						</form>
 					</>
 				) : (
 					<>
