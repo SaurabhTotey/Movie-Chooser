@@ -1,0 +1,31 @@
+.userSelectionForm > div {
+	display: inline-block;
+	border: 1px solid black;
+	width: calc(60% - 2px);
+	height: calc(12rem - 1.5px);
+	overflow-y: scroll;
+}
+
+.userSelectionForm > div > h2 {
+	text-align: center;
+}
+
+.userSelectionForm > button {
+	display: inline-block;
+	vertical-align: top;
+	width: 40%;
+	height: 12rem;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
+
+.userCheckBoxContainer > label {
+	display: inline-block;
+	width: 90%;
+}
+
+.userCheckBoxContainer > input {
+	display: inline-block;
+	margin: 0;
+	max-width: calc(10% - 2px);
+}

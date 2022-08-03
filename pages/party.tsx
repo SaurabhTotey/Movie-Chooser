@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import deleteStaleSessions from "../helpers/DeleteStaleSessions";
 import { prisma } from "../helpers/GetPrismaClient";
 import UserClientInfo from "../helpers/UserClientInfo";
+import style from "../styles/party.module.css";
 
 const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
 	const sessionId = new Cookies(context.req.headers.cookie).get("session");
@@ -59,21 +60,38 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 				<Navbar userClientInfo={userClientInfo} />
 				{userClientInfo ? (
 					<>
-						<h2>Hello, world!</h2>
 						<p>
 							TODO: this page will be used to allow users to select all users present and then have a movie selected.
 							After a movie is selected, the page allows the current selection to be marked as watched and another
 							selection to be made.
 						</p>
-						<form>
-							{userInformation &&
-								userInformation.map((info: any) => (
-									<div key={info.id}>
-										<label htmlFor={`checkboxFor${info.id}`}>{info.name}</label>
-										<input id={`checkboxFor${info.id}`} type={"checkbox"} value={info.id} />
-									</div>
-								))}
-						</form>
+						<div className={style["userSelectionFormContainer"]}>
+							<form className={style["userSelectionForm"]}>
+								<div>
+									<h2>Select Users Who Will Be Watching Movies</h2>
+									{userInformation.map((info: any) => (
+										<div className={style["userCheckBoxContainer"]} key={info.id}>
+											<label htmlFor={`checkboxFor${info.id}`}>{info.name}</label>
+											<input
+												id={`checkboxFor${info.id}`}
+												type={"checkbox"}
+												value={info.id}
+												disabled={userClientInfo.email == info.email}
+												defaultChecked={userClientInfo.email == info.email}
+											/>
+										</div>
+									))}
+								</div>
+								<button
+									type={"submit"}
+									onClick={(event) => {
+										event.preventDefault();
+									}}
+								>
+									CHOOSE MOVIE!!!
+								</button>
+							</form>
+						</div>
 					</>
 				) : (
 					<>
