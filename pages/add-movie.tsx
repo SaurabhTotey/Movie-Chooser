@@ -73,6 +73,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 								searchedMovies.map((movie) => (
 									<MovieCard movie={movie} key={movie.id}>
 										<button
+											type="button"
 											className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}
 											aria-controls={`movieCardFormSpaceFor${movie.id}`}
 											onClick={(event) => {
@@ -94,6 +95,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 											Add to To-Watch List
 										</button>
 										<button
+											type="button"
 											className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}
 											aria-controls={`movieCardFormSpaceFor${movie.id}`}
 											onClick={(event) => {

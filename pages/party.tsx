@@ -1,11 +1,14 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import { Cookies } from "react-cookie";
 import Footer from "../components/Footer";
+import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
 import deleteStaleSessions from "../helpers/DeleteStaleSessions";
 import { prisma } from "../helpers/GetPrismaClient";
+import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/party.module.css";
 
@@ -51,6 +54,7 @@ const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
 };
 
 function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<typeof getAllUsersServerSideProps>) {
+	const [selectedMovie, setSelectedMovie] = useState<MovieApiMovieInformation | null>(null);
 	return (
 		<>
 			<Head>
@@ -86,12 +90,26 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 									type={"submit"}
 									onClick={(event) => {
 										event.preventDefault();
+										// TODO:
 									}}
 								>
-									CHOOSE MOVIE!!!
+									{selectedMovie ? "CHOOSE ANOTHER MOVIE!!!" : "CHOOSE MOVIE!!!"}
 								</button>
 							</form>
 						</div>
+						{selectedMovie && (
+							<MovieCard movie={selectedMovie}>
+								<button
+									type="submit"
+									onClick={(event) => {
+										event.preventDefault();
+										// TODO:
+									}}
+								>
+									Mark as Watched for All Viewers
+								</button>
+							</MovieCard>
+						)}
 					</>
 				) : (
 					<>

@@ -21,7 +21,8 @@
 
 .userCheckBoxContainer > label {
 	display: inline-block;
-	width: 90%;
+	width: 85%;
+	margin-left: 5%;
 }
 
 .userCheckBoxContainer > input {
