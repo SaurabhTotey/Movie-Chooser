@@ -30,8 +30,8 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 				) : (
 					<>
 						<Form
-							title={"Log In"}
-							initialDirective={"Please fill out the form to log in."}
+							title="Log In"
+							initialDirective="Please fill out the form to log in."
 							fieldNamesToFieldTypes={
 								new Map([
 									["Email", "email"],
@@ -72,8 +72,8 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 							}}
 						/>
 						<Form
-							title={"Create Account"}
-							initialDirective={"Please fill out the form to create an account."}
+							title="Create Account"
+							initialDirective="Please fill out the form to create an account."
 							fieldNamesToFieldTypes={
 								new Map([
 									["Name", "text"],

@@ -84,7 +84,7 @@ function Profile({
 						<p>
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
-						<CollapsibleSection title={"Watch List"}>
+						<CollapsibleSection title="Watch List">
 							{toWatchList &&
 								toWatchList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.movie.id}>
@@ -92,17 +92,17 @@ function Profile({
 											<form>
 												<label>Weight</label>
 												<input
-													type={"number"}
+													type="number"
 													id={`weightInputFor${entry.movie.id}`}
 													defaultValue={entry.weight}
 													min={0}
 													step={0.1}
-													aria-live={"polite"}
+													aria-live="polite"
 												/>
 												<button
 													id={`changeWeightButtonFor${entry.movie.id}`}
 													aria-controls={`weightInputFor${entry.movie.id} formStatusForToWatchMovie${entry.movie.id}`}
-													type={"submit"}
+													type="submit"
 													onClick={(event) => {
 														event.preventDefault();
 														const self = document.getElementById(
@@ -159,11 +159,11 @@ function Profile({
 												❌
 											</button>
 										</div>
-										<p id={`formStatusForToWatchMovie${entry.movie.id}`} aria-live={"polite"}></p>
+										<p id={`formStatusForToWatchMovie${entry.movie.id}`} aria-live="polite"></p>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
-						<CollapsibleSection title={"Already Watched List"}>
+						<CollapsibleSection title="Already Watched List">
 							{alreadyWatchedList &&
 								alreadyWatchedList.map((entry: any) => (
 									<MovieCard movie={entry.movie} key={entry.id}>
@@ -172,18 +172,18 @@ function Profile({
 											<form>
 												<label>Rating</label>
 												<input
-													type={"number"}
+													type="number"
 													id={`ratingInputFor${entry.id}`}
 													defaultValue={entry.rating}
 													min={0}
 													max={10}
 													step={0.1}
-													aria-live={"polite"}
+													aria-live="polite"
 												/>
 												<button
 													id={`changeRatingButtonFor${entry.id}`}
 													aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
-													type={"submit"}
+													type="submit"
 													onClick={(event) => {
 														event.preventDefault();
 														const self = document.getElementById(
@@ -240,13 +240,13 @@ function Profile({
 												❌
 											</button>
 										</div>
-										<p id={`formStatusForWatchedEntry${entry.id}`} aria-live={"polite"}></p>
+										<p id={`formStatusForWatchedEntry${entry.id}`} aria-live="polite"></p>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
 						<Form
-							title={"Log Out"}
-							initialDirective={"Press button to log out."}
+							title="Log Out"
+							initialDirective="Press button to log out."
 							fieldNamesToFieldTypes={new Map()}
 							submitHandler={async (submitButton, updateTextContainer) => {
 								submitButton.disabled = true;
@@ -266,8 +266,8 @@ function Profile({
 							}}
 						/>
 						<Form
-							title={"Delete Account"}
-							initialDirective={"Enter your password to delete your account."}
+							title="Delete Account"
+							initialDirective="Enter your password to delete your account."
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {
 								submitButton.disabled = true;

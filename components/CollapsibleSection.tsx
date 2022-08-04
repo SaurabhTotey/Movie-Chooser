@@ -17,7 +17,7 @@ const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, children })
 				id={`expandToggleButtonFor${htmlValidFieldNameFor(title)}`}
 				className={style["headingButton"]}
 				aria-controls={`expandSymbolFor${htmlValidFieldNameFor(title)} contentFor${htmlValidFieldNameFor(title)}`}
-				aria-expanded={"false"}
+				aria-expanded="false"
 				onClick={(event) => {
 					event.preventDefault();
 
@@ -43,7 +43,7 @@ const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, children })
 				<h2>{title}</h2>
 				<p id={`expandSymbolFor${htmlValidFieldNameFor(title)}`}>▼</p>
 			</button>
-			<div id={`contentFor${htmlValidFieldNameFor(title)}`} className={style["content"]} aria-live={"polite"}>
+			<div id={`contentFor${htmlValidFieldNameFor(title)}`} className={style["content"]} aria-live="polite">
 				{children}
 			</div>
 		</div>

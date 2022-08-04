@@ -25,7 +25,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 							<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
 								Search for Movie to Add
 							</label>
-							<input id={style["movieSearchInput"]} type={"search"} />
+							<input id={style["movieSearchInput"]} type="search" />
 							<button
 								id={style["movieSearchButton"]}
 								type="submit"
@@ -65,10 +65,10 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 								🔍
 							</button>
 						</form>
-						<p id={style["searchStatus"]} aria-live={"polite"}>
+						<p id={style["searchStatus"]} aria-live="polite">
 							Search results will be shown below.
 						</p>
-						<div id={"movieListContainer"} aria-live={"polite"}>
+						<div id="movieListContainer" aria-live="polite">
 							{searchedMovies &&
 								searchedMovies.map((movie) => (
 									<MovieCard movie={movie} key={movie.id}>
@@ -125,14 +125,14 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 										<div
 											id={`movieCardFormSpaceFor${movie.id}`}
 											className={style["movieCardFormSpace"]}
-											aria-live={"polite"}
+											aria-live="polite"
 										>
 											<form id={`formToAdd${movie.id}ToWatchList`} className={style["movieCardForm"]}>
 												<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
 												<input
 													id={`weightWhenAdding${movie.id}ToWatchList`}
 													className={style["movieCardWeightInput"]}
-													type={"number"}
+													type="number"
 													min={0}
 													defaultValue={1}
 													step={0.1}

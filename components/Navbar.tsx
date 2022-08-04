@@ -21,12 +21,12 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 	return (
-		<nav id={style["navContainer"]} aria-live={"polite"}>
+		<nav id={style["navContainer"]} aria-live="polite">
 			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
 			<button
 				id={style["mobileHamburgerButton"]}
 				aria-controls={style["navList"]}
-				aria-expanded={"false"}
+				aria-expanded="false"
 				onClick={(event) => {
 					event.preventDefault();
 

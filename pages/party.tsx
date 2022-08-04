@@ -78,7 +78,7 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 											<label htmlFor={`checkboxFor${info.id}`}>{info.name}</label>
 											<input
 												id={`checkboxFor${info.id}`}
-												type={"checkbox"}
+												type="checkbox"
 												value={info.id}
 												disabled={userClientInfo.email == info.email}
 												defaultChecked={userClientInfo.email == info.email}
@@ -87,7 +87,7 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 									))}
 								</div>
 								<button
-									type={"submit"}
+									type="submit"
 									onClick={(event) => {
 										event.preventDefault();
 										// TODO:

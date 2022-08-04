@@ -18,7 +18,7 @@ const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 						<Image
 							src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
 							alt={`Poster for ${movie.title}.`}
-							layout={"responsive"}
+							layout="responsive"
 							width={500}
 							height={750}
 						/>

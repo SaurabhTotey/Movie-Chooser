@@ -21,7 +21,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 	return (
 		<div className={style["form"]}>
 			<h2 className={style["formTitle"]}>{title}</h2>
-			<p id={directiveParagraphName} className={style["formDescription"]} aria-live={"polite"}>
+			<p id={directiveParagraphName} className={style["formDescription"]} aria-live="polite">
 				{initialDirective}
 			</p>
 			<form>
