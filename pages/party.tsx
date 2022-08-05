@@ -54,7 +54,9 @@ const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
 };
 
 function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<typeof getAllUsersServerSideProps>) {
-	const [selectedMovie, setSelectedMovie] = useState<[number[], MovieApiMovieInformation] | null>(null);
+	const [movieSelectionInformation, setMovieSelectionInformation] = useState<
+		[number[], Date, MovieApiMovieInformation] | null
+	>(null);
 	return (
 		<>
 			<Head>
@@ -93,12 +95,12 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 										// TODO:
 									}}
 								>
-									{selectedMovie ? "CHOOSE ANOTHER MOVIE!!!" : "CHOOSE MOVIE!!!"}
+									{movieSelectionInformation ? "CHOOSE ANOTHER MOVIE!!!" : "CHOOSE MOVIE!!!"}
 								</button>
 							</form>
 						</div>
-						{selectedMovie && (
-							<MovieCard movie={selectedMovie[1]}>
+						{movieSelectionInformation && (
+							<MovieCard movie={movieSelectionInformation[2]}>
 								<button
 									type="submit"
 									onClick={(event) => {
