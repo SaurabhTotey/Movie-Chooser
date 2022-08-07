@@ -1,3 +1,4 @@
+import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -71,8 +72,8 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 							After a movie is selected, the page allows the current selection to be marked as watched and another
 							selection to be made.
 						</p>
-						<div className={style["userSelectionFormContainer"]}>
-							<form className={style["userSelectionForm"]}>
+						<div id={style["userSelectionFormContainer"]}>
+							<form id={style["userSelectionForm"]}>
 								<div>
 									<h2>Select Users Who Will Be Watching Movies</h2>
 									{userInformation.map((info: any) => (
@@ -90,28 +91,57 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								</div>
 								<button
 									type="submit"
-									onClick={(event) => {
+									aria-controls="movieChoosingStatus movieCardContainer"
+									onClick={async (event) => {
 										event.preventDefault();
-										// TODO:
+										const movieChoosingStatusElement = document.getElementById("movieChoosingStatus")!;
+										movieChoosingStatusElement.innerText = "Choosing a movie...";
+
+										const selectionTime = new Date();
+
+										const userSelectionCheckboxes = Array.from(
+											document.getElementById(style["userSelectionForm"])!.getElementsByTagName("input"),
+										);
+										const selectedIds = userSelectionCheckboxes
+											.filter((checkbox) => checkbox.checked)
+											.map((checkbox) => parseInt(checkbox.value));
+
+										await axios
+											.post("/api/party/select-random-movie", {
+												userIds: selectedIds,
+											})
+											.then((response) => {
+												const selectedRandomMovie = response.data;
+												setMovieSelectionInformation([selectedIds, selectionTime, selectedRandomMovie]);
+												movieChoosingStatusElement.innerText = "Selected movie is displayed below.";
+											})
+											.catch((error) => {
+												movieChoosingStatusElement.innerText = error.response.data;
+											});
 									}}
 								>
 									{movieSelectionInformation ? "CHOOSE ANOTHER MOVIE!!!" : "CHOOSE MOVIE!!!"}
 								</button>
 							</form>
 						</div>
-						{movieSelectionInformation && (
-							<MovieCard movie={movieSelectionInformation[2]}>
-								<button
-									type="submit"
-									onClick={(event) => {
-										event.preventDefault();
-										// TODO:
-									}}
-								>
-									Mark as Watched for All Viewers
-								</button>
-							</MovieCard>
-						)}
+						<p id="movieChoosingStatus">
+							Select users who will be watching a movie and then submit to get a random movie.
+						</p>
+						<div id="movieCardContainer" aria-live="polite">
+							{movieSelectionInformation && (
+								<MovieCard movie={movieSelectionInformation[2]}>
+									<button
+										type="submit"
+										onClick={(event) => {
+											event.preventDefault();
+											// TODO:
+										}}
+									>
+										Mark as Watched for All Viewers
+									</button>
+								</MovieCard>
+							)}
+						</div>
 					</>
 				) : (
 					<>

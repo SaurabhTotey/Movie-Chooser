@@ -5,21 +5,23 @@ import { getMovieInformationFor, MovieApiMovieInformation } from "../../../helpe
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string | MovieApiMovieInformation>) {
 	// Validate request.
-	if (!req.body.id || !req.body.userIds) {
+	if (!req.body.userIds) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
 
 	// Get the movie lists of all users specified in the request.
-	const movieLists: ToWatchEntry[][] = req.body.userIds.map(
-		async (userId: number) =>
-			await prisma.user
-				.findUnique({
-					where: {
-						id: userId,
-					},
-				})
-				.ToWatchEntry(),
+	const movieLists: ToWatchEntry[][] = await Promise.all(
+		req.body.userIds.map(
+			async (userId: number) =>
+				await prisma.user
+					.findUnique({
+						where: {
+							id: userId,
+						},
+					})
+					.ToWatchEntry(),
+		),
 	);
 
 	// Ensure that a movie can be chosen from the given users.
@@ -42,6 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		selectionValue -= toWatchEntry.weight;
 		if (selectionValue <= 0) {
 			selectedMovie = toWatchEntry.movieId;
+			break;
 		}
 	}
 
