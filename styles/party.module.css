@@ -30,3 +30,19 @@
 	margin: 0;
 	max-width: calc(10% - 2px);
 }
+
+#movieChoosingStatus {
+	text-align: center;
+}
+
+#markAsWatchedButtonContainer {
+	text-align: center;
+}
+
+#markAsWatchedButtonContainer > button {
+	width: 50%;
+}
+
+#markAsWatchedStatus {
+	text-align: center;
+}

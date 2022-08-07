@@ -91,10 +91,10 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								</div>
 								<button
 									type="submit"
-									aria-controls="movieChoosingStatus movieCardContainer"
+									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
 									onClick={async (event) => {
 										event.preventDefault();
-										const movieChoosingStatusElement = document.getElementById("movieChoosingStatus")!;
+										const movieChoosingStatusElement = document.getElementById(style["movieChoosingStatus"])!;
 										movieChoosingStatusElement.innerText = "Choosing a movie...";
 
 										const selectionTime = new Date();
@@ -124,21 +124,27 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								</button>
 							</form>
 						</div>
-						<p id="movieChoosingStatus">
+						<p id={style["movieChoosingStatus"]} aria-live="polite">
 							Select users who will be watching a movie and then submit to get a random movie.
 						</p>
 						<div id="movieCardContainer" aria-live="polite">
 							{movieSelectionInformation && (
 								<MovieCard movie={movieSelectionInformation[2]}>
-									<button
-										type="submit"
-										onClick={(event) => {
-											event.preventDefault();
-											// TODO:
-										}}
-									>
-										Mark as Watched for All Viewers
-									</button>
+									<div id={style["markAsWatchedButtonContainer"]}>
+										<button
+											type="submit"
+											aria-controls={style["markAsWatchedStatus"]}
+											onClick={(event) => {
+												event.preventDefault();
+												// TODO:
+											}}
+										>
+											Mark as Watched for All Viewers
+										</button>
+									</div>
+									<p id={style["markAsWatchedStatus"]} aria-live="polite">
+										TODO:
+									</p>
 								</MovieCard>
 							)}
 						</div>
