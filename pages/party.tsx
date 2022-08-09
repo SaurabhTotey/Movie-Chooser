@@ -67,11 +67,6 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 				<Navbar userClientInfo={userClientInfo} />
 				{userClientInfo ? (
 					<>
-						<p>
-							TODO: this page will be used to allow users to select all users present and then have a movie selected.
-							After a movie is selected, the page allows the current selection to be marked as watched and another
-							selection to be made.
-						</p>
 						<div id={style["userSelectionFormContainer"]}>
 							<form id={style["userSelectionForm"]}>
 								<div>
