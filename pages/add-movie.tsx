@@ -30,7 +30,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 								id={style["movieSearchButton"]}
 								type="submit"
 								aria-controls={`${style["searchStatus"]} movieListContainer`}
-								onClick={async (event) => {
+								onClick={(event) => {
 									event.preventDefault();
 									const searchStatusElement = document.getElementById(style["searchStatus"]) as HTMLParagraphElement;
 									searchStatusElement.textContent = "Searching...";
@@ -42,7 +42,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 										return;
 									}
 
-									await axios
+									axios
 										.get(`/api/movie/search-for-movie?searchTerm=${searchTerm}`)
 										.then((response) => {
 											if (!response.data || !Array.isArray(response.data)) {

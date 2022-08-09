@@ -90,11 +90,14 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 									))}
 								</div>
 								<button
+									id="chooseMovieButton"
 									type="submit"
 									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
-									onClick={async (event) => {
+									onClick={(event) => {
 										event.preventDefault();
 										const movieChoosingStatusElement = document.getElementById(style["movieChoosingStatus"])!;
+										const self = document.getElementById("chooseMovieButton") as HTMLButtonElement;
+										self.disabled = true;
 										movieChoosingStatusElement.innerText = "Choosing a movie...";
 
 										const selectionTime = new Date();
@@ -106,7 +109,7 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 											.filter((checkbox) => checkbox.checked)
 											.map((checkbox) => parseInt(checkbox.value));
 
-										await axios
+										axios
 											.post("/api/party/select-random-movie", {
 												userIds: selectedIds,
 											})
@@ -114,9 +117,11 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 												const selectedRandomMovie = response.data;
 												setMovieSelectionInformation([selectedIds, selectionTime, selectedRandomMovie]);
 												movieChoosingStatusElement.innerText = "Selected movie is displayed below.";
+												self.disabled = false;
 											})
 											.catch((error) => {
 												movieChoosingStatusElement.innerText = error.response.data;
+												self.disabled = false;
 											});
 									}}
 								>
@@ -132,10 +137,13 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								<MovieCard movie={movieSelectionInformation[2]}>
 									<div id={style["markAsWatchedButtonContainer"]}>
 										<button
+											id="markAsWatchedButton"
 											type="submit"
 											aria-controls={style["markAsWatchedStatus"]}
 											onClick={(event) => {
 												event.preventDefault();
+												const self = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
+												self.disabled = true;
 												// TODO:
 											}}
 										>
