@@ -95,9 +95,9 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
 									onClick={(event) => {
 										event.preventDefault();
-										const movieChoosingStatusElement = document.getElementById(style["movieChoosingStatus"])!;
 										const self = document.getElementById("chooseMovieButton") as HTMLButtonElement;
 										self.disabled = true;
+										const movieChoosingStatusElement = document.getElementById(style["movieChoosingStatus"])!;
 										movieChoosingStatusElement.innerText = "Choosing a movie...";
 
 										const selectionTime = new Date();
@@ -116,6 +116,10 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 											.then((response) => {
 												const selectedRandomMovie = response.data;
 												setMovieSelectionInformation([selectedIds, selectionTime, selectedRandomMovie]);
+												const markAsWatchedButton = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
+												if (markAsWatchedButton) {
+													markAsWatchedButton.disabled = false;
+												}
 												movieChoosingStatusElement.innerText = "Selected movie is displayed below.";
 												self.disabled = false;
 											})
@@ -144,14 +148,29 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 												event.preventDefault();
 												const self = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
 												self.disabled = true;
-												// TODO:
+												const markAsWatchedStatusElement = document.getElementById(style["markAsWatchedStatus"])!;
+												markAsWatchedStatusElement.innerText = "Marking movie as watched.";
+
+												axios
+													.post("/api/party/make-movie-watched-for-users", {
+														id: movieSelectionInformation[2].id,
+														userIds: movieSelectionInformation[0],
+														date: movieSelectionInformation[1],
+													})
+													.then((response) => {
+														markAsWatchedStatusElement.innerText = "Movie has been marked as watched for all viewers!";
+													})
+													.catch((error) => {
+														markAsWatchedStatusElement.innerText = error.response.data;
+														self.disabled = false;
+													});
 											}}
 										>
 											Mark as Watched for All Viewers
 										</button>
 									</div>
 									<p id={style["markAsWatchedStatus"]} aria-live="polite">
-										TODO:
+										Click the above button if y&apos;all watched the movie.
 									</p>
 								</MovieCard>
 							)}
