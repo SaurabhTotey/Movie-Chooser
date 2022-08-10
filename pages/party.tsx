@@ -45,9 +45,9 @@ const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
 			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
 			userInformation: userList.map((userEntry) => {
 				return {
+					email: userEntry.email,
 					id: userEntry.id,
 					name: userEntry.name,
-					email: userEntry.email,
 				};
 			}),
 		},
@@ -72,22 +72,22 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								<div>
 									<h2>Select Users Who Will Be Watching Movies</h2>
 									{userInformation.map((info: any) => (
-										<div className={style["userCheckBoxContainer"]} key={info.id}>
+										<div key={info.id} className={style["userCheckBoxContainer"]}>
 											<label htmlFor={`checkboxFor${info.id}`}>{info.name}</label>
 											<input
+												defaultChecked={userClientInfo.email == info.email}
+												disabled={userClientInfo.email == info.email}
 												id={`checkboxFor${info.id}`}
 												type="checkbox"
 												value={info.id}
-												disabled={userClientInfo.email == info.email}
-												defaultChecked={userClientInfo.email == info.email}
 											/>
 										</div>
 									))}
 								</div>
 								<button
+									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
 									id="chooseMovieButton"
 									type="submit"
-									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
 									onClick={(event) => {
 										event.preventDefault();
 										const self = document.getElementById("chooseMovieButton") as HTMLButtonElement;
@@ -128,17 +128,17 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								</button>
 							</form>
 						</div>
-						<p id={style["movieChoosingStatus"]} aria-live="polite">
+						<p aria-live="polite" id={style["movieChoosingStatus"]}>
 							Select users who will be watching a movie and then submit to get a random movie.
 						</p>
-						<div id="movieCardContainer" aria-live="polite">
+						<div aria-live="polite" id="movieCardContainer">
 							{movieSelectionInformation && (
 								<MovieCard movie={movieSelectionInformation[2]}>
 									<div id={style["markAsWatchedButtonContainer"]}>
 										<button
+											aria-controls={style["markAsWatchedStatus"]}
 											id="markAsWatchedButton"
 											type="submit"
-											aria-controls={style["markAsWatchedStatus"]}
 											onClick={(event) => {
 												event.preventDefault();
 												const self = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
@@ -148,9 +148,9 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 
 												axios
 													.post("/api/party/make-movie-watched-for-users", {
+														date: movieSelectionInformation[1],
 														id: movieSelectionInformation[2].id,
 														userIds: movieSelectionInformation[0],
-														date: movieSelectionInformation[1],
 													})
 													.then((response) => {
 														markAsWatchedStatusElement.innerText = "Movie has been marked as watched for all viewers!";
@@ -164,7 +164,7 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 											Mark as Watched for All Viewers
 										</button>
 									</div>
-									<p id={style["markAsWatchedStatus"]} aria-live="polite">
+									<p aria-live="polite" id={style["markAsWatchedStatus"]}>
 										Click the above button if y&apos;all watched the movie.
 									</p>
 								</MovieCard>
@@ -172,15 +172,13 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 						</div>
 					</>
 				) : (
-					<>
-						<p>
-							You are not logged in. You can log in or create an account{" "}
-							<Link href="./log-in-or-create-account">
-								<a>here</a>
-							</Link>
-							.
-						</p>
-					</>
+					<p>
+						You are not logged in. You can log in or create an account{" "}
+						<Link href="./log-in-or-create-account">
+							<a>here</a>
+						</Link>
+						.
+					</p>
 				)}
 			</main>
 			<Footer />

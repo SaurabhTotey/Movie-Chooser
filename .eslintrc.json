@@ -2,6 +2,18 @@
 	"extends": ["next/core-web-vitals", "plugin:prettier/recommended"],
 	"plugins": ["prettier"],
 	"rules": {
-		"react/jsx-curly-brace-presence": [1, { "props": "never", "children": "never", "propElementValues": "always" }]
+		"sort-keys": [1, "asc", { "natural": true }],
+		"react/jsx-curly-brace-presence": [1, { "props": "never", "children": "never", "propElementValues": "always" }],
+		"react/jsx-sort-props": [
+			1,
+			{
+				"ignoreCase": false,
+				"callbacksLast": true,
+				"shorthandLast": true,
+				"reservedFirst": true
+			}
+		],
+		"react/button-has-type": [1],
+		"react/jsx-no-useless-fragment": [1]
 	}
 }

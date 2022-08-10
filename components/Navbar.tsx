@@ -21,12 +21,13 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 	return (
-		<nav id={style["navContainer"]} aria-live="polite">
+		<nav aria-live="polite" id={style["navContainer"]}>
 			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
 			<button
-				id={style["mobileHamburgerButton"]}
 				aria-controls={style["navList"]}
 				aria-expanded="false"
+				id={style["mobileHamburgerButton"]}
+				type="button"
 				onClick={(event) => {
 					event.preventDefault();
 
@@ -52,11 +53,11 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 					const path = mappingToUse.get(name);
 					return (
 						<li
+							key={name}
 							className={
 								style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"] +
 								(router.pathname == `/${path}` ? ` ${style["active"]}` : "")
 							}
-							key={name}
 						>
 							<Link href={`/${path}`}>
 								<a>{name}</a>

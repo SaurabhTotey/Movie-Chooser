@@ -26,10 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	// Remove the movie from the to-watch lists of all given users.
 	await prisma.toWatchEntry.deleteMany({
 		where: {
+			movieId: req.body.id,
 			userId: {
 				in: req.body.userIds,
 			},
-			movieId: req.body.id,
 		},
 	});
 
@@ -37,8 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	await prisma.watchedEntry.createMany({
 		data: req.body.userIds.map((userId: number) => {
 			return {
-				userId: userId,
 				movieId: req.body.id,
+				userId: userId,
 				watched: new Date(req.body.date),
 			};
 		}),

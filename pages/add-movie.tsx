@@ -22,14 +22,14 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 				{userClientInfo ? (
 					<>
 						<form>
-							<label id={style["movieSearchLabel"]} htmlFor={style["movieSearchInput"]}>
+							<label htmlFor={style["movieSearchInput"]} id={style["movieSearchLabel"]}>
 								Search for Movie to Add
 							</label>
 							<input id={style["movieSearchInput"]} type="search" />
 							<button
+								aria-controls={`${style["searchStatus"]} movieListContainer`}
 								id={style["movieSearchButton"]}
 								type="submit"
-								aria-controls={`${style["searchStatus"]} movieListContainer`}
 								onClick={(event) => {
 									event.preventDefault();
 									const searchStatusElement = document.getElementById(style["searchStatus"]) as HTMLParagraphElement;
@@ -65,17 +65,17 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 								🔍
 							</button>
 						</form>
-						<p id={style["searchStatus"]} aria-live="polite">
+						<p aria-live="polite" id={style["searchStatus"]}>
 							Search results will be shown below.
 						</p>
-						<div id="movieListContainer" aria-live="polite">
+						<div aria-live="polite" id="movieListContainer">
 							{searchedMovies &&
 								searchedMovies.map((movie) => (
-									<MovieCard movie={movie} key={movie.id}>
+									<MovieCard key={movie.id} movie={movie}>
 										<button
-											type="button"
-											className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}
 											aria-controls={`movieCardFormSpaceFor${movie.id}`}
+											className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}
+											type="button"
 											onClick={(event) => {
 												event.preventDefault();
 												const addToWatchListForm = document.getElementById(
@@ -95,9 +95,9 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 											Add to To-Watch List
 										</button>
 										<button
-											type="button"
-											className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}
 											aria-controls={`movieCardFormSpaceFor${movie.id}`}
+											className={`${style["movieCardButton"]} ${style["addToWatchedListButton"]}`}
+											type="button"
 											onClick={(event) => {
 												event.preventDefault();
 												const addToWatchListForm = document.getElementById(
@@ -123,19 +123,19 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 											Add to Watched List
 										</button>
 										<div
-											id={`movieCardFormSpaceFor${movie.id}`}
-											className={style["movieCardFormSpace"]}
 											aria-live="polite"
+											className={style["movieCardFormSpace"]}
+											id={`movieCardFormSpaceFor${movie.id}`}
 										>
-											<form id={`formToAdd${movie.id}ToWatchList`} className={style["movieCardForm"]}>
+											<form className={style["movieCardForm"]} id={`formToAdd${movie.id}ToWatchList`}>
 												<label htmlFor={`weightWhenAdding${movie.id}ToWatchList`}>Weight</label>
 												<input
-													id={`weightWhenAdding${movie.id}ToWatchList`}
 													className={style["movieCardWeightInput"]}
-													type="number"
-													min={0}
 													defaultValue={1}
+													id={`weightWhenAdding${movie.id}ToWatchList`}
+													min={0}
 													step={0.1}
+													type="number"
 												/>
 												<button
 													id={`addToWatchListSubmitButtonFor${movie.id}`}
@@ -169,12 +169,12 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 													Submit
 												</button>
 											</form>
-											<form id={`formToAdd${movie.id}ToWatchedList`} className={style["movieCardForm"]}>
+											<form className={style["movieCardForm"]} id={`formToAdd${movie.id}ToWatchedList`}>
 												<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
 												<input
+													defaultValue={new Date().toISOString().substring(0, 10)}
 													id={`dateWhenAdding${movie.id}ToWatchedList`}
 													type="date"
-													defaultValue={new Date().toISOString().substring(0, 10)}
 												/>
 												<button
 													id={`addToWatchedListSubmitButtonFor${movie.id}`}
@@ -193,8 +193,8 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 														).value;
 														axios
 															.post("/api/movie/add-to-watched-list", {
-																id: movie.id,
 																date: dateString,
+																id: movie.id,
 															})
 															.then((response) => {
 																statusTextElement.textContent =
@@ -209,7 +209,7 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 													Submit
 												</button>
 											</form>
-											<p id={`formsStatusFor${movie.id}`} className={style["formsStatus"]}>
+											<p className={style["formsStatus"]} id={`formsStatusFor${movie.id}`}>
 												Submit to add movie.
 											</p>
 										</div>
@@ -218,15 +218,13 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 						</div>
 					</>
 				) : (
-					<>
-						<p>
-							You are not logged in. You can log in or create an account{" "}
-							<Link href="./log-in-or-create-account">
-								<a>here</a>
-							</Link>
-							.
-						</p>
-					</>
+					<p>
+						You are not logged in. You can log in or create an account{" "}
+						<Link href="./log-in-or-create-account">
+							<a>here</a>
+						</Link>
+						.
+					</p>
 				)}
 			</main>
 			<Footer />

@@ -30,14 +30,13 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 				) : (
 					<>
 						<Form
-							title="Log In"
-							initialDirective="Please fill out the form to log in."
 							fieldNamesToFieldTypes={
 								new Map([
 									["Email", "email"],
 									["Password", "password"],
 								])
 							}
+							initialDirective="Please fill out the form to log in."
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {
 								submitButton.disabled = true;
 
@@ -57,8 +56,8 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 									.then((response) => {
 										const responseObject = response.data;
 										setCookie("session", responseObject.sessionId, {
-											path: "/",
 											maxAge: 60 * 60 * 24 * 7,
+											path: "/",
 											sameSite: true,
 										});
 										updateTextContainer.textContent =
@@ -70,10 +69,9 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 										submitButton.disabled = false;
 									});
 							}}
+							title="Log In"
 						/>
 						<Form
-							title="Create Account"
-							initialDirective="Please fill out the form to create an account."
 							fieldNamesToFieldTypes={
 								new Map([
 									["Name", "text"],
@@ -82,6 +80,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 									["Email", "email"],
 								])
 							}
+							initialDirective="Please fill out the form to create an account."
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {
 								submitButton.disabled = true;
 
@@ -103,15 +102,15 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 
 								axios
 									.post("/api/account/create-account", {
+										email: emailInput.value,
 										name: nameInput.value,
 										password: passwordInput.value,
-										email: emailInput.value,
 									})
 									.then((response) => {
 										const responseObject = response.data;
 										setCookie("session", responseObject.sessionId, {
-											path: "/",
 											maxAge: 60 * 60 * 24 * 7,
+											path: "/",
 											sameSite: true,
 										});
 										updateTextContainer.textContent =
@@ -123,6 +122,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 										submitButton.disabled = false;
 									});
 							}}
+							title="Create Account"
 						/>
 					</>
 				)}

@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	reactStrictMode: true,
 	images: {
-		domains: ["image.tmdb.org"],
 		deviceSizes: [900],
+		domains: ["image.tmdb.org"],
 	},
+	reactStrictMode: true,
 };
 
 module.exports = nextConfig;

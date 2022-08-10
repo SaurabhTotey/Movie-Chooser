@@ -30,19 +30,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 	// Insert the new movie into the database.
 	await prisma.toWatchEntry.upsert({
-		where: {
-			userId_movieId: {
-				userId: user.id,
-				movieId: req.body.id,
-			},
+		create: {
+			movieId: req.body.id,
+			userId: user.id,
+			weight: req.body.weight,
 		},
 		update: {
 			weight: req.body.weight,
 		},
-		create: {
-			userId: user.id,
-			movieId: req.body.id,
-			weight: req.body.weight,
+		where: {
+			userId_movieId: {
+				movieId: req.body.id,
+				userId: user.id,
+			},
 		},
 	});
 

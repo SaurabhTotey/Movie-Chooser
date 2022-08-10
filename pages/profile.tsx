@@ -22,9 +22,9 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	if (!sessionId) {
 		return {
 			props: {
+				userAlreadyWatchedList: null,
 				userClientInfo: null,
 				userToWatchList: null,
-				userAlreadyWatchedList: null,
 			},
 		};
 	}
@@ -46,18 +46,18 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	const userAlreadyWatchedList = await Promise.all(
 		watchedEntries.map(async (entry) => {
 			return {
+				date: new Intl.DateTimeFormat("en-US").format(entry.watched),
 				id: entry.id,
 				movie: await getMovieInformationFor(entry.movieId),
-				date: new Intl.DateTimeFormat("en-US").format(entry.watched),
 				rating: entry.rating,
 			};
 		}),
 	);
 	return {
 		props: {
+			userAlreadyWatchedList: JSON.parse(JSON.stringify(userAlreadyWatchedList)),
 			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
 			userToWatchList: JSON.parse(JSON.stringify(userToWatchList)),
-			userAlreadyWatchedList: JSON.parse(JSON.stringify(userAlreadyWatchedList)),
 		},
 	};
 };
@@ -87,21 +87,21 @@ function Profile({
 						<CollapsibleSection title="Watch List">
 							{toWatchList &&
 								toWatchList.map((entry: any) => (
-									<MovieCard movie={entry.movie} key={entry.movie.id}>
+									<MovieCard key={entry.movie.id} movie={entry.movie}>
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Weight</label>
 												<input
-													type="number"
-													id={`weightInputFor${entry.movie.id}`}
+													aria-live="polite"
 													defaultValue={entry.weight}
+													id={`weightInputFor${entry.movie.id}`}
 													min={0}
 													step={0.1}
-													aria-live="polite"
+													type="number"
 												/>
 												<button
-													id={`changeWeightButtonFor${entry.movie.id}`}
 													aria-controls={`weightInputFor${entry.movie.id} formStatusForToWatchMovie${entry.movie.id}`}
+													id={`changeWeightButtonFor${entry.movie.id}`}
 													type="submit"
 													onClick={(event) => {
 														event.preventDefault();
@@ -134,8 +134,9 @@ function Profile({
 												</button>
 											</form>
 											<button
-												id={`deleteFromWatchListButtonFor${entry.movie.id}`}
 												aria-controls={`formStatusForToWatchMovie${entry.movie.id}`}
+												id={`deleteFromWatchListButtonFor${entry.movie.id}`}
+												type="submit"
 												onClick={(event) => {
 													event.preventDefault();
 													const self = document.getElementById(
@@ -159,30 +160,30 @@ function Profile({
 												❌
 											</button>
 										</div>
-										<p id={`formStatusForToWatchMovie${entry.movie.id}`} aria-live="polite"></p>
+										<p aria-live="polite" id={`formStatusForToWatchMovie${entry.movie.id}`}></p>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
 						<CollapsibleSection title="Already Watched List">
 							{alreadyWatchedList &&
 								alreadyWatchedList.map((entry: any) => (
-									<MovieCard movie={entry.movie} key={entry.id}>
+									<MovieCard key={entry.id} movie={entry.movie}>
 										<p>Watched on {entry.date}.</p>
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Rating</label>
 												<input
-													type="number"
-													id={`ratingInputFor${entry.id}`}
-													defaultValue={entry.rating}
-													min={0}
-													max={10}
-													step={0.1}
 													aria-live="polite"
+													defaultValue={entry.rating}
+													id={`ratingInputFor${entry.id}`}
+													max={10}
+													min={0}
+													step={0.1}
+													type="number"
 												/>
 												<button
-													id={`changeRatingButtonFor${entry.id}`}
 													aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
+													id={`changeRatingButtonFor${entry.id}`}
 													type="submit"
 													onClick={(event) => {
 														event.preventDefault();
@@ -215,8 +216,9 @@ function Profile({
 												</button>
 											</form>
 											<button
-												id={`deleteFromWatchedListButtonFor${entry.id}`}
 												aria-controls={`formStatusForWatchedEntry${entry.id}`}
+												id={`deleteFromWatchedListButtonFor${entry.id}`}
+												type="submit"
 												onClick={(event) => {
 													event.preventDefault();
 													const self = document.getElementById(
@@ -240,14 +242,13 @@ function Profile({
 												❌
 											</button>
 										</div>
-										<p id={`formStatusForWatchedEntry${entry.id}`} aria-live="polite"></p>
+										<p aria-live="polite" id={`formStatusForWatchedEntry${entry.id}`}></p>
 									</MovieCard>
 								))}
 						</CollapsibleSection>
 						<Form
-							title="Log Out"
-							initialDirective="Press button to log out."
 							fieldNamesToFieldTypes={new Map()}
+							initialDirective="Press button to log out."
 							submitHandler={async (submitButton, updateTextContainer) => {
 								submitButton.disabled = true;
 
@@ -264,11 +265,11 @@ function Profile({
 										submitButton.disabled = false;
 									});
 							}}
+							title="Log Out"
 						/>
 						<Form
-							title="Delete Account"
-							initialDirective="Enter your password to delete your account."
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
+							initialDirective="Enter your password to delete your account."
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {
 								submitButton.disabled = true;
 
@@ -292,18 +293,17 @@ function Profile({
 										submitButton.disabled = false;
 									});
 							}}
+							title="Delete Account"
 						/>
 					</>
 				) : (
-					<>
-						<p>
-							You are not logged in. You can log in or create an account{" "}
-							<Link href="./log-in-or-create-account">
-								<a>here</a>
-							</Link>
-							.
-						</p>
-					</>
+					<p>
+						You are not logged in. You can log in or create an account{" "}
+						<Link href="./log-in-or-create-account">
+							<a>here</a>
+						</Link>
+						.
+					</p>
 				)}
 			</main>
 			<Footer />

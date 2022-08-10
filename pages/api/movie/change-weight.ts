@@ -26,14 +26,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	// Update the movie's weight in the database.
 	const newWeight = Math.max(req.body.weight, 0);
 	await prisma.toWatchEntry.update({
-		where: {
-			userId_movieId: {
-				userId: user.id,
-				movieId: req.body.id,
-			},
-		},
 		data: {
 			weight: newWeight,
+		},
+		where: {
+			userId_movieId: {
+				movieId: req.body.id,
+				userId: user.id,
+			},
 		},
 	});
 

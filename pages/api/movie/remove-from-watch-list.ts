@@ -27,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	await prisma.toWatchEntry.delete({
 		where: {
 			userId_movieId: {
-				userId: user.id,
 				movieId: req.body.id,
+				userId: user.id,
 			},
 		},
 	});

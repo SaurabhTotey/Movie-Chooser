@@ -29,8 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	const sessionToken = makeSessionToken();
 	const createdSessionEntry = await prisma.session.create({
 		data: {
-			userId: userToLogIn.id,
 			token: sessionToken,
+			userId: userToLogIn.id,
 		},
 	});
 

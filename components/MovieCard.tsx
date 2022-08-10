@@ -16,11 +16,11 @@ const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 				{movie.posterPath && (
 					<div className={style["movieCardImageContainer"]}>
 						<Image
-							src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
 							alt={`Poster for ${movie.title}.`}
-							layout="responsive"
-							width={500}
 							height={750}
+							layout="responsive"
+							src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
+							width={500}
 						/>
 					</div>
 				)}

@@ -26,11 +26,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	// Update the movie's rating in the database.
 	const newRating = Math.min(Math.max(req.body.rating, 0), 10);
 	await prisma.watchedEntry.update({
-		where: {
-			id: req.body.id,
-		},
 		data: {
 			rating: newRating,
+		},
+		where: {
+			id: req.body.id,
 		},
 	});
 

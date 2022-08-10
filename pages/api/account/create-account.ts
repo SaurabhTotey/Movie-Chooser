@@ -18,9 +18,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 		const createdUser = await prisma.user.create({
 			data: {
+				email: req.body.email,
 				name: req.body.name,
 				password: hashedPassword,
-				email: req.body.email,
 			},
 		});
 
@@ -28,8 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		const sessionToken = makeSessionToken();
 		const createdSessionEntry = await prisma.session.create({
 			data: {
-				userId: createdUser.id,
 				token: sessionToken,
+				userId: createdUser.id,
 			},
 		});
 

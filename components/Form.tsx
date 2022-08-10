@@ -21,7 +21,7 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 	return (
 		<div className={style["form"]}>
 			<h2 className={style["formTitle"]}>{title}</h2>
-			<p id={directiveParagraphName} className={style["formDescription"]} aria-live="polite">
+			<p aria-live="polite" className={style["formDescription"]} id={directiveParagraphName}>
 				{initialDirective}
 			</p>
 			<form>
@@ -35,10 +35,10 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 					);
 				})}
 				<button
-					type="submit"
+					aria-controls={directiveParagraphName}
 					className={style["submitButton"]}
 					id={submitButtonName}
-					aria-controls={directiveParagraphName}
+					type="submit"
 					onClick={(event) => {
 						event.preventDefault();
 						const fieldNameToFormInputElements = new Map();
