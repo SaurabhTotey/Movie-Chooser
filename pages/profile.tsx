@@ -49,6 +49,7 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 				date: new Intl.DateTimeFormat("en-US").format(entry.watched),
 				id: entry.id,
 				movie: await getMovieInformationFor(entry.movieId),
+				originatorName: (await prisma.user.findUnique({ where: { id: entry.originatorId } }))!.name,
 				rating: entry.rating,
 			};
 		}),
@@ -168,7 +169,9 @@ function Profile({
 							{alreadyWatchedList &&
 								alreadyWatchedList.map((entry: any) => (
 									<MovieCard key={entry.id} movie={entry.movie}>
-										<p>Watched on {entry.date}.</p>
+										<p>
+											Watched on {entry.date}. From the list of {entry.originatorName}.
+										</p>
 										<div className={style["movieCardFormContainer"]}>
 											<form>
 												<label>Rating</label>
