@@ -156,9 +156,41 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 							"\\[\\mathcal{P}(w_i) = \\begin{cases} \\frac{w_i}{\\sum_j w_j} &\\qquad \\sum_j w_j \\neq 0 \\\\ 0 &\\qquad \\text{otherwise} \\end{cases}\\]"
 						}
 					</span>
+					where
+					<span>{"\\[\\sum_j w_j\\]"}</span>
+					is the total sum of the weight for a single to-watch list. The chance of any specific to-watch list being used
+					is equal for each user whose total to-watch list weight is greater than 0. If a user&apos;s to-watch list
+					total weight comes out to 0, their list will not be chosen.
+				</p>
+				<p className={style["textParagraph"]}>
+					Weights for a signed-in user&apos;s to-watch list can be managed on their{" "}
+					<Link href="./profile">
+						<a>profile page</a>
+					</Link>
+					.
 				</p>
 				<h3>Ratings</h3>
+				<p className={style["textParagraph"]}>
+					Ratings of watched movies should reflect one&apos;s enjoyment of that experience and need not necessarily be
+					ratings of the movies as a whole. Therefore, a movie can be seen multiple times and have multiple different
+					ratings depending one&apos;s enjoyment each time. The ratings do not matter at all and are only used for fun
+					statistics.
+				</p>
+				<p className={style["textParagraph"]}>
+					Ratings for a signed-in user&apos;s already-watched list can be managed on their{" "}
+					<Link href="./profile">
+						<a>profile page</a>
+					</Link>
+					.
+				</p>
 				<h3>Statistics</h3>
+				<p className={style["textParagraph"]}>
+					Statistics are for fun only and should not be taken seriously. They can be viewed on the{" "}
+					<Link href="./statistics">
+						<a>statistics page</a>
+					</Link>{" "}
+					along with explanations.
+				</p>
 				<CollapsibleSection title="User Lists">
 					TODO: display a collapsible section for each user where each section has a list of their to-watch list and
 					already watched list; the to-watch list should show the movie title and its relative chance of getting chosen,
