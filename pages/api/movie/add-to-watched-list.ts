@@ -31,15 +31,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	}
 
 	// Insert the new movie into the database.
-	await prisma.watchedEntry.create({
-		data: {
-			movieId: req.body.id as number,
-			originatorId: req.body.originatorId,
-			rating: null,
-			userId: user.id,
-			watched: new Date(req.body.date),
-		},
-	});
-
-	res.status(200).json("Success!");
+	prisma.watchedEntry
+		.create({
+			data: {
+				movieId: req.body.id as number,
+				originatorId: req.body.originatorId,
+				rating: null,
+				userId: user.id,
+				watched: new Date(req.body.date),
+			},
+		})
+		.then(() => {
+			res.status(200).json("Success!");
+		})
+		.catch(() => {
+			res.status(400).json("Invalid request.");
+		});
 }

@@ -123,12 +123,12 @@ function Profile({
 															.then((response) => {
 																weightInput.valueAsNumber = response.data;
 																formStatus.innerText = `Successfully set weight to ${response.data}.`;
+																self.disabled = false;
 															})
 															.catch((error) => {
 																formStatus.innerText = error.response.data;
+																self.disabled = false;
 															});
-
-														self.disabled = false;
 													}}
 												>
 													Submit New Weight
@@ -207,12 +207,12 @@ function Profile({
 															.then((response) => {
 																ratingInput.valueAsNumber = response.data;
 																formStatus.innerText = `Successfully set rating to ${response.data}.`;
+																self.disabled = false;
 															})
 															.catch((error) => {
 																formStatus.innerText = error.response.data;
+																self.disabled = false;
 															});
-
-														self.disabled = false;
 													}}
 												>
 													Submit New Rating
