@@ -1,16 +1,56 @@
 import axios from "axios";
-import { InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import { Cookies } from "react-cookie";
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
-import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
+import deleteStaleSessions from "../helpers/DeleteStaleSessions";
+import { prisma } from "../helpers/GetPrismaClient";
 import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
+import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/add-movie.module.css";
 
-function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
+const getUserAndAllUsersAsServerSideProps: GetServerSideProps = async (context) => {
+	const sessionId = new Cookies(context.req.headers.cookie).get("session");
+	await deleteStaleSessions();
+	const user = sessionId
+		? await prisma.session
+				.findUnique({
+					where: {
+						token: sessionId,
+					},
+				})
+				.User()
+		: null;
+
+	if (!user) {
+		return {
+			props: {
+				allUsers: null,
+				userClientInfo: null,
+			},
+		};
+	}
+
+	const allUsers = await prisma.user.findMany();
+
+	return {
+		props: {
+			allUsers: allUsers.map((userEntry) => {
+				return { id: userEntry.id, name: userEntry.name };
+			}),
+			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
+		},
+	};
+};
+
+function AddMovie({
+	userClientInfo,
+	allUsers,
+}: InferGetServerSidePropsType<typeof getUserAndAllUsersAsServerSideProps>) {
 	const [searchedMovies, setSearchedMovies] = useState<MovieApiMovieInformation[] | null>(null);
 	return (
 		<>
@@ -159,11 +199,12 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 															})
 															.then((response) => {
 																statusTextElement.textContent = "Successfully added move to your to-watch list.";
+																self.disabled = false;
 															})
 															.catch((error) => {
 																statusTextElement.textContent = error.response.data;
+																self.disabled = false;
 															});
-														self.disabled = false;
 													}}
 												>
 													Submit
@@ -176,6 +217,16 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 													id={`dateWhenAdding${movie.id}ToWatchedList`}
 													type="date"
 												/>
+												<br />
+												<label htmlFor={`originatorIdSelectionFor${movie.id}`}>From Whose List</label>
+												<select id={`originatorIdSelectionFor${movie.id}`}>
+													{allUsers &&
+														allUsers.map((userInfo: any) => (
+															<option key={userInfo.id} value={userInfo.id}>
+																{userInfo.name}
+															</option>
+														))}
+												</select>
 												<button
 													id={`addToWatchedListSubmitButtonFor${movie.id}`}
 													type="submit"
@@ -195,15 +246,20 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 															.post("/api/movie/add-to-watched-list", {
 																date: dateString,
 																id: movie.id,
+																originatorId: parseInt(
+																	(document.getElementById(`originatorIdSelectionFor${movie.id}`) as HTMLSelectElement)
+																		.value,
+																),
 															})
 															.then((response) => {
 																statusTextElement.textContent =
 																	"Successfully added move to your watched list. You can rate it in your profile page.";
+																self.disabled = false;
 															})
 															.catch((error) => {
 																statusTextElement.textContent = error.response.data;
+																self.disabled = false;
 															});
-														self.disabled = false;
 													}}
 												>
 													Submit
@@ -232,5 +288,5 @@ function AddMovie({ userClientInfo }: InferGetServerSidePropsType<typeof getUser
 	);
 }
 
-export const getServerSideProps = getUserAsServerSideProp;
+export const getServerSideProps = getUserAndAllUsersAsServerSideProps;
 export default AddMovie;
