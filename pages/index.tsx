@@ -1,7 +1,6 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
@@ -149,18 +148,16 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 				<h3 className={style["title"]}>Weights</h3>
 				<p className={style["textParagraph"]}>
 					Weights apply solely to movies in to-watch lists, and are relative to other weights within the same list. For
-					a movie of weight <span>{"\\(w_i\\)"}</span>, it&apos;s probability of being chosen,{" "}
-					<span>{"\\(\\mathcal{P}(w_i)\\)"}</span>, is{" "}
+					a movie, <span>{"\\(i\\)"}</span>, with weight <span>{"\\(w_i\\)"}</span>, it&apos;s probability of being
+					chosen, <span>{"\\(\\mathcal{P}(i)\\)"}</span>, is{" "}
 					<span>
 						{
-							"\\[\\mathcal{P}(w_i) = \\begin{cases} \\frac{w_i}{\\sum_j w_j} &\\qquad \\sum_j w_j \\neq 0 \\\\ 0 &\\qquad \\text{otherwise} \\end{cases}\\]"
+							"\\[\\mathcal{P}(i) = \\begin{cases} \\frac{w_i}{\\sum_j w_j} &\\qquad \\sum_j w_j \\neq 0 \\\\ 0 &\\qquad \\text{otherwise} \\end{cases}\\]"
 						}
 					</span>
-					where
-					<span>{"\\[\\sum_j w_j\\]"}</span>
-					is the total sum of the weight for a single to-watch list. The chance of any specific to-watch list being used
-					is equal for each user whose total to-watch list weight is greater than 0. If a user&apos;s to-watch list
-					total weight comes out to 0, their list will not be chosen.
+					where <span>{"\\(\\sum_j w_j\\)"}</span> is the total sum of the weight for a single to-watch list. The chance
+					of any specific to-watch list being used is equal for each user whose total to-watch list weight is greater
+					than 0. If a user&apos;s to-watch list total weight comes out to 0, their list will not be chosen.
 				</p>
 				<p className={style["textParagraph"]}>
 					Weights for a signed-in user&apos;s to-watch list can be managed on their{" "}
@@ -191,11 +188,10 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					</Link>{" "}
 					along with explanations.
 				</p>
-				<CollapsibleSection title="User Lists">
-					TODO: display a collapsible section for each user where each section has a list of their to-watch list and
-					already watched list; the to-watch list should show the movie title and its relative chance of getting chosen,
-					and the already-watched list should show the watched date and the rating.
-				</CollapsibleSection>
+				<h2 className={style["title"]}>User Lists</h2>
+				TODO: display a collapsible section for each user where each section has a list of their to-watch list and
+				already watched list; the to-watch list should show the movie title and its relative chance of getting chosen,
+				and the already-watched list should show the watched date and the rating.
 			</main>
 			<Footer />
 		</>
