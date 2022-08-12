@@ -8,6 +8,7 @@ interface MovieCardPropType {
 	children?: ReactNode;
 }
 
+// TOOD: make this a collapsible section that is expanded by default
 const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 	return (
 		<div className={style["movieCard"]}>
