@@ -2,6 +2,8 @@
 
 ## Features
 
+### Design Principles
+
 ## How to Set Up
 
 ### Dependencies
@@ -18,6 +20,7 @@
 - Stats page
 - Ensure handling of IDs of 0 is consistent for both users and movies
 - Allow names to be changed
+- Documentation of EVERYTHING
 - This README
 - License
 - Styling -- especially a better look for watching movies at night (so basically a dark mode)
