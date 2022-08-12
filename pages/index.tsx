@@ -15,12 +15,12 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<h2>About this Site</h2>
+				<h2 className={style["title"]}>About this Site</h2>
 				<p className={style["textParagraph"]}>
 					This page is a wall of useless text that no one will read followed by all the user movie lists registered on
 					this site.
 				</p>
-				<h3>General</h3>
+				<h3 className={style["title"]}>General</h3>
 				<p className={style["textParagraph"]}>
 					This is a site for choosing movies to watch when watching movies as a group. Oftentimes, selecting movies in a
 					group setting can be difficult: different people want to watch different movies. This site allows users to
@@ -69,7 +69,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					</Link>
 					. Statistics are purely for fun and are based off of movie ratings (so rate movies for fun statistics maybe).
 				</p>
-				<h3>Accounts</h3>
+				<h3 className={style["title"]}>Accounts</h3>
 				<p className={style["textParagraph"]}>
 					An account allows one full functionality of this website. To log in or create an account, use{" "}
 					<Link href="./log-in-or-create-account">
@@ -85,7 +85,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					this. Do not put sensitive information into this website. Passwords are hashed, but caution should still be
 					exercised. Please don&apos;t game what this website allows since it is based on trust.
 				</p>
-				<h3>Movie Lists</h3>
+				<h3 className={style["title"]}>Movie Lists</h3>
 				<p className={style["textParagraph"]}>
 					Each account has two movie lists: a to-watch list and an already-watched list. The to-watch list of a user is
 					the list of movies that can be selected on the party page. The already-watched list is the list of movies that
@@ -128,7 +128,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					</Link>
 					.
 				</p>
-				<h3>Party</h3>
+				<h3 className={style["title"]}>Party</h3>
 				<p className={style["textParagraph"]}>
 					The main magic of this site happens on the{" "}
 					<Link href="./party">
@@ -146,7 +146,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					picked, the list&apos;s weightings are used to determine how likely each movie is. A movie is then chosen
 					according to this likelihood. The intricacies of weights are described in the next section.
 				</p>
-				<h3>Weights</h3>
+				<h3 className={style["title"]}>Weights</h3>
 				<p className={style["textParagraph"]}>
 					Weights apply solely to movies in to-watch lists, and are relative to other weights within the same list. For
 					a movie of weight <span>{"\\(w_i\\)"}</span>, it&apos;s probability of being chosen,{" "}
@@ -169,7 +169,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					</Link>
 					.
 				</p>
-				<h3>Ratings</h3>
+				<h3 className={style["title"]}>Ratings</h3>
 				<p className={style["textParagraph"]}>
 					Ratings of watched movies should reflect one&apos;s enjoyment of that experience and need not necessarily be
 					ratings of the movies as a whole. Therefore, a movie can be seen multiple times and have multiple different
@@ -183,7 +183,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					</Link>
 					.
 				</p>
-				<h3>Statistics</h3>
+				<h3 className={style["title"]}>Statistics</h3>
 				<p className={style["textParagraph"]}>
 					Statistics are for fun only and should not be taken seriously. They can be viewed on the{" "}
 					<Link href="./statistics">
