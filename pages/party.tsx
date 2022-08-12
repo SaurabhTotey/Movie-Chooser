@@ -56,7 +56,7 @@ const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
 
 function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<typeof getAllUsersServerSideProps>) {
 	const [movieSelectionInformation, setMovieSelectionInformation] = useState<
-		[number[], Date, MovieApiMovieInformation] | null
+		[number[], Date, MovieApiMovieInformation, number] | null
 	>(null);
 	return (
 		<>
@@ -109,8 +109,8 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 												userIds: selectedIds,
 											})
 											.then((response) => {
-												const selectedRandomMovie = response.data;
-												setMovieSelectionInformation([selectedIds, selectionTime, selectedRandomMovie]);
+												const [selectedRandomMovie, originatorId] = response.data;
+												setMovieSelectionInformation([selectedIds, selectionTime, selectedRandomMovie, originatorId]);
 												const markAsWatchedButton = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
 												if (markAsWatchedButton) {
 													markAsWatchedButton.disabled = false;
@@ -134,6 +134,10 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 						<div aria-live="polite" id="movieCardContainer">
 							{movieSelectionInformation && (
 								<MovieCard movie={movieSelectionInformation[2]}>
+									<p id={style["originatorText"]}>
+										From the list of{" "}
+										{userInformation.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name}.
+									</p>
 									<div id={style["markAsWatchedButtonContainer"]}>
 										<button
 											aria-controls={style["markAsWatchedStatus"]}
@@ -150,6 +154,7 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 													.post("/api/party/make-movie-watched-for-users", {
 														date: movieSelectionInformation[1],
 														id: movieSelectionInformation[2].id,
+														originatorId: movieSelectionInformation[3],
 														userIds: movieSelectionInformation[0],
 													})
 													.then((response) => {

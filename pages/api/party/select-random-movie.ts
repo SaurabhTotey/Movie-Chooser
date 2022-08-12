@@ -3,7 +3,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../helpers/GetPrismaClient";
 import { getMovieInformationFor, MovieApiMovieInformation } from "../../../helpers/MovieApiManager";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<string | MovieApiMovieInformation>) {
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<string | [MovieApiMovieInformation, number]>,
+) {
 	// Validate request.
 	if (!req.body.userIds) {
 		res.status(400).json("Couldn't parse request.");
@@ -40,14 +43,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	const movieListToUseTotalWeight = movieListWeightSums[movieListIndexToUse];
 	let selectionValue = Math.random() * movieListToUseTotalWeight;
 	let selectedMovie = null;
+	let originatorId = null;
 	for (let toWatchEntry of movieListToUse) {
 		selectionValue -= toWatchEntry.weight;
 		if (selectionValue <= 0) {
 			selectedMovie = toWatchEntry.movieId;
+			originatorId = toWatchEntry.userId;
 			break;
 		}
 	}
 
 	// Give the movie information for the selected movie.
-	res.status(200).json(await getMovieInformationFor(selectedMovie!));
+	res.status(200).json([await getMovieInformationFor(selectedMovie!), originatorId!]);
 }

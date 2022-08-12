@@ -31,7 +31,8 @@
 	max-width: calc(10% - 2px);
 }
 
-#movieChoosingStatus {
+#movieChoosingStatus,
+#originatorText {
 	text-align: center;
 }
 
