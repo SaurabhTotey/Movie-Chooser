@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useState } from "react";
 import style from "../styles/CollapsibleSection.module.css";
 
 const expandedSymbol = "▲";
@@ -6,48 +6,38 @@ const collapsedSymbol = "▼";
 
 interface CollapsibleSectionPropType {
 	title: string;
+	isExpandedToBegin: boolean;
 	children?: ReactNode;
 }
 
-const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, children }) => {
+const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, isExpandedToBegin = false, children }) => {
+	const [isExpanded, setIsExpanded] = useState(isExpandedToBegin);
 	const htmlValidFieldNameFor = (inputName: string) => inputName.toLowerCase().replaceAll(" ", "-");
 	return (
 		<div className={style["collapsibleSection"]}>
 			<button
 				aria-controls={`expandSymbolFor${htmlValidFieldNameFor(title)} contentFor${htmlValidFieldNameFor(title)}`}
-				aria-expanded="false"
+				aria-expanded={isExpanded}
 				className={style["headingButton"]}
-				id={`expandToggleButtonFor${htmlValidFieldNameFor(title)}`}
 				type="button"
 				onClick={(event) => {
 					event.preventDefault();
-
-					const self = document.getElementById(`expandToggleButtonFor${htmlValidFieldNameFor(title)}`)!;
-					const isExpanded = self.getAttribute("aria-expanded");
-					self.setAttribute("aria-expanded", isExpanded == "true" ? "false" : "true");
-
-					const symbolContainer = document.getElementById(
-						`expandSymbolFor${htmlValidFieldNameFor(title)}`,
-					) as HTMLParagraphElement;
-					const contentContainer = document.getElementById(`contentFor${htmlValidFieldNameFor(title)}`)!;
-
-					const contentContainerDisplay = window.getComputedStyle(contentContainer).display;
-					if (contentContainerDisplay == "none") {
-						contentContainer.style.setProperty("display", "block");
-						symbolContainer.innerText = expandedSymbol;
-					} else {
-						contentContainer.style.setProperty("display", "none");
-						symbolContainer.innerText = collapsedSymbol;
-					}
+					setIsExpanded(!isExpanded);
 				}}
 			>
 				<h2>{title}</h2>
-				<p id={`expandSymbolFor${htmlValidFieldNameFor(title)}`}>▼</p>
+				<p id={`expandSymbolFor${htmlValidFieldNameFor(title)}`}>{isExpanded ? expandedSymbol : collapsedSymbol}</p>
 			</button>
-			<div aria-live="polite" className={style["content"]} id={`contentFor${htmlValidFieldNameFor(title)}`}>
+			<div
+				aria-live="polite"
+				className={style["content"]}
+				id={`contentFor${htmlValidFieldNameFor(title)}`}
+				style={{ display: isExpanded ? "block" : "none" }}
+			>
 				{children}
 			</div>
 		</div>
 	);
 };
+
 export default CollapsibleSection;
