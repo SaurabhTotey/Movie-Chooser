@@ -2,17 +2,16 @@ import Image from "next/image";
 import { FC, ReactNode } from "react";
 import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
 import style from "../styles/MovieCard.module.css";
+import CollapsibleSection from "./CollapsibleSection";
 
 interface MovieCardPropType {
 	movie: MovieApiMovieInformation;
 	children?: ReactNode;
 }
 
-// TOOD: make this a collapsible section that is expanded by default
 const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 	return (
-		<div className={style["movieCard"]}>
-			<h3 className={style["movieCardTitle"]}>{movie.title}</h3>
+		<CollapsibleSection isExpandedToBegin={true} title={movie.title} titleHeadingLevel={3}>
 			<div className={style["movieCardImageContainerContainer"]}>
 				{movie.posterPath && (
 					<div className={style["movieCardImageContainer"]}>
@@ -32,7 +31,7 @@ const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
 			</div>
 			{children && <hr />}
 			{children}
-		</div>
+		</CollapsibleSection>
 	);
 };
 export default MovieCard;

@@ -1,14 +1,3 @@
-.movieCard {
-	border: 1px solid black;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-	padding: 1rem;
-}
-
-.movieCardTitle {
-	text-align: center;
-}
-
 .movieCardImageContainerContainer {
 	display: flex;
 	justify-content: center;

@@ -6,13 +6,20 @@ const collapsedSymbol = "▼";
 
 interface CollapsibleSectionPropType {
 	title: string;
-	isExpandedToBegin: boolean;
+	isExpandedToBegin?: boolean;
+	titleHeadingLevel?: number;
 	children?: ReactNode;
 }
 
-const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, isExpandedToBegin = false, children }) => {
+const CollapsibleSection: FC<CollapsibleSectionPropType> = ({
+	title,
+	isExpandedToBegin = false,
+	titleHeadingLevel = 2,
+	children,
+}) => {
 	const [isExpanded, setIsExpanded] = useState(isExpandedToBegin);
 	const htmlValidFieldNameFor = (inputName: string) => inputName.toLowerCase().replaceAll(" ", "-");
+	const TitleTag = `h${titleHeadingLevel}`;
 	return (
 		<div className={style["collapsibleSection"]}>
 			<button
@@ -25,7 +32,7 @@ const CollapsibleSection: FC<CollapsibleSectionPropType> = ({ title, isExpandedT
 					setIsExpanded(!isExpanded);
 				}}
 			>
-				<h2>{title}</h2>
+				<TitleTag className={style["titleTag"]}>{title}</TitleTag>
 				<p id={`expandSymbolFor${htmlValidFieldNameFor(title)}`}>{isExpanded ? expandedSymbol : collapsedSymbol}</p>
 			</button>
 			<div
