@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  name         String         @db.VarChar(255)
-  password     String         @db.VarChar(255)
-  email        String         @unique @db.VarChar(255)
-  Session      Session[]
-  ToWatchEntry ToWatchEntry[]
-  WatchedEntry WatchedEntry[]
+  id                                           Int            @id @default(autoincrement())
+  name                                         String         @db.VarChar(255)
+  password                                     String         @db.VarChar(255)
+  email                                        String         @unique @db.VarChar(255)
+  Session                                      Session[]
+  ToWatchEntry                                 ToWatchEntry[]
+  WatchedEntry_UserToWatchedEntry_originatorId WatchedEntry[] @relation("UserToWatchedEntry_originatorId")
+  WatchedEntry                                 WatchedEntry[]
 }
 
 model Session {
@@ -35,10 +36,12 @@ model ToWatchEntry {
 }
 
 model WatchedEntry {
-  id      Int      @id @default(autoincrement())
-  userId  Int
-  movieId Int
-  rating  Float?   @db.Real
-  watched DateTime @db.Date
-  User    User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                   Int      @id @default(autoincrement())
+  userId                               Int
+  movieId                              Int
+  originatorId                         Int
+  rating                               Float?   @db.Real
+  watched                              DateTime @db.Date
+  User_UserToWatchedEntry_originatorId User     @relation("UserToWatchedEntry_originatorId", fields: [originatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User                                 User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

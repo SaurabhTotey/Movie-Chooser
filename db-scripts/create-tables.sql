@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS "public"."WatchedEntry"(
 	id SERIAL PRIMARY KEY,
 	"userId" INTEGER NOT NULL, FOREIGN KEY ("userId") REFERENCES "public"."User"(id),
 	"movieId" INTEGER NOT NULL,
+	"originatorId" INTEGER NOT NULL, FOREIGN KEY ("originatorId") REFERENCES "public"."User"(id),
 	rating REAL,
 	watched DATE NOT NULL
 );

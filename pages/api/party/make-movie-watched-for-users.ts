@@ -5,7 +5,7 @@ import { prisma } from "../../../helpers/GetPrismaClient";
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate request.
 	const token = new Cookies(req.headers.cookie).get("session");
-	if (req.method != "POST" || !req.body.id || !req.body.userIds || !req.body.date || !token) {
+	if (req.method != "POST" || !req.body.id || !req.body.userIds || !req.body.date || !req.body.originatorId || !token) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
@@ -19,6 +19,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		})
 		.User();
 	if (!user) {
+		res.status(400).json("Couldn't parse request.");
+		return;
+	}
+
+	// Ensure that the movie is on the to-watch list of the originator.
+	const toWatchEntry = await prisma.toWatchEntry.findUnique({
+		where: {
+			userId_movieId: {
+				movieId: req.body.id,
+				userId: req.body.originatorId,
+			},
+		},
+	});
+	if (!toWatchEntry) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}
@@ -38,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		data: req.body.userIds.map((userId: number) => {
 			return {
 				movieId: req.body.id,
+				originatorId: req.body.originatorId,
 				userId: userId,
 				watched: new Date(req.body.date),
 			};
