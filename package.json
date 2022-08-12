@@ -12,6 +12,7 @@
 		"@prisma/client": "^4.2.1",
 		"axios": "^0.27.2",
 		"bcrypt": "^5.0.1",
+		"katex": "^0.16.0",
 		"next": "12.2.0",
 		"react": "18.2.0",
 		"react-cookie": "^4.1.1",
@@ -20,6 +21,7 @@
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.0",
+		"@types/katex": "^0.14.0",
 		"@types/node": "18.0.0",
 		"@types/react": "18.0.14",
 		"@types/react-cookies": "^0.1.0",

@@ -17,7 +17,8 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 				<Navbar userClientInfo={userClientInfo} />
 				<h2>About this Site</h2>
 				<p className={style["textParagraph"]}>
-					This page is a wall of useless text followed by all the user movie lists registered on this site.
+					This page is a wall of useless text that no one will read followed by all the user movie lists registered on
+					this site.
 				</p>
 				<h3>General</h3>
 				<p className={style["textParagraph"]}>
@@ -92,7 +93,8 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					<Link href="./profile">
 						<a>profile page</a>
 					</Link>
-					, where any entry can be deleted freely.
+					, where any entry can be deleted freely or modified in certain aspects. All lists are also visible on this
+					page regardless of whether the user is signed in, but the lists and entries cannot be modified here.
 				</p>
 				<p className={style["textParagraph"]}>
 					The to-watch list of a user corresponds each movie with a weight that signifies the movie&apos;s relative
@@ -103,12 +105,16 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					<Link href="./add-movie">
 						<a>add-movie page</a>
 					</Link>
+					. Weights can be changed by adding the movie again with a different weight or by updating it in the{" "}
+					<Link href="./profile">
+						<a>profile page</a>
+					</Link>
 					.
 				</p>
 				<p className={style["textParagraph"]}>
 					The already-watched list of a user stores information about a user&apos;s experience watching a given movie.
-					Movies can make duplicate appearances as users can watch movies multiple times. The user can rate a watched
-					movie on their{" "}
+					Movies can make duplicate appearances as users can watch movies multiple times. The user add their rating or
+					change their rating for a watched movie on their{" "}
 					<Link href="./profile">
 						<a>profile page</a>
 					</Link>
@@ -123,7 +129,34 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 					.
 				</p>
 				<h3>Party</h3>
+				<p className={style["textParagraph"]}>
+					The main magic of this site happens on the{" "}
+					<Link href="./party">
+						<a>party page</a>
+					</Link>
+					, which requires the user to be signed in. The user then selects all users who will be watching movies. After
+					that, the user is free to let the site choose a random movie. After the site chooses a movie, the user can
+					mark the movie as watched for all users who were marked as watching at the time that the movie was chosen. In
+					that case, any users who have the movie marked as watched will also have the movie removed from their to-watch
+					list.
+				</p>
+				<p className={style["textParagraph"]}>
+					The algorithm for choosing a movie is as follows. Every user who is watching and has a non-empty to-watch list
+					with total weight greater than 0 has an equal chance of their to-watch list being picked. Once a list is
+					picked, the list&apos;s weightings are used to determine how likely each movie is. A movie is then chosen
+					according to this likelihood. The intricacies of weights are described in the next section.
+				</p>
 				<h3>Weights</h3>
+				<p className={style["textParagraph"]}>
+					Weights apply solely to movies in to-watch lists, and are relative to other weights within the same list. For
+					a movie of weight <span>{"\\(w_i\\)"}</span>, it&apos;s probability of being chosen,{" "}
+					<span>{"\\(\\mathcal{P}(w_i)\\)"}</span>, is{" "}
+					<span>
+						{
+							"\\[\\mathcal{P}(w_i) = \\begin{cases} \\frac{w_i}{\\sum_j w_j} &\\qquad \\sum_j w_j \\neq 0 \\\\ 0 &\\qquad \\text{otherwise} \\end{cases}\\]"
+						}
+					</span>
+				</p>
 				<h3>Ratings</h3>
 				<h3>Statistics</h3>
 				<CollapsibleSection title="User Lists">
