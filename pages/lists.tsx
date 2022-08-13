@@ -83,47 +83,49 @@ function Home({
 				<Navbar userClientInfo={userClientInfo} />
 				{userIdsToLists &&
 					Object.keys(userIdsToLists).map((id) => {
+						const entry = userIdsToLists[id];
 						const toWatchListTotalWeight = userIdsToLists[id].toWatchList.reduce(
 							(sum: number, current: any) => sum + current.weight,
 							0,
 						);
 						return (
-							<CollapsibleSection key={id} isExpandedToBegin={true} title={userIdsToLists[id].userName}>
+							<div key={id}>
+								<h2>{entry.userName}</h2>
 								<p>
-									Email: <a href={`mailto:${userIdsToLists[id].userEmail}`}>{userIdsToLists[id].userEmail}</a>
+									Email: <a href={`mailto:${entry.userEmail}`}>{entry.userEmail}</a>
 								</p>
-								<CollapsibleSection isExpandedToBegin={true} title="Watch List" titleHeadingLevel={3}>
-									{userIdsToLists[id].toWatchList.map((entry: any) => {
+								<CollapsibleSection title="Watch List" titleHeadingLevel={3}>
+									{entry.toWatchList.map((movieEntry: any) => {
 										return (
 											<MovieCard
-												key={`toWatchListFor${id}Movie${entry.movie.id}`}
-												movie={entry.movie}
+												key={`toWatchListFor${id}Movie${movieEntry.movie.id}`}
+												movie={movieEntry.movie}
 												titleHeadingLevel={4}
 											>
 												Relative chance of getting chosen:{" "}
-												{toWatchListTotalWeight ? entry.weight / toWatchListTotalWeight : 0}
+												{toWatchListTotalWeight ? movieEntry.weight / toWatchListTotalWeight : 0}
 											</MovieCard>
 										);
 									})}
 								</CollapsibleSection>
 								<CollapsibleSection title="Already Watched List" titleHeadingLevel={3}>
-									{userIdsToLists[id].alreadyWatchedList.map((entry: any) => {
+									{entry.alreadyWatchedList.map((movieEntry: any) => {
 										return (
 											<MovieCard
-												key={`alreadyWatchedListFor${id}Movie${entry.movie.id}`}
-												movie={entry.movie}
+												key={`alreadyWatchedListFor${id}Movie${movieEntry.movie.id}`}
+												movie={movieEntry.movie}
 												titleHeadingLevel={4}
 											>
-												Watched on {entry.date}
-												{entry.rating && <br />}
-												{entry.rating && `Rated: ${entry.rating}`}
+												Watched on {movieEntry.date}
+												{movieEntry.rating && <br />}
+												{movieEntry.rating && `Rated: ${movieEntry.rating}`}
 												<br />
-												From the list of {entry.originatorName}
+												From the list of {movieEntry.originatorName}
 											</MovieCard>
 										);
 									})}
 								</CollapsibleSection>
-							</CollapsibleSection>
+							</div>
 						);
 					})}
 			</main>

@@ -35,13 +35,8 @@ const CollapsibleSection: FC<CollapsibleSectionPropType> = ({
 				<TitleTag className={style["titleTag"]}>{title}</TitleTag>
 				<p id={`expandSymbolFor${htmlValidFieldNameFor(title)}`}>{isExpanded ? expandedSymbol : collapsedSymbol}</p>
 			</button>
-			<div
-				aria-live="polite"
-				className={style["content"]}
-				id={`contentFor${htmlValidFieldNameFor(title)}`}
-				style={{ display: isExpanded ? "block" : "none" }}
-			>
-				{children}
+			<div aria-live="polite" className={style["content"]} id={`contentFor${htmlValidFieldNameFor(title)}`}>
+				{isExpanded && children}
 			</div>
 		</div>
 	);
