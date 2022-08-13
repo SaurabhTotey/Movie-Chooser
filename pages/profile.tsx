@@ -38,22 +38,37 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	const user = (await getUserPromise)!;
 	const toWatchEntries = await getUserPromise.ToWatchEntry();
 	const watchedEntries = await getUserPromise.WatchedEntry();
-	const userToWatchList = await Promise.all(
-		toWatchEntries.map(async (entry) => {
-			return { movie: await getMovieInformationFor(entry.movieId), weight: entry.weight };
-		}),
+	const allMovieIds = Array.from(
+		new Set(
+			toWatchEntries
+				.map((toWatchEntry) => toWatchEntry.movieId)
+				.concat(watchedEntries.map((watchedEntry) => watchedEntry.movieId)),
+		),
 	);
-	const userAlreadyWatchedList = await Promise.all(
-		watchedEntries.map(async (entry) => {
-			return {
-				date: new Intl.DateTimeFormat("en-US").format(entry.watched),
-				id: entry.id,
-				movie: await getMovieInformationFor(entry.movieId),
-				originatorName: (await prisma.user.findUnique({ where: { id: entry.originatorId } }))!.name,
-				rating: entry.rating,
-			};
-		}),
+	const movieIdToMovieInformation = new Map(
+		(await Promise.all(allMovieIds.map(async (movieId) => [movieId, await getMovieInformationFor(movieId)]))) as any,
 	);
+	const allOriginatorIds = Array.from(new Set(watchedEntries.map((watchedEntry) => watchedEntry.originatorId)));
+	const originatorIdToName = new Map(
+		(await Promise.all(
+			allOriginatorIds.map(async (originatorId) => [
+				originatorId,
+				(await prisma.user.findUnique({ where: { id: originatorId } }))!.name,
+			]),
+		)) as any,
+	);
+	const userToWatchList = toWatchEntries.map((entry) => {
+		return { movie: movieIdToMovieInformation.get(entry.movieId), weight: entry.weight };
+	});
+	const userAlreadyWatchedList = watchedEntries.map((entry) => {
+		return {
+			date: new Intl.DateTimeFormat("en-US").format(entry.watched),
+			id: entry.id,
+			movie: movieIdToMovieInformation.get(entry.movieId),
+			originatorName: originatorIdToName.get(entry.originatorId),
+			rating: entry.rating,
+		};
+	});
 	return {
 		props: {
 			userAlreadyWatchedList: JSON.parse(JSON.stringify(userAlreadyWatchedList)),
@@ -85,7 +100,7 @@ function Profile({
 						<p>
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
-						<CollapsibleSection title="Watch List">
+						<CollapsibleSection isExpandedToBegin={true} title="Watch List">
 							{toWatchList &&
 								toWatchList.map((entry: any) => (
 									<MovieCard key={entry.movie.id} movie={entry.movie}>
