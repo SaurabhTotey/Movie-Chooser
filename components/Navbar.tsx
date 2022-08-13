@@ -7,6 +7,7 @@ import style from "../styles/Navbar.module.css";
 const namesToPathsWhenLoggedIn = new Map([
 	["Home", ""],
 	["Profile", "profile"],
+	["Lists", "lists"],
 	["Stats", "statistics"],
 	["Add Movie", "add-movie"],
 	["Party!", "party"],
@@ -14,6 +15,7 @@ const namesToPathsWhenLoggedIn = new Map([
 const namesToPathsWhenNotLoggedIn = new Map([
 	["Home", ""],
 	["Log In / Create Account", "log-in-or-create-account"],
+	["Lists", "lists"],
 	["Stats", "statistics"],
 ]);
 

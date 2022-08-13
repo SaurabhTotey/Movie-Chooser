@@ -1,82 +1,12 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { Cookies } from "react-cookie";
-import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
-import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
-import deleteStaleSessions from "../helpers/DeleteStaleSessions";
-import { prisma } from "../helpers/GetPrismaClient";
-import { getMovieInformationFor } from "../helpers/MovieApiManager";
-import UserClientInfo from "../helpers/UserClientInfo";
+import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 import style from "../styles/index.module.css";
 
-const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (context) => {
-	const sessionId = new Cookies(context.req.headers.cookie).get("session");
-	await deleteStaleSessions();
-	const user = sessionId
-		? await prisma.session
-				.findUnique({
-					where: {
-						token: sessionId,
-					},
-				})
-				.User()
-		: null;
-	const userIdsToLists = Object.fromEntries(
-		new Map(
-			(await Promise.all(
-				(
-					await prisma.user.findMany()
-				).map(async (userEntry) => {
-					return [
-						userEntry.id,
-						{
-							alreadyWatchedList: await Promise.all(
-								(
-									await prisma.watchedEntry.findMany({ where: { userId: userEntry.id } })
-								).map(async (movieEntry) => {
-									return {
-										date: new Intl.DateTimeFormat("en-US").format(movieEntry.watched),
-										movie: await getMovieInformationFor(movieEntry.movieId),
-										originatorName: (await prisma.user.findUnique({ where: { id: movieEntry.originatorId } }))!.name,
-										rating: movieEntry.rating,
-									};
-								}),
-							),
-							toWatchList: await Promise.all(
-								(
-									await prisma.toWatchEntry.findMany({ where: { userId: userEntry.id } })
-								).map(async (movieEntry) => {
-									return {
-										movie: await getMovieInformationFor(movieEntry.movieId),
-										weight: movieEntry.weight,
-									};
-								}),
-							),
-							userEmail: userEntry.email,
-							userName: userEntry.name,
-						},
-					];
-				}),
-			)) as any,
-		),
-	);
-
-	return {
-		props: {
-			userClientInfo: user ? JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))) : null,
-			userIdsToLists: JSON.parse(JSON.stringify(userIdsToLists)),
-		},
-	};
-};
-
-function Home({
-	userClientInfo,
-	userIdsToLists,
-}: InferGetServerSidePropsType<typeof getUserAndAllUserListsAsServerSideProp>) {
-	console.log(userIdsToLists);
+function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	return (
 		<>
 			<Head>
@@ -86,8 +16,8 @@ function Home({
 				<Navbar userClientInfo={userClientInfo} />
 				<h2 className={style["title"]}>About this Site</h2>
 				<p className={style["textParagraph"]}>
-					This page is a wall of useless text that no one will read followed by all the user movie lists registered on
-					this site.
+					This page is a wall of useless text that no one will read. Use the navigation above to go to where you need to
+					go.
 				</p>
 				<h3 className={style["title"]}>General</h3>
 				<p className={style["textParagraph"]}>
@@ -108,7 +38,12 @@ function Home({
 					<Link href="./profile">
 						<a>profile page</a>
 					</Link>{" "}
-					can also be used to see the user&apos;s to-watch and already-watched movie lists.
+					can also be used to see the user&apos;s to-watch and already-watched movie lists. All users&apos; lists are
+					available on the{" "}
+					<Link href="./lists">
+						<a>lists page</a>
+					</Link>
+					.
 				</p>
 				<p className={style["textParagraph"]}>
 					Once logged in, a user can add movies to their to-watch list on the{" "}
@@ -162,8 +97,11 @@ function Home({
 					<Link href="./profile">
 						<a>profile page</a>
 					</Link>
-					, where any entry can be deleted freely or modified in certain aspects. All lists are also visible on this
-					page regardless of whether the user is signed in, but the lists and entries cannot be modified here.
+					, where any entry can be deleted freely or modified in certain aspects. All lists are also visible on the{" "}
+					<Link href="./lists">
+						<a>lists page</a>
+					</Link>{" "}
+					regardless of whether the user is signed in, but the lists and entries cannot be modified here.
 				</p>
 				<p className={style["textParagraph"]}>
 					The to-watch list of a user corresponds each movie with a weight that signifies the movie&apos;s relative
@@ -258,62 +196,11 @@ function Home({
 					</Link>{" "}
 					along with explanations.
 				</p>
-				<h2 className={style["title"]}>User Lists</h2>
-				{userIdsToLists &&
-					Object.keys(userIdsToLists).map((id) => {
-						const toWatchListTotalWeight = userIdsToLists[id].toWatchList.reduce(
-							(sum: number, current: any) => sum + current.weight,
-							0,
-						);
-						return (
-							<CollapsibleSection
-								key={id}
-								isExpandedToBegin={true}
-								title={userIdsToLists[id].userName}
-								titleHeadingLevel={3}
-							>
-								<p>
-									Email: <a href={`mailto:${userIdsToLists[id].userEmail}`}>{userIdsToLists[id].userEmail}</a>
-								</p>
-								<CollapsibleSection isExpandedToBegin={true} title="Watch List" titleHeadingLevel={4}>
-									{userIdsToLists[id].toWatchList.map((entry: any) => {
-										return (
-											<MovieCard
-												key={`toWatchListFor${id}Movie${entry.movie.id}`}
-												movie={entry.movie}
-												titleHeadingLevel={5}
-											>
-												Relative chance of getting chosen:{" "}
-												{toWatchListTotalWeight ? entry.weight / toWatchListTotalWeight : 0}
-											</MovieCard>
-										);
-									})}
-								</CollapsibleSection>
-								<CollapsibleSection title="Already Watched List" titleHeadingLevel={4}>
-									{userIdsToLists[id].alreadyWatchedList.map((entry: any) => {
-										return (
-											<MovieCard
-												key={`alreadyWatchedListFor${id}Movie${entry.movie.id}`}
-												movie={entry.movie}
-												titleHeadingLevel={5}
-											>
-												Watched on {entry.date}
-												{entry.rating && <br />}
-												{entry.rating && `Rated: ${entry.rating}`}
-												<br />
-												From the list of {entry.originatorName}
-											</MovieCard>
-										);
-									})}
-								</CollapsibleSection>
-							</CollapsibleSection>
-						);
-					})}
 			</main>
 			<Footer />
 		</>
 	);
 }
 
-export const getServerSideProps = getUserAndAllUserListsAsServerSideProp;
+export const getServerSideProps = getUserAsServerSideProp;
 export default Home;
