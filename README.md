@@ -16,8 +16,8 @@
 
 ## TODO
 
-- Home page
 - Stats page
+- Ensure users can be deleted even if they are originators of movies
 - Ensure handling of IDs of 0 is consistent for both users and movies
 - Allow names to be changed and change the name of the Form component to something like AccountForm
 - Documentation of EVERYTHING

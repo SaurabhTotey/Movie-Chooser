@@ -6,12 +6,13 @@ import CollapsibleSection from "./CollapsibleSection";
 
 interface MovieCardPropType {
 	movie: MovieApiMovieInformation;
+	titleHeadingLevel?: number;
 	children?: ReactNode;
 }
 
-const MovieCard: FC<MovieCardPropType> = ({ movie, children }) => {
+const MovieCard: FC<MovieCardPropType> = ({ movie, titleHeadingLevel = 3, children }) => {
 	return (
-		<CollapsibleSection isExpandedToBegin={true} title={movie.title} titleHeadingLevel={3}>
+		<CollapsibleSection isExpandedToBegin={true} title={movie.title} titleHeadingLevel={titleHeadingLevel}>
 			<div className={style["movieCardImageContainerContainer"]}>
 				{movie.posterPath && (
 					<div className={style["movieCardImageContainer"]}>
