@@ -38,7 +38,7 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 									await prisma.watchedEntry.findMany({ where: { userId: userEntry.id } })
 								).map(async (movieEntry) => {
 									return {
-										date: movieEntry.watched,
+										date: new Intl.DateTimeFormat("en-US").format(movieEntry.watched),
 										movie: await getMovieInformationFor(movieEntry.movieId),
 										originatorName: (await prisma.user.findUnique({ where: { id: movieEntry.originatorId } }))!.name,
 										rating: movieEntry.rating,
