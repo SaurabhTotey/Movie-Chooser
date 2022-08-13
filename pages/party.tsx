@@ -1,60 +1,16 @@
 import axios from "axios";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { Cookies } from "react-cookie";
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
-import deleteStaleSessions from "../helpers/DeleteStaleSessions";
-import { prisma } from "../helpers/GetPrismaClient";
+import getAllUsersAsServerSideProp from "../helpers/GetAllUsersAsServerSideProp";
 import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
-import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/party.module.css";
 
-const getAllUsersServerSideProps: GetServerSideProps = async (context) => {
-	const sessionId = new Cookies(context.req.headers.cookie).get("session");
-	await deleteStaleSessions();
-	if (!sessionId) {
-		return {
-			props: {
-				userClientInfo: null,
-				userInformation: [],
-			},
-		};
-	}
-	const user = await prisma.session
-		.findUnique({
-			where: {
-				token: sessionId,
-			},
-		})
-		.User();
-	if (!user) {
-		return {
-			props: {
-				userClientInfo: null,
-				userInformation: [],
-			},
-		};
-	}
-	const userList = await prisma.user.findMany();
-	return {
-		props: {
-			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
-			userInformation: userList.map((userEntry) => {
-				return {
-					email: userEntry.email,
-					id: userEntry.id,
-					name: userEntry.name,
-				};
-			}),
-		},
-	};
-};
-
-function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<typeof getAllUsersServerSideProps>) {
+function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof getAllUsersAsServerSideProp>) {
 	const [movieSelectionInformation, setMovieSelectionInformation] = useState<
 		[number[], Date, MovieApiMovieInformation, number] | null
 	>(null);
@@ -71,15 +27,15 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 							<form id={style["userSelectionForm"]}>
 								<div>
 									<h2>Select Users Who Will Be Watching Movies</h2>
-									{userInformation.map((info: any) => (
-										<div key={info.id} className={style["userCheckBoxContainer"]}>
-											<label htmlFor={`checkboxFor${info.id}`}>{info.name}</label>
+									{allUsers.map((userInformation: any) => (
+										<div key={userInformation.id} className={style["userCheckBoxContainer"]}>
+											<label htmlFor={`checkboxFor${userInformation.id}`}>{userInformation.name}</label>
 											<input
-												defaultChecked={userClientInfo.email == info.email}
-												disabled={userClientInfo.email == info.email}
-												id={`checkboxFor${info.id}`}
+												defaultChecked={userClientInfo.email == userInformation.email}
+												disabled={userClientInfo.email == userInformation.email}
+												id={`checkboxFor${userInformation.id}`}
 												type="checkbox"
-												value={info.id}
+												value={userInformation.id}
 											/>
 										</div>
 									))}
@@ -136,7 +92,7 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 								<MovieCard movie={movieSelectionInformation[2]}>
 									<p id={style["originatorText"]}>
 										From the list of{" "}
-										{userInformation.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name}.
+										{allUsers.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name}.
 									</p>
 									<div id={style["markAsWatchedButtonContainer"]}>
 										<button
@@ -191,5 +147,5 @@ function Party({ userClientInfo, userInformation }: InferGetServerSidePropsType<
 	);
 }
 
-export const getServerSideProps = getAllUsersServerSideProps;
+export const getServerSideProps = getAllUsersAsServerSideProp;
 export default Party;

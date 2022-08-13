@@ -1,56 +1,16 @@
 import axios from "axios";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { Cookies } from "react-cookie";
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
-import deleteStaleSessions from "../helpers/DeleteStaleSessions";
-import { prisma } from "../helpers/GetPrismaClient";
+import getAllUsersAsServerSideProp from "../helpers/GetAllUsersAsServerSideProp";
 import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
-import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/add-movie.module.css";
 
-const getUserAndAllUsersAsServerSideProps: GetServerSideProps = async (context) => {
-	const sessionId = new Cookies(context.req.headers.cookie).get("session");
-	await deleteStaleSessions();
-	const user = sessionId
-		? await prisma.session
-				.findUnique({
-					where: {
-						token: sessionId,
-					},
-				})
-				.User()
-		: null;
-
-	if (!user) {
-		return {
-			props: {
-				allUsers: null,
-				userClientInfo: null,
-			},
-		};
-	}
-
-	const allUsers = await prisma.user.findMany();
-
-	return {
-		props: {
-			allUsers: allUsers.map((userEntry) => {
-				return { id: userEntry.id, name: userEntry.name };
-			}),
-			userClientInfo: JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))),
-		},
-	};
-};
-
-function AddMovie({
-	userClientInfo,
-	allUsers,
-}: InferGetServerSidePropsType<typeof getUserAndAllUsersAsServerSideProps>) {
+function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof getAllUsersAsServerSideProp>) {
 	const [searchedMovies, setSearchedMovies] = useState<MovieApiMovieInformation[] | null>(null);
 	return (
 		<>
@@ -220,12 +180,11 @@ function AddMovie({
 												<br />
 												<label htmlFor={`originatorIdSelectionFor${movie.id}`}>From Whose List</label>
 												<select id={`originatorIdSelectionFor${movie.id}`}>
-													{allUsers &&
-														allUsers.map((userInfo: any) => (
-															<option key={userInfo.id} value={userInfo.id}>
-																{userInfo.name}
-															</option>
-														))}
+													{allUsers.map((userInfo: any) => (
+														<option key={userInfo.id} value={userInfo.id}>
+															{`${userInfo.name} (${userInfo.email})`}
+														</option>
+													))}
 												</select>
 												<button
 													id={`addToWatchedListSubmitButtonFor${movie.id}`}
@@ -288,5 +247,5 @@ function AddMovie({
 	);
 }
 
-export const getServerSideProps = getUserAndAllUsersAsServerSideProps;
+export const getServerSideProps = getAllUsersAsServerSideProp;
 export default AddMovie;
