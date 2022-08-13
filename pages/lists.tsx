@@ -34,6 +34,22 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 			)) as any,
 		),
 	);
+	const allMovieIds = Array.from(
+		new Set(
+			(await prisma.toWatchEntry.findMany())
+				.map((movieEntry) => movieEntry.movieId)
+				.concat((await prisma.watchedEntry.findMany()).map((movieEntry) => movieEntry.movieId)),
+		),
+	);
+	const movieIdToMovieInformation = Object.fromEntries(
+		new Map(
+			(await Promise.all(
+				allMovieIds.map(async (movieId) => {
+					return [movieId, await getMovieInformationFor(movieId)];
+				}),
+			)) as any,
+		),
+	);
 	const userIdsToLists = Object.fromEntries(
 		new Map(
 			(await Promise.all(
@@ -43,27 +59,23 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 					return [
 						userEntry.id,
 						{
-							alreadyWatchedList: await Promise.all(
-								(
-									await prisma.watchedEntry.findMany({ where: { userId: userEntry.id } })
-								).map(async (movieEntry) => {
+							alreadyWatchedList: (await prisma.watchedEntry.findMany({ where: { userId: userEntry.id } })).map(
+								(movieEntry) => {
 									return {
 										date: new Intl.DateTimeFormat("en-US").format(movieEntry.watched),
-										movie: await getMovieInformationFor(movieEntry.movieId),
+										movie: movieIdToMovieInformation[movieEntry.movieId],
 										originatorId: movieEntry.originatorId,
 										rating: movieEntry.rating,
 									};
-								}),
+								},
 							),
-							toWatchList: await Promise.all(
-								(
-									await prisma.toWatchEntry.findMany({ where: { userId: userEntry.id } })
-								).map(async (movieEntry) => {
+							toWatchList: (await prisma.toWatchEntry.findMany({ where: { userId: userEntry.id } })).map(
+								(movieEntry) => {
 									return {
-										movie: await getMovieInformationFor(movieEntry.movieId),
+										movie: movieIdToMovieInformation[movieEntry.movieId],
 										weight: movieEntry.weight,
 									};
-								}),
+								},
 							),
 						},
 					];

@@ -23,5 +23,4 @@
 - Documentation of EVERYTHING
 - This README
 - License
-- Look at calls of MovieApiManager's getMovieInformationFor and try and reduce the number of calls (e.g. aggregate IDs first and then make calls and don't make repeated calls for the same ID)
 - Styling -- especially a better look for watching movies at night (so basically a dark mode)
