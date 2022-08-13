@@ -22,11 +22,23 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 				})
 				.User()
 		: null;
+	const getAllUsersPromise = prisma.user.findMany();
+	const userIdsToUserInformation = Object.fromEntries(
+		new Map(
+			(await Promise.all(
+				(
+					await getAllUsersPromise
+				).map(async (userEntry) => {
+					return [userEntry.id, { email: userEntry.email, name: userEntry.name }];
+				}),
+			)) as any,
+		),
+	);
 	const userIdsToLists = Object.fromEntries(
 		new Map(
 			(await Promise.all(
 				(
-					await prisma.user.findMany()
+					await getAllUsersPromise
 				).map(async (userEntry) => {
 					return [
 						userEntry.id,
@@ -38,7 +50,7 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 									return {
 										date: new Intl.DateTimeFormat("en-US").format(movieEntry.watched),
 										movie: await getMovieInformationFor(movieEntry.movieId),
-										originatorName: (await prisma.user.findUnique({ where: { id: movieEntry.originatorId } }))!.name,
+										originatorId: movieEntry.originatorId,
 										rating: movieEntry.rating,
 									};
 								}),
@@ -53,8 +65,6 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 									};
 								}),
 							),
-							userEmail: userEntry.email,
-							userName: userEntry.name,
 						},
 					];
 				}),
@@ -66,6 +76,7 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 		props: {
 			userClientInfo: user ? JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))) : null,
 			userIdsToLists: JSON.parse(JSON.stringify(userIdsToLists)),
+			userIdsToUserInformation: userIdsToUserInformation,
 		},
 	};
 };
@@ -73,6 +84,7 @@ const getUserAndAllUserListsAsServerSideProp: GetServerSideProps = async (contex
 function Home({
 	userClientInfo,
 	userIdsToLists,
+	userIdsToUserInformation,
 }: InferGetServerSidePropsType<typeof getUserAndAllUserListsAsServerSideProp>) {
 	return (
 		<>
@@ -83,19 +95,19 @@ function Home({
 				<Navbar userClientInfo={userClientInfo} />
 				{userIdsToLists &&
 					Object.keys(userIdsToLists).map((id) => {
-						const entry = userIdsToLists[id];
+						const userInformation = userIdsToUserInformation[id];
 						const toWatchListTotalWeight = userIdsToLists[id].toWatchList.reduce(
 							(sum: number, current: any) => sum + current.weight,
 							0,
 						);
 						return (
 							<div key={id}>
-								<h2>{entry.userName}</h2>
+								<h2>{userInformation.name}</h2>
 								<p>
-									Email: <a href={`mailto:${entry.userEmail}`}>{entry.userEmail}</a>
+									Email: <a href={`mailto:${userInformation.email}`}>{userInformation.email}</a>
 								</p>
 								<CollapsibleSection title="Watch List" titleHeadingLevel={3}>
-									{entry.toWatchList.map((movieEntry: any) => {
+									{userIdsToLists[id].toWatchList.map((movieEntry: any) => {
 										return (
 											<MovieCard
 												key={`toWatchListFor${id}Movie${movieEntry.movie.id}`}
@@ -109,7 +121,7 @@ function Home({
 									})}
 								</CollapsibleSection>
 								<CollapsibleSection title="Already Watched List" titleHeadingLevel={3}>
-									{entry.alreadyWatchedList.map((movieEntry: any) => {
+									{userIdsToLists[id].alreadyWatchedList.map((movieEntry: any) => {
 										return (
 											<MovieCard
 												key={`alreadyWatchedListFor${id}Movie${movieEntry.movie.id}`}
@@ -120,7 +132,7 @@ function Home({
 												{movieEntry.rating && <br />}
 												{movieEntry.rating && `Rated: ${movieEntry.rating}`}
 												<br />
-												From the list of {movieEntry.originatorName}
+												From the list of {userIdsToUserInformation[movieEntry.originatorId].name}
 											</MovieCard>
 										);
 									})}

@@ -12,8 +12,8 @@ function Statistics({ userClientInfo }: InferGetServerSidePropsType<typeof getUs
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<h2>Hello, world!</h2>
-				<p>TODO: this page will show statistics about the group, about the movies, and about each user.</p>
+				<h2>Statistics by Movie</h2>
+				<h2>Statistics by Person</h2>
 			</main>
 			<Footer />
 		</>

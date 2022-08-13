@@ -31,6 +31,7 @@ export const searchMovies = async (searchTerm: string) => {
 };
 
 // Query TMDB about a specific movie and get its information based on its TMDB ID.
+// TODO: this perhaps can be cached in memory so that we don't need a network request for commonly requested movies
 export const getMovieInformationFor = async (id: number) => {
 	const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}`);
 	return new MovieApiMovieInformation(
