@@ -22,7 +22,7 @@ const getUserAsServerSideProp: GetServerSideProps = async (context) => {
 		: null;
 	return {
 		props: {
-			userClientInfo: JSON.parse(JSON.stringify(user ? new UserClientInfo(user.name, user.email, sessionId) : null)),
+			userClientInfo: user ? JSON.parse(JSON.stringify(new UserClientInfo(user.name, user.email, sessionId))) : null,
 		},
 	};
 };
