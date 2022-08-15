@@ -16,6 +16,26 @@ function Statistics({
 	allUserInformation,
 	userClientInfo,
 }: InferGetServerSidePropsType<typeof getEverythingAsServerSideProp>) {
+	const allWatchedEntries = Object.keys(allUserInformation).flatMap((userId) =>
+		allUserInformation[userId].alreadyWatchedList.map((entry: any) => {
+			return {
+				userId: parseInt(userId),
+				...entry,
+			};
+		}),
+	);
+	const allWatchedMovieIds: number[] = Array.from(new Set(allWatchedEntries.map((entry) => entry.movie.id)));
+	const movieIdToWatchedInformation = new Map(
+		allWatchedMovieIds.map((movieId) => {
+			return [
+				movieId,
+				{
+					entries: allWatchedEntries.filter((watchedEntry) => watchedEntry.movie.id == movieId),
+					movie: allWatchedEntries.find((watchedEntry) => watchedEntry.movie.id == movieId).movie,
+				},
+			];
+		}),
+	);
 	return (
 		<>
 			<Head>
@@ -23,8 +43,13 @@ function Statistics({
 			</Head>
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
-				<h2>Statistics by Movie</h2>
-				<h2>Statistics by Person</h2>
+				<h2>Movie Statistics</h2>
+				<h3>Highlights</h3>
+				<h3>Statistics by Movie</h3>
+				{}
+				<h2>Person Statistics</h2>
+				<h3>Highlights</h3>
+				<h3>Statistics by Person</h3>
 			</main>
 			<Footer />
 		</>
