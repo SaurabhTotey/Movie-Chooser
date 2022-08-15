@@ -13,7 +13,6 @@ const median = (numbers: number[]) => {
 	return sorted.length % 2 == 0 ? (sorted[middleIndex - 1] + sorted[middleIndex]) / 2 : sorted[middleIndex];
 };
 
-// TODO: give aspects of this page different looks when there is no content.
 function Statistics({
 	allUserInformation,
 	userClientInfo,
@@ -30,18 +29,72 @@ function Statistics({
 	const movieIdToWatchedInformation = new Map(
 		allWatchedMovieIds.map((movieId) => {
 			const entries = allWatchedEntries.filter((watchedEntry) => watchedEntry.movie.id == movieId);
-			const ratings: number[] = entries.map((watchedEntry) => watchedEntry.rating).filter((rating) => rating || rating === 0);
+			const ratings: number[] = entries
+				.map((watchedEntry) => watchedEntry.rating)
+				.filter((rating) => rating || rating === 0);
 			return [
 				movieId,
 				{
-					entries: entries,
-					ratings: ratings,
-					movie: entries[0].movie,
-					medianRating: ratings.length ? median(ratings) : null,
 					averageRating: ratings.length ? average(ratings) : null,
+					entries: entries,
+					highestRating: ratings.length ? Math.max(...ratings) : null,
+					lowestRating: ratings.length ? Math.min(...ratings) : null,
+					medianRating: ratings.length ? median(ratings) : null,
+					movie: entries[0].movie,
+					ratings: ratings,
 				},
 			];
 		}),
+	);
+	// God, what the fuck is this garbage... Forgive me...
+	const [
+		lowestRatedMovieEntries,
+		highestRatedMovieEntries,
+		leastControversialMovieEntries,
+		mostControversialMovieEntries,
+	] = allWatchedMovieIds.reduce(
+		(
+			[currentLowestRated, currentHighestRated, currentLeastControversial, currentMostControversial]: [
+				any[],
+				any[],
+				any[],
+				any[],
+			],
+			currentId,
+		) => {
+			const currentEntry = movieIdToWatchedInformation.get(currentId)!;
+			if (!currentEntry.medianRating) {
+				return [currentLowestRated, currentHighestRated, currentLeastControversial, currentMostControversial];
+			}
+			const currentLowestValue = currentLowestRated.length ? currentLowestRated[0].medianRating : 11;
+			const currentHighestValue = currentHighestRated.length ? currentHighestRated[0].medianRating : -1;
+			const rangeOf = (entry: any) => entry.highestRating - entry.lowestRating;
+			const currentSmallestRange = currentLeastControversial.length ? rangeOf(currentLeastControversial[0]) : 11;
+			const currentLargestRange = currentMostControversial.length ? rangeOf(currentMostControversial[0]) : -1;
+			return [
+				currentEntry.medianRating <= currentLowestValue
+					? currentEntry.medianRating == currentLowestValue
+						? [...currentLowestRated, currentEntry]
+						: [currentEntry]
+					: currentLowestRated,
+				currentEntry.medianRating >= currentHighestValue
+					? currentEntry.medianRating == currentHighestValue
+						? [...currentHighestRated, currentEntry]
+						: [currentEntry]
+					: currentHighestRated,
+				rangeOf(currentEntry) <= currentSmallestRange
+					? rangeOf(currentEntry) == currentSmallestRange
+						? [...currentLeastControversial, currentEntry]
+						: [currentEntry]
+					: currentLeastControversial,
+				rangeOf(currentEntry) >= currentLargestRange
+					? rangeOf(currentEntry) == currentLargestRange
+						? [...currentMostControversial, currentEntry]
+						: [currentEntry]
+					: currentMostControversial,
+			];
+		},
+		[[], [], [], []],
 	);
 	return (
 		<>
@@ -61,17 +114,21 @@ function Statistics({
 				<h4>Least Controversial Movie</h4>
 				TODO: movie with lowest rating range
 				<h3>Statistics by Movie</h3>
-				{allWatchedMovieIds.map((movieId) => {
-					const entry = movieIdToWatchedInformation.get(movieId)!;
-					return (
-						<MovieCard key={movieId} movie={entry.movie} titleHeadingLevel={4}>
-							<p>Median Rating: {entry.medianRating || "no data"}</p>
-							<p>Average Rating: {entry.averageRating || "no data"}</p>
-							<p>Highest Rating: {entry.ratings.length ? Math.max(...entry.ratings) : "no data"}</p>
-							<p>Lowest Rating: {entry.ratings.length ? Math.min(...entry.ratings) : "no data"}</p>
-						</MovieCard>
-					);
-				})}
+				{allWatchedMovieIds.length ? (
+					allWatchedMovieIds.map((movieId) => {
+						const entry = movieIdToWatchedInformation.get(movieId)!;
+						return (
+							<MovieCard key={movieId} movie={entry.movie} titleHeadingLevel={4}>
+								<p>Median Rating: {entry.medianRating || "no data"}</p>
+								<p>Average Rating: {entry.averageRating || "no data"}</p>
+								<p>Highest Rating: {entry.highestRating || "no data"}</p>
+								<p>Lowest Rating: {entry.lowestRating || "no data"}</p>
+							</MovieCard>
+						);
+					})
+				) : (
+					<p>No watched movies yet.</p>
+				)}
 				<h2>Person Statistics</h2>
 				<h3>Highlights</h3>
 				<h4>Person Who Enjoys Movies the Most</h4>
