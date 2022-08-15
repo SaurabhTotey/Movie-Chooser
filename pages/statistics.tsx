@@ -13,6 +13,7 @@ const median = (numbers: number[]) => {
 	return sorted.length % 2 == 0 ? (sorted[middleIndex - 1] + sorted[middleIndex]) / 2 : sorted[middleIndex];
 };
 
+// TODO: give aspects of this page different looks when there is no content.
 function Statistics({
 	allUserInformation,
 	userClientInfo,
@@ -28,11 +29,16 @@ function Statistics({
 	const allWatchedMovieIds: number[] = Array.from(new Set(allWatchedEntries.map((entry) => entry.movie.id)));
 	const movieIdToWatchedInformation = new Map(
 		allWatchedMovieIds.map((movieId) => {
+			const entries = allWatchedEntries.filter((watchedEntry) => watchedEntry.movie.id == movieId);
+			const ratings: number[] = entries.map((watchedEntry) => watchedEntry.rating).filter((rating) => rating || rating === 0);
 			return [
 				movieId,
 				{
-					entries: allWatchedEntries.filter((watchedEntry) => watchedEntry.movie.id == movieId),
-					movie: allWatchedEntries.find((watchedEntry) => watchedEntry.movie.id == movieId).movie,
+					entries: entries,
+					ratings: ratings,
+					movie: entries[0].movie,
+					medianRating: ratings.length ? median(ratings) : null,
+					averageRating: ratings.length ? average(ratings) : null,
 				},
 			];
 		}),
@@ -57,13 +63,12 @@ function Statistics({
 				<h3>Statistics by Movie</h3>
 				{allWatchedMovieIds.map((movieId) => {
 					const entry = movieIdToWatchedInformation.get(movieId)!;
-					const ratings = entry.entries.map((e) => e.rating).filter((e) => e || e === 0);
 					return (
 						<MovieCard key={movieId} movie={entry.movie} titleHeadingLevel={4}>
-							<p>Median Rating: {ratings.length ? median(ratings) : "no data"}</p>
-							<p>Average Rating: {ratings.length ? average(ratings) : "no data"}</p>
-							<p>Highest Rating: {ratings.length ? Math.max(...ratings) : "no data"}</p>
-							<p>Lowest Rating: {ratings.length ? Math.min(...ratings) : "no data"}</p>
+							<p>Median Rating: {entry.medianRating || "no data"}</p>
+							<p>Average Rating: {entry.averageRating || "no data"}</p>
+							<p>Highest Rating: {entry.ratings.length ? Math.max(...entry.ratings) : "no data"}</p>
+							<p>Lowest Rating: {entry.ratings.length ? Math.min(...entry.ratings) : "no data"}</p>
 						</MovieCard>
 					);
 				})}
