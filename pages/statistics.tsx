@@ -96,6 +96,28 @@ function Statistics({
 		},
 		[[], [], [], []],
 	);
+	const personInformation = new Map(
+		Object.keys(allUserInformation).map((userIdAsString) => {
+			const userId = parseInt(userIdAsString);
+			const allUserWatchedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.userId == userId);
+			const allPostedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.originatorId == userId);
+			const allUsableWatchedRatings = allUserWatchedEntries
+				.map((watchedEntry) => watchedEntry.rating)
+				.filter((rating) => rating || rating === 0);
+			const allUsablePostedRatings = allPostedEntries
+				.map((watchedEntry) => watchedEntry.rating)
+				.filter((rating) => rating || rating === 0);
+			return [
+				userId,
+				{
+					allPostedEntries: allPostedEntries,
+					allUsablePostedRatings: allUsablePostedRatings,
+					allUsableWatchedRatings: allUsableWatchedRatings,
+					allWatchedEntries: allUserWatchedEntries,
+				},
+			];
+		}),
+	);
 	return (
 		<>
 			<Head>
