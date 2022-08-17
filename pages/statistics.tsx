@@ -105,14 +105,30 @@ function Statistics({
 				<Navbar userClientInfo={userClientInfo} />
 				<h2>Movie Statistics</h2>
 				<h3>Highlights</h3>
-				<h4>Most Enjoyed Movie</h4>
-				TODO: movie with highest median rating
-				<h4>Least Enjoyed Movie</h4>
-				TODO: movie with lowest median rating
-				<h4>Most Controversial Movie</h4>
-				TODO: movie with highest rating range
-				<h4>Least Controversial Movie</h4>
-				TODO: movie with lowest rating range
+				<h4>Most Enjoyed Movie(s)</h4>
+				{highestRatedMovieEntries.map((movieEntry) => (
+					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
+						Median rating: {movieEntry.medianRating}
+					</MovieCard>
+				))}
+				<h4>Least Enjoyed Movie(s)</h4>
+				{lowestRatedMovieEntries.map((movieEntry) => (
+					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
+						Median rating: {movieEntry.medianRating}
+					</MovieCard>
+				))}
+				<h4>Most Controversial Movie(s)</h4>
+				{mostControversialMovieEntries.map((movieEntry) => (
+					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
+						Rating range: {movieEntry.highestRating - movieEntry.lowestRating}
+					</MovieCard>
+				))}
+				<h4>Least Controversial Movie(s)</h4>
+				{leastControversialMovieEntries.map((movieEntry) => (
+					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
+						Rating range: {movieEntry.highestRating - movieEntry.lowestRating}
+					</MovieCard>
+				))}
 				<h3>Statistics by Movie</h3>
 				{allWatchedMovieIds.length ? (
 					allWatchedMovieIds.map((movieId) => {
