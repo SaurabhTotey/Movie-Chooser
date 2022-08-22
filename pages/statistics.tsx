@@ -13,6 +13,31 @@ const median = (numbers: number[]) => {
 	return sorted.length % 2 == 0 ? (sorted[middleIndex - 1] + sorted[middleIndex]) / 2 : sorted[middleIndex];
 };
 
+enum ExtremeValue {
+	MAX,
+	MIN,
+	MEDIAN,
+}
+
+const getExtremeValues = <T,>(values: T[], key: (_: T) => number, extremeValueType: ExtremeValue) => {
+	const valueKeys = values.map(key);
+	let bingoValues: number[] = [];
+	if (extremeValueType == ExtremeValue.MAX) {
+		bingoValues = [Math.max(...valueKeys)];
+	} else if (extremeValueType == ExtremeValue.MIN) {
+		bingoValues = [Math.min(...valueKeys)];
+	} else {
+		const sorted = Array.from(valueKeys).sort((a, b) => a - b);
+		const middleIndex = Math.floor(sorted.length / 2);
+		if (sorted.length % 2 == 0 && valueKeys[middleIndex - 1] != valueKeys[middleIndex]) {
+			bingoValues = [valueKeys[middleIndex - 1], valueKeys[middleIndex]];
+		} else {
+			bingoValues = [valueKeys[middleIndex]];
+		}
+	}
+	return values.filter((value) => bingoValues.includes(key(value)));
+};
+
 function Statistics({
 	allUserInformation,
 	userClientInfo,
