@@ -19,8 +19,12 @@ enum ExtremeValue {
 	MEDIAN,
 }
 
-const getExtremeValues = <T,>(values: T[], key: (_: T) => number, extremeValueType: ExtremeValue) => {
-	const valueKeys = values.map(key);
+const getExtremeValues = <T,>(values: T[], key: (_: T) => number | null, extremeValueType: ExtremeValue) => {
+	const valueKeys = values.map(key).filter((value) => value || value === 0) as number[];
+	if (!valueKeys.length) {
+		return [];
+	}
+
 	let bingoValues: number[] = [];
 	if (extremeValueType == ExtremeValue.MAX) {
 		bingoValues = [Math.max(...valueKeys)];
@@ -35,6 +39,7 @@ const getExtremeValues = <T,>(values: T[], key: (_: T) => number, extremeValueTy
 			bingoValues = [valueKeys[middleIndex]];
 		}
 	}
+
 	return values.filter((value) => bingoValues.includes(key(value)));
 };
 
@@ -71,55 +76,25 @@ function Statistics({
 			];
 		}),
 	);
-	// God, what the fuck is this garbage... Forgive me...
-	const [
-		lowestRatedMovieEntries,
-		highestRatedMovieEntries,
-		leastControversialMovieEntries,
-		mostControversialMovieEntries,
-	] = allWatchedMovieIds.reduce(
-		(
-			[currentLowestRated, currentHighestRated, currentLeastControversial, currentMostControversial]: [
-				any[],
-				any[],
-				any[],
-				any[],
-			],
-			currentId,
-		) => {
-			const currentEntry = movieIdToWatchedInformation.get(currentId)!;
-			if (!currentEntry.medianRating) {
-				return [currentLowestRated, currentHighestRated, currentLeastControversial, currentMostControversial];
-			}
-			const currentLowestValue = currentLowestRated.length ? currentLowestRated[0].medianRating : 11;
-			const currentHighestValue = currentHighestRated.length ? currentHighestRated[0].medianRating : -1;
-			const rangeOf = (entry: any) => entry.highestRating - entry.lowestRating;
-			const currentSmallestRange = currentLeastControversial.length ? rangeOf(currentLeastControversial[0]) : 11;
-			const currentLargestRange = currentMostControversial.length ? rangeOf(currentMostControversial[0]) : -1;
-			return [
-				currentEntry.medianRating <= currentLowestValue
-					? currentEntry.medianRating == currentLowestValue
-						? [...currentLowestRated, currentEntry]
-						: [currentEntry]
-					: currentLowestRated,
-				currentEntry.medianRating >= currentHighestValue
-					? currentEntry.medianRating == currentHighestValue
-						? [...currentHighestRated, currentEntry]
-						: [currentEntry]
-					: currentHighestRated,
-				rangeOf(currentEntry) <= currentSmallestRange
-					? rangeOf(currentEntry) == currentSmallestRange
-						? [...currentLeastControversial, currentEntry]
-						: [currentEntry]
-					: currentLeastControversial,
-				rangeOf(currentEntry) >= currentLargestRange
-					? rangeOf(currentEntry) == currentLargestRange
-						? [...currentMostControversial, currentEntry]
-						: [currentEntry]
-					: currentMostControversial,
-			];
-		},
-		[[], [], [], []],
+	const lowestRatedMovieEntries = getExtremeValues(
+		Array.from(movieIdToWatchedInformation.values()),
+		(entry) => entry.medianRating,
+		ExtremeValue.MIN,
+	);
+	const highestRatedMovieEntries = getExtremeValues(
+		Array.from(movieIdToWatchedInformation.values()),
+		(entry) => entry.medianRating,
+		ExtremeValue.MAX,
+	);
+	const leastControversialMovieEntries = getExtremeValues(
+		Array.from(movieIdToWatchedInformation.values()),
+		(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+		ExtremeValue.MIN,
+	);
+	const mostControversialMovieEntries = getExtremeValues(
+		Array.from(movieIdToWatchedInformation.values()),
+		(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+		ExtremeValue.MAX,
 	);
 	const personInformation = new Map(
 		Object.keys(allUserInformation).map((userIdAsString) => {
@@ -183,13 +158,13 @@ function Statistics({
 				<h4>Most Controversial Movie(s)</h4>
 				{mostControversialMovieEntries.map((movieEntry) => (
 					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
-						Rating range: {movieEntry.highestRating - movieEntry.lowestRating}
+						Rating range: {movieEntry.highestRating! - movieEntry.lowestRating!}
 					</MovieCard>
 				))}
 				<h4>Least Controversial Movie(s)</h4>
 				{leastControversialMovieEntries.map((movieEntry) => (
 					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
-						Rating range: {movieEntry.highestRating - movieEntry.lowestRating}
+						Rating range: {movieEntry.highestRating! - movieEntry.lowestRating!}
 					</MovieCard>
 				))}
 				<h3>Statistics by Movie</h3>
