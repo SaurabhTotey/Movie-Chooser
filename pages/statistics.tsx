@@ -43,6 +43,8 @@ const getExtremeValues = <T,>(values: T[], key: (_: T) => number | null, extreme
 	return values.filter((value) => bingoValues.includes(key(value)));
 };
 
+const numericValueOrDefault = (value: any, defaultValue: any) => (value || value === 0 ? value : defaultValue);
+
 function Statistics({
 	allUserInformation,
 	userClientInfo,
@@ -76,23 +78,24 @@ function Statistics({
 			];
 		}),
 	);
+	const allWatchedInformation = Array.from(movieIdToWatchedInformation.values());
 	const lowestRatedMovieEntries = getExtremeValues(
-		Array.from(movieIdToWatchedInformation.values()),
+		allWatchedInformation,
 		(entry) => entry.medianRating,
 		ExtremeValue.MIN,
 	);
 	const highestRatedMovieEntries = getExtremeValues(
-		Array.from(movieIdToWatchedInformation.values()),
+		allWatchedInformation,
 		(entry) => entry.medianRating,
 		ExtremeValue.MAX,
 	);
 	const leastControversialMovieEntries = getExtremeValues(
-		Array.from(movieIdToWatchedInformation.values()),
+		allWatchedInformation,
 		(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
 		ExtremeValue.MIN,
 	);
 	const mostControversialMovieEntries = getExtremeValues(
-		Array.from(movieIdToWatchedInformation.values()),
+		allWatchedInformation,
 		(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
 		ExtremeValue.MAX,
 	);
@@ -101,23 +104,43 @@ function Statistics({
 			const userId = parseInt(userIdAsString);
 			const allUserWatchedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.userId == userId);
 			const allPostedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.originatorId == userId);
+			const allPostedMovieIds = Array.from(new Set(allPostedEntries.map((watchedEntry) => watchedEntry.movie.id)));
+			const postedMovieIdToMovieInformation = new Map(
+				allPostedMovieIds.map((movieId) => {
+					const entries = allWatchedEntries.filter(
+						(watchedEntry) => watchedEntry.movie.id == movieId && watchedEntry.originatorId == userId,
+					);
+					const ratings: number[] = entries
+						.map((watchedEntry) => watchedEntry.rating)
+						.filter((rating) => rating || rating === 0);
+					return [
+						movieId,
+						{
+							averageRating: ratings.length ? average(ratings) : null,
+							entries: entries,
+							highestRating: ratings.length ? Math.max(...ratings) : null,
+							lowestRating: ratings.length ? Math.min(...ratings) : null,
+							medianRating: ratings.length ? median(ratings) : null,
+							movie: entries[0].movie,
+							ratings: ratings,
+						},
+					];
+				}),
+			);
 			const allUsableWatchedRatings = allUserWatchedEntries
-				.map((watchedEntry) => watchedEntry.rating)
-				.filter((rating) => rating || rating === 0);
-			const allUsablePostedRatings = allPostedEntries
 				.map((watchedEntry) => watchedEntry.rating)
 				.filter((rating) => rating || rating === 0);
 			return [
 				userId,
 				{
 					allPostedEntries: allPostedEntries,
-					allUsablePostedRatings: allUsablePostedRatings,
+					allUsablePostedRatings: undefined,
 					allUsableWatchedRatings: allUsableWatchedRatings,
 					allWatchedEntries: allUserWatchedEntries,
-					averageUsableWatchedRating: allUsableWatchedRatings.length ? average(allUsableWatchedRatings) : null,
-					averageUsablePostedRating: allUsablePostedRatings.length ? average(allUsablePostedRatings) : null,
-					medianUsableWatchedRating: allUsableWatchedRatings.length ? median(allUsableWatchedRatings) : null,
-					medianUsablePostedRating: allUsablePostedRatings.length ? median(allUsablePostedRatings) : null,
+					averageWatchedRating: allUsableWatchedRatings.length ? average(allUsableWatchedRatings) : null,
+					averagePostedRating: undefined,
+					medianWatchedRating: getExtremeValues(allUserWatchedEntries, (entry) => entry.rating, ExtremeValue.MEDIAN),
+					medianPostedRating: undefined,
 					averageWatchedControversiality: undefined,
 					averagePostedControversiality: undefined,
 					medianWatchedControversiality: undefined,
@@ -173,10 +196,10 @@ function Statistics({
 						const entry = movieIdToWatchedInformation.get(movieId)!;
 						return (
 							<MovieCard key={movieId} movie={entry.movie} titleHeadingLevel={4}>
-								<p>Median Rating: {entry.medianRating || "no data"}</p>
-								<p>Average Rating: {entry.averageRating || "no data"}</p>
-								<p>Highest Rating: {entry.highestRating || "no data"}</p>
-								<p>Lowest Rating: {entry.lowestRating || "no data"}</p>
+								<p>Median Rating: {numericValueOrDefault(entry.medianRating, "no data")}</p>
+								<p>Average Rating: {numericValueOrDefault(entry.averageRating, "no data")}</p>
+								<p>Highest Rating: {numericValueOrDefault(entry.highestRating, "no data")}</p>
+								<p>Lowest Rating: {numericValueOrDefault(entry.lowestRating, "no data")}</p>
 							</MovieCard>
 						);
 					})
