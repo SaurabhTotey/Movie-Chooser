@@ -127,32 +127,73 @@ function Statistics({
 					];
 				}),
 			);
+			const allUserPostedEntries = Array.from(postedMovieIdToMovieInformation.values());
 			const allUsableWatchedRatings = allUserWatchedEntries
 				.map((watchedEntry) => watchedEntry.rating)
 				.filter((rating) => rating || rating === 0);
+			const allUsablePostedRatings = allUserPostedEntries
+				.map((watchedEntry) => watchedEntry.medianRating)
+				.filter((rating) => rating || rating === 0) as number[];
+			const allUsablePostedControversialities = allUserPostedEntries
+				.filter((watchedEntry) => watchedEntry.medianRating || watchedEntry.medianRating === 0)
+				.map((watchedEntry) => watchedEntry.highestRating! - watchedEntry.lowestRating!);
 			return [
 				userId,
 				{
 					allPostedEntries: allPostedEntries,
-					allUsablePostedRatings: undefined,
+					allUsablePostedRatings: allUsablePostedRatings,
 					allUsableWatchedRatings: allUsableWatchedRatings,
 					allWatchedEntries: allUserWatchedEntries,
+					allUserPostedEntries: allUserPostedEntries,
 					averageWatchedRating: allUsableWatchedRatings.length ? average(allUsableWatchedRatings) : null,
-					averagePostedRating: undefined,
-					medianWatchedRating: getExtremeValues(allUserWatchedEntries, (entry) => entry.rating, ExtremeValue.MEDIAN),
-					medianPostedRating: undefined,
-					averageWatchedControversiality: undefined,
-					averagePostedControversiality: undefined,
-					medianWatchedControversiality: undefined,
-					medianPostedControversiality: undefined,
-					lowestRatedWatchedEntries: undefined,
-					highestRatedWatchedEntries: undefined,
-					lowestRatedPostedEntries: undefined,
-					highestRatedPostdEntries: undefined,
-					leastControversialWatchedEntries: undefined,
-					mostControversialWatchedEntries: undefined,
-					leastControversialPostedEntries: undefined,
-					mostControversialPostedEntries: undefined,
+					averagePostedRating: allUsablePostedRatings.length ? average(allUsablePostedRatings) : null,
+					medianWatchedRatingEntries: getExtremeValues(
+						allUserWatchedEntries,
+						(entry) => entry.rating,
+						ExtremeValue.MEDIAN,
+					),
+					medianPostedRatingEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => entry.medianRating,
+						ExtremeValue.MEDIAN,
+					),
+					ratingControversiality: allUsableWatchedRatings.length
+						? Math.max(...allUsableWatchedRatings) - Math.min(...allUsableWatchedRatings)
+						: null,
+					averagePostedControversiality: allUsablePostedControversialities.length
+						? average(allUsablePostedControversialities)
+						: null,
+					medianPostedControversialityEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						ExtremeValue.MEDIAN,
+					),
+					lowestRatedWatchedEntries: getExtremeValues(allUserWatchedEntries, (entry) => entry.rating, ExtremeValue.MIN),
+					highestRatedWatchedEntries: getExtremeValues(
+						allUserWatchedEntries,
+						(entry) => entry.rating,
+						ExtremeValue.MAX,
+					),
+					lowestRatedPostedEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => entry.medianRating,
+						ExtremeValue.MIN,
+					),
+					highestRatedPostedEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => entry.medianRating,
+						ExtremeValue.MAX,
+					),
+					leastControversialPostedEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						ExtremeValue.MIN,
+					),
+					mostControversialPostedEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						ExtremeValue.MIN,
+					),
 				},
 			];
 		}),
