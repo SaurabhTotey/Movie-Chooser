@@ -52,8 +52,8 @@ function Lists({
 											titleHeadingLevel={4}
 										>
 											Watched on {movieEntry.date}
-											{movieEntry.rating && <br />}
-											{movieEntry.rating && `Rated: ${movieEntry.rating}`}
+											{(movieEntry.rating || movieEntry.rating === 0) && <br />}
+											{(movieEntry.rating || movieEntry.rating === 0) && `Rated: ${movieEntry.rating}`}
 											<br />
 											From the list of {allUserInformation[movieEntry.originatorId].name}
 										</MovieCard>

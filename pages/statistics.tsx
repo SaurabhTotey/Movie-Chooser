@@ -1,5 +1,6 @@
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
+import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
@@ -33,10 +34,10 @@ const getExtremeValues = <T,>(values: T[], key: (_: T) => number | null, extreme
 	} else {
 		const sorted = Array.from(valueKeys).sort((a, b) => a - b);
 		const middleIndex = Math.floor(sorted.length / 2);
-		if (sorted.length % 2 == 0 && valueKeys[middleIndex - 1] != valueKeys[middleIndex]) {
-			bingoValues = [valueKeys[middleIndex - 1], valueKeys[middleIndex]];
+		if (sorted.length % 2 == 0 && sorted[middleIndex - 1] != sorted[middleIndex]) {
+			bingoValues = [sorted[middleIndex - 1], sorted[middleIndex]];
 		} else {
-			bingoValues = [valueKeys[middleIndex]];
+			bingoValues = [sorted[middleIndex]];
 		}
 	}
 
@@ -99,7 +100,7 @@ function Statistics({
 		(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
 		ExtremeValue.MAX,
 	);
-	const personInformation = new Map(
+	const peopleInformation = new Map(
 		Object.keys(allUserInformation).map((userIdAsString) => {
 			const userId = parseInt(userIdAsString);
 			const allUserWatchedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.userId == userId);
@@ -262,10 +263,55 @@ function Statistics({
 				<h4>Person Who Posts the Least Controversial Movies</h4>
 				TODO: person who has the lowest rating range on average for their posted movies
 				<h3>Statistics by Person</h3>
-				TODO: show each person&apos;s highest rating, lowest rating, median rating, average rating, number of chosen
-				movies, number of watched movies, most controversial rating (largest deviation from the median), best posted
-				movie, worst posted movie, average posted movie rating, most controversial posted movie, least controversial
-				posted movie, and average posted movie controversiality
+				{Array.from(peopleInformation.keys()).map((userId) => {
+					const personInformation = peopleInformation.get(userId)!;
+					return (
+						<CollapsibleSection key={userId} title={allUserInformation[userId].name} titleHeadingLevel={4}>
+							<>
+								<h5>Highest Rated Movies</h5>
+								{personInformation.highestRatedWatchedEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`highestRatedFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Rating: {entry.rating}
+										</MovieCard>
+									);
+								})}
+								<h5>Median Rated Movies</h5>
+								{personInformation.medianWatchedRatingEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`medianRatedFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Rating: {entry.rating}
+										</MovieCard>
+									);
+								})}
+								<h5>Lowest Rated Movies</h5>
+								{personInformation.lowestRatedWatchedEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`lowestRatedFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Rating: {entry.rating}
+										</MovieCard>
+									);
+								})}
+							</>
+						</CollapsibleSection>
+					);
+				})}
+				TODO: show each person&apos;s average rating, number of chosen movies, number of watched movies, most
+				controversial rating (largest deviation from the median), best posted movie, worst posted movie, average posted
+				movie rating, most controversial posted movie, least controversial posted movie, and average posted movie
+				controversiality
 			</main>
 			<Footer />
 		</>
