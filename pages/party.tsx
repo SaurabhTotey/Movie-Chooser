@@ -89,7 +89,7 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 						</p>
 						<div aria-live="polite" id="movieCardContainer">
 							{movieSelectionInformation && (
-								<MovieCard movie={movieSelectionInformation[2]}>
+								<MovieCard movie={movieSelectionInformation[2]} isExpandedToBegin={true}>
 									<p id={style["originatorText"]}>
 										From the list of{" "}
 										{allUsers.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name}.
