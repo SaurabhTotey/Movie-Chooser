@@ -304,14 +304,18 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
+								{personInformation.averageWatchedRating && (
+									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
+								)}
+								<h5>Number of watched movies: {personInformation.allWatchedEntries.length}</h5>
+								<h5>Number of chosen movies: {personInformation.allUserPostedEntries.length}</h5>
 							</>
 						</CollapsibleSection>
 					);
 				})}
-				TODO: show each person&apos;s average rating, number of chosen movies, number of watched movies, most
-				controversial rating (largest deviation from the median), best posted movie, worst posted movie, average posted
-				movie rating, most controversial posted movie, least controversial posted movie, and average posted movie
-				controversiality
+				TODO: show each person&apos;s most controversial rating (largest deviation from the median), best posted movie,
+				worst posted movie, average posted movie rating, most controversial posted movie, least controversial posted
+				movie, and median posted movie controversiality
 			</main>
 			<Footer />
 		</>
