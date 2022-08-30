@@ -131,7 +131,7 @@ function Statistics({
 			const allUserPostedEntries = Array.from(postedMovieIdToMovieInformation.values());
 			const allUsableWatchedRatings = allUserWatchedEntries
 				.map((watchedEntry) => watchedEntry.rating)
-				.filter((rating) => rating || rating === 0);
+				.filter((rating) => rating || rating === 0) as number[];
 			const allUsablePostedRatings = allUserPostedEntries
 				.map((watchedEntry) => watchedEntry.medianRating)
 				.filter((rating) => rating || rating === 0) as number[];
@@ -268,7 +268,9 @@ function Statistics({
 					return (
 						<CollapsibleSection key={userId} title={allUserInformation[userId].name} titleHeadingLevel={4}>
 							<>
-								<h5>Highest Rated Movies</h5>
+								{personInformation.allUsableWatchedRatings.length && (
+									<h5>Highest Rated Movies ({Math.max(...personInformation.allUsableWatchedRatings)})</h5>
+								)}
 								{personInformation.highestRatedWatchedEntries.map((entry) => {
 									return (
 										<MovieCard
@@ -280,7 +282,9 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								<h5>Median Rated Movies</h5>
+								{personInformation.allUsableWatchedRatings.length && (
+									<h5>Median Rated Movies ({median(personInformation.allUsableWatchedRatings)})</h5>
+								)}
 								{personInformation.medianWatchedRatingEntries.map((entry) => {
 									return (
 										<MovieCard
@@ -292,7 +296,9 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								<h5>Lowest Rated Movies</h5>
+								{personInformation.allUsableWatchedRatings.length && (
+									<h5>Lowest Rated Movies ({Math.min(...personInformation.allUsableWatchedRatings)})</h5>
+								)}
 								{personInformation.lowestRatedWatchedEntries.map((entry) => {
 									return (
 										<MovieCard
