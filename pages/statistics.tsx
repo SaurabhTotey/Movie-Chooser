@@ -46,6 +46,7 @@ const getExtremeValues = <T,>(values: T[], key: (_: T) => number | null, extreme
 
 const numericValueOrDefault = (value: any, defaultValue: any) => (value || value === 0 ? value : defaultValue);
 
+// TODO: when using conditional rendering, the falsy expressions render 0 when using a number as a check (like .length) instead of a boolean
 function Statistics({
 	allUserInformation,
 	userClientInfo,
@@ -313,15 +314,59 @@ function Statistics({
 								{personInformation.averageWatchedRating && (
 									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
 								)}
+								{personInformation.allUsablePostedRatings.length && (
+									<h5>Most Enjoyed Posted Movie ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
+								)}
+								{personInformation.highestRatedPostedEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`highestPostedRatedFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Rating: {entry.medianRating}
+										</MovieCard>
+									);
+								})}
+								{personInformation.allUsablePostedRatings.length && (
+									<h5>Median Enjoyed Posted Movie ({median(personInformation.allUsablePostedRatings)})</h5>
+								)}
+								{personInformation.medianPostedRatingEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`medianPostedRatedFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Rating: {entry.medianRating}
+										</MovieCard>
+									);
+								})}
+								{personInformation.allUsablePostedRatings.length && (
+									<h5>Least Enjoyed Posted Movie ({Math.min(...personInformation.allUsablePostedRatings)})</h5>
+								)}
+								{personInformation.lowestRatedPostedEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`lowestPostedRatedFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Rating: {entry.medianRating}
+										</MovieCard>
+									);
+								})}
+								{personInformation.allUsablePostedRatings.length && (
+									<h5>Average Posted Movie Rating: {average(personInformation.allUsablePostedRatings)}</h5>
+								)}
 								<h5>Number of watched movies: {personInformation.allWatchedEntries.length}</h5>
 								<h5>Number of chosen movies: {personInformation.allUserPostedEntries.length}</h5>
 							</>
 						</CollapsibleSection>
 					);
 				})}
-				TODO: show each person&apos;s most controversial rating (largest deviation from the median), best posted movie,
-				worst posted movie, average posted movie rating, most controversial posted movie, least controversial posted
-				movie, and median posted movie controversiality
+				TODO: show each person&apos;s most controversial rating (largest deviation from the median), most controversial
+				posted movie, least controversial posted movie, and median posted movie controversiality
 			</main>
 			<Footer />
 		</>
