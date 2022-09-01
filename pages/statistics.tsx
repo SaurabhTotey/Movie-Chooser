@@ -144,6 +144,7 @@ function Statistics({
 					allPostedEntries: allPostedEntries,
 					allUsablePostedRatings: allUsablePostedRatings,
 					allUsableWatchedRatings: allUsableWatchedRatings,
+					allUsablePostedControversialities: allUsablePostedControversialities,
 					allWatchedEntries: allUserWatchedEntries,
 					allUserPostedEntries: allUserPostedEntries,
 					averageWatchedRating: allUsableWatchedRatings.length ? average(allUsableWatchedRatings) : null,
@@ -193,7 +194,7 @@ function Statistics({
 					mostControversialPostedEntries: getExtremeValues(
 						allUserPostedEntries,
 						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
-						ExtremeValue.MIN,
+						ExtremeValue.MAX,
 					),
 				},
 			];
@@ -314,7 +315,7 @@ function Statistics({
 									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
 								)}
 								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Most Enjoyed Posted Movie ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
+									<h5>Most Enjoyed Posted Movies ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.highestRatedPostedEntries.map((entry) => {
 									return (
@@ -328,7 +329,7 @@ function Statistics({
 									);
 								})}
 								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Median Enjoyed Posted Movie ({median(personInformation.allUsablePostedRatings)})</h5>
+									<h5>Median Enjoyed Posted Movies ({median(personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.medianPostedRatingEntries.map((entry) => {
 									return (
@@ -342,7 +343,7 @@ function Statistics({
 									);
 								})}
 								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Least Enjoyed Posted Movie ({Math.min(...personInformation.allUsablePostedRatings)})</h5>
+									<h5>Least Enjoyed Posted Movies ({Math.min(...personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.lowestRatedPostedEntries.map((entry) => {
 									return (
@@ -355,6 +356,56 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
+								{personInformation.mostControversialPostedEntries.length > 0 && (
+									<h5>
+										Most Controversial Posted Movies ({Math.max(...personInformation.allUsablePostedControversialities)}
+										)
+									</h5>
+								)}
+								{personInformation.mostControversialPostedEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`highestControversialityFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Controversiality: {entry.highestRating! - entry.lowestRating!}
+										</MovieCard>
+									);
+								})}
+								{personInformation.medianPostedControversialityEntries.length > 0 && (
+									<h5>
+										Median Controversial Posted Movies ({median(personInformation.allUsablePostedControversialities)})
+									</h5>
+								)}
+								{personInformation.medianPostedControversialityEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`medianControversialityFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Controversiality: {entry.highestRating! - entry.lowestRating!}
+										</MovieCard>
+									);
+								})}
+								{personInformation.leastControversialPostedEntries.length > 0 && (
+									<h5>
+										Least Controversial Posted Movies (
+										{Math.min(...personInformation.allUsablePostedControversialities)})
+									</h5>
+								)}
+								{personInformation.leastControversialPostedEntries.map((entry) => {
+									return (
+										<MovieCard
+											key={`lowestControversialityFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											Controversiality: {entry.highestRating! - entry.lowestRating!}
+										</MovieCard>
+									);
+								})}
 								{personInformation.allUsablePostedRatings.length > 0 && (
 									<h5>Average Posted Movie Rating: {average(personInformation.allUsablePostedRatings)}</h5>
 								)}
@@ -364,8 +415,7 @@ function Statistics({
 						</CollapsibleSection>
 					);
 				})}
-				TODO: show each person&apos;s most controversial rating (largest deviation from the median), most controversial
-				posted movie, least controversial posted movie, and median posted movie controversiality
+				TODO: show each person&apos;s most controversial rating (largest deviation from the median)
 			</main>
 			<Footer />
 		</>
