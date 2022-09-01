@@ -209,25 +209,47 @@ function Statistics({
 				<Navbar userClientInfo={userClientInfo} />
 				<h2>Movie Statistics</h2>
 				<h3>Highlights</h3>
-				<h4>Most Enjoyed Movie(s)</h4>
+				<h4>
+					Most Enjoyed Movie(s) (
+					{numericValueOrDefault(highestRatedMovieEntries.length > 0 && highestRatedMovieEntries[0].medianRating, "?")})
+				</h4>
 				{highestRatedMovieEntries.map((movieEntry) => (
 					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
 						Median rating: {movieEntry.medianRating}
 					</MovieCard>
 				))}
-				<h4>Least Enjoyed Movie(s)</h4>
+				<h4>
+					Least Enjoyed Movie(s) (
+					{numericValueOrDefault(lowestRatedMovieEntries.length > 0 && lowestRatedMovieEntries[0].medianRating, "?")})
+				</h4>
 				{lowestRatedMovieEntries.map((movieEntry) => (
 					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
 						Median rating: {movieEntry.medianRating}
 					</MovieCard>
 				))}
-				<h4>Most Controversial Movie(s)</h4>
+				<h4>
+					Most Controversial Movie(s) (
+					{numericValueOrDefault(
+						mostControversialMovieEntries.length > 0 &&
+							mostControversialMovieEntries[0].highestRating! - mostControversialMovieEntries[0].lowestRating!,
+						"?",
+					)}
+					)
+				</h4>
 				{mostControversialMovieEntries.map((movieEntry) => (
 					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
 						Rating range: {movieEntry.highestRating! - movieEntry.lowestRating!}
 					</MovieCard>
 				))}
-				<h4>Least Controversial Movie(s)</h4>
+				<h4>
+					Least Controversial Movie(s) (
+					{numericValueOrDefault(
+						leastControversialMovieEntries.length > 0 &&
+							leastControversialMovieEntries[0].highestRating! - leastControversialMovieEntries[0].lowestRating!,
+						"?",
+					)}
+					)
+				</h4>
 				{leastControversialMovieEntries.map((movieEntry) => (
 					<MovieCard key={movieEntry.movie.id} movie={movieEntry.movie} titleHeadingLevel={5}>
 						Rating range: {movieEntry.highestRating! - movieEntry.lowestRating!}
@@ -270,7 +292,7 @@ function Statistics({
 						<CollapsibleSection key={userId} title={allUserInformation[userId].name} titleHeadingLevel={4}>
 							<>
 								{personInformation.allUsableWatchedRatings.length > 0 && (
-									<h5>Highest Rated Movies ({Math.max(...personInformation.allUsableWatchedRatings)})</h5>
+									<h5>Highest Rated Movie(s) ({Math.max(...personInformation.allUsableWatchedRatings)})</h5>
 								)}
 								{personInformation.highestRatedWatchedEntries.map((entry) => {
 									return (
@@ -284,7 +306,7 @@ function Statistics({
 									);
 								})}
 								{personInformation.allUsableWatchedRatings.length > 0 && (
-									<h5>Median Rated Movies ({median(personInformation.allUsableWatchedRatings)})</h5>
+									<h5>Median Rated Movie(s) ({median(personInformation.allUsableWatchedRatings)})</h5>
 								)}
 								{personInformation.medianWatchedRatingEntries.map((entry) => {
 									return (
@@ -298,7 +320,7 @@ function Statistics({
 									);
 								})}
 								{personInformation.allUsableWatchedRatings.length > 0 && (
-									<h5>Lowest Rated Movies ({Math.min(...personInformation.allUsableWatchedRatings)})</h5>
+									<h5>Lowest Rated Movie(s) ({Math.min(...personInformation.allUsableWatchedRatings)})</h5>
 								)}
 								{personInformation.lowestRatedWatchedEntries.map((entry) => {
 									return (
@@ -315,7 +337,7 @@ function Statistics({
 									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
 								)}
 								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Most Enjoyed Posted Movies ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
+									<h5>Most Enjoyed Posted Movie(s) ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.highestRatedPostedEntries.map((entry) => {
 									return (
@@ -329,7 +351,7 @@ function Statistics({
 									);
 								})}
 								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Median Enjoyed Posted Movies ({median(personInformation.allUsablePostedRatings)})</h5>
+									<h5>Median Enjoyed Posted Movie(s) ({median(personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.medianPostedRatingEntries.map((entry) => {
 									return (
@@ -343,7 +365,7 @@ function Statistics({
 									);
 								})}
 								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Least Enjoyed Posted Movies ({Math.min(...personInformation.allUsablePostedRatings)})</h5>
+									<h5>Least Enjoyed Posted Movie(s) ({Math.min(...personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.lowestRatedPostedEntries.map((entry) => {
 									return (
@@ -356,10 +378,13 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
+								{personInformation.allUsablePostedRatings.length > 0 && (
+									<h5>Average Posted Movie Rating: {average(personInformation.allUsablePostedRatings)}</h5>
+								)}
 								{personInformation.mostControversialPostedEntries.length > 0 && (
 									<h5>
-										Most Controversial Posted Movies ({Math.max(...personInformation.allUsablePostedControversialities)}
-										)
+										Most Controversial Posted Movie(s) (
+										{Math.max(...personInformation.allUsablePostedControversialities)})
 									</h5>
 								)}
 								{personInformation.mostControversialPostedEntries.map((entry) => {
@@ -375,7 +400,7 @@ function Statistics({
 								})}
 								{personInformation.medianPostedControversialityEntries.length > 0 && (
 									<h5>
-										Median Controversial Posted Movies ({median(personInformation.allUsablePostedControversialities)})
+										Median Controversial Posted Movie(s) ({median(personInformation.allUsablePostedControversialities)})
 									</h5>
 								)}
 								{personInformation.medianPostedControversialityEntries.map((entry) => {
@@ -391,7 +416,7 @@ function Statistics({
 								})}
 								{personInformation.leastControversialPostedEntries.length > 0 && (
 									<h5>
-										Least Controversial Posted Movies (
+										Least Controversial Posted Movie(s) (
 										{Math.min(...personInformation.allUsablePostedControversialities)})
 									</h5>
 								)}
@@ -406,9 +431,6 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsablePostedRatings.length > 0 && (
-									<h5>Average Posted Movie Rating: {average(personInformation.allUsablePostedRatings)}</h5>
-								)}
 								<h5>Number of watched movies: {personInformation.allWatchedEntries.length}</h5>
 								<h5>Number of chosen movies: {personInformation.allUserPostedEntries.length}</h5>
 							</>
