@@ -46,7 +46,6 @@ const getExtremeValues = <T,>(values: T[], key: (_: T) => number | null, extreme
 
 const numericValueOrDefault = (value: any, defaultValue: any) => (value || value === 0 ? value : defaultValue);
 
-// TODO: when using conditional rendering, the falsy expressions render 0 when using a number as a check (like .length) instead of a boolean
 function Statistics({
 	allUserInformation,
 	userClientInfo,
@@ -269,7 +268,7 @@ function Statistics({
 					return (
 						<CollapsibleSection key={userId} title={allUserInformation[userId].name} titleHeadingLevel={4}>
 							<>
-								{personInformation.allUsableWatchedRatings.length && (
+								{personInformation.allUsableWatchedRatings.length > 0 && (
 									<h5>Highest Rated Movies ({Math.max(...personInformation.allUsableWatchedRatings)})</h5>
 								)}
 								{personInformation.highestRatedWatchedEntries.map((entry) => {
@@ -283,7 +282,7 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsableWatchedRatings.length && (
+								{personInformation.allUsableWatchedRatings.length > 0 && (
 									<h5>Median Rated Movies ({median(personInformation.allUsableWatchedRatings)})</h5>
 								)}
 								{personInformation.medianWatchedRatingEntries.map((entry) => {
@@ -297,7 +296,7 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsableWatchedRatings.length && (
+								{personInformation.allUsableWatchedRatings.length > 0 && (
 									<h5>Lowest Rated Movies ({Math.min(...personInformation.allUsableWatchedRatings)})</h5>
 								)}
 								{personInformation.lowestRatedWatchedEntries.map((entry) => {
@@ -311,10 +310,10 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.averageWatchedRating && (
+								{(personInformation.averageWatchedRating || personInformation.averageWatchedRating === 0) && (
 									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
 								)}
-								{personInformation.allUsablePostedRatings.length && (
+								{personInformation.allUsablePostedRatings.length > 0 && (
 									<h5>Most Enjoyed Posted Movie ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.highestRatedPostedEntries.map((entry) => {
@@ -328,7 +327,7 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsablePostedRatings.length && (
+								{personInformation.allUsablePostedRatings.length > 0 && (
 									<h5>Median Enjoyed Posted Movie ({median(personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.medianPostedRatingEntries.map((entry) => {
@@ -342,7 +341,7 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsablePostedRatings.length && (
+								{personInformation.allUsablePostedRatings.length > 0 && (
 									<h5>Least Enjoyed Posted Movie ({Math.min(...personInformation.allUsablePostedRatings)})</h5>
 								)}
 								{personInformation.lowestRatedPostedEntries.map((entry) => {
@@ -356,7 +355,7 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsablePostedRatings.length && (
+								{personInformation.allUsablePostedRatings.length > 0 && (
 									<h5>Average Posted Movie Rating: {average(personInformation.allUsablePostedRatings)}</h5>
 								)}
 								<h5>Number of watched movies: {personInformation.allWatchedEntries.length}</h5>
