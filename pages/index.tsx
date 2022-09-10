@@ -120,8 +120,8 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 				</p>
 				<p className={style["textParagraph"]}>
 					The already-watched list of a user stores information about a user&apos;s experience watching a given movie.
-					Movies can make duplicate appearances as users can watch movies multiple times. The user add their rating or
-					change their rating for a watched movie on their{" "}
+					Movies can make duplicate appearances as users can watch movies multiple times. The user can add their rating
+					or change their rating for a watched movie on their{" "}
 					<Link href="./profile">
 						<a>profile page</a>
 					</Link>

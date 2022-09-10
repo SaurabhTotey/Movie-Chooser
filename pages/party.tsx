@@ -114,7 +114,8 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 														userIds: movieSelectionInformation[0],
 													})
 													.then((response) => {
-														markAsWatchedStatusElement.innerText = "Movie has been marked as watched for all viewers!";
+														markAsWatchedStatusElement.innerText =
+															"Movie has been marked as watched for all viewers! Each viewer can rate the movie on their profile page (once signed in)!";
 													})
 													.catch((error) => {
 														markAsWatchedStatusElement.innerText = error.response.data;
