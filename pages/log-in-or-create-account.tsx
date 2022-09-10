@@ -1,13 +1,13 @@
-import axios from "axios";
-import { InferGetServerSidePropsType } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
+import Head from "next/head";
+import { InferGetServerSidePropsType } from "next";
+import Link from "next/link";
 import Navbar from "../components/Navbar";
+import axios from "axios";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
 
 function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsServerSideProp>) {
 	const router = useRouter();
@@ -28,8 +28,9 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 						?
 					</p>
 				) : (
-					<>
+					<div className="space-y-10">
 						<Form
+							className="mx-auto"
 							fieldNamesToFieldTypes={
 								new Map([
 									["Email", "email"],
@@ -72,6 +73,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 							title="Log In"
 						/>
 						<Form
+							className="mx-auto"
 							fieldNamesToFieldTypes={
 								new Map([
 									["Name", "text"],
@@ -124,7 +126,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 							}}
 							title="Create Account"
 						/>
-					</>
+					</div>
 				)}
 			</main>
 			<Footer />

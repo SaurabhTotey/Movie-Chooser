@@ -1,20 +1,21 @@
-import axios from "axios";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
 import { Cookies, useCookies } from "react-cookie";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+
 import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
+import Head from "next/head";
+import Link from "next/link";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
-import deleteStaleSessions from "../helpers/DeleteStaleSessions";
-import { prisma } from "../helpers/GetPrismaClient";
-import { getMovieInformationFor } from "../helpers/MovieApiManager";
 import UserClientInfo from "../helpers/UserClientInfo";
+import axios from "axios";
+import deleteStaleSessions from "../helpers/DeleteStaleSessions";
+import { getMovieInformationFor } from "../helpers/MovieApiManager";
+import { prisma } from "../helpers/GetPrismaClient";
 import style from "../styles/profile.module.css";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	const sessionId = new Cookies(context.req.headers.cookie).get("session");
@@ -265,6 +266,7 @@ function Profile({
 								))}
 						</CollapsibleSection>
 						<Form
+							className="mx-auto mb-10"
 							fieldNamesToFieldTypes={new Map()}
 							initialDirective="Press button to log out."
 							submitHandler={async (submitButton, updateTextContainer) => {
@@ -286,6 +288,7 @@ function Profile({
 							title="Log Out"
 						/>
 						<Form
+							className="mx-auto"
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							initialDirective="Enter your password to delete your account."
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {

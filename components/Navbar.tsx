@@ -1,8 +1,9 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { FC } from "react";
+import Link from "next/link";
 import UserClientInfo from "../helpers/UserClientInfo";
+import clsx from "clsx";
 import style from "../styles/Navbar.module.css";
+import { useRouter } from "next/router";
 
 const namesToPathsWhenLoggedIn = new Map([
 	["Home", ""],
@@ -23,8 +24,8 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 	return (
-		<nav aria-live="polite" id={style["navContainer"]}>
-			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
+		<nav aria-live="polite" className="flex md:flex-row my-auto py-4 px-2">
+			<h1 className="my-auto font-bold text-3xl">MOVIE CHOOSER</h1>
 			<button
 				aria-controls={style["navList"]}
 				aria-expanded="false"
@@ -50,24 +51,24 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 			>
 				☰
 			</button>
-			<ul id={style["navList"]}>
+			<div className="flex md:flex-row md:ml-auto">
 				{Array.from(mappingToUse.keys()).map((name) => {
 					const path = mappingToUse.get(name);
 					return (
-						<li
+						<div
 							key={name}
-							className={
-								style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"] +
-								(router.pathname == `/${path}` ? ` ${style["active"]}` : "")
-							}
+							className={clsx(
+								"transition-colors py-2 px-3",
+								router.pathname == `/${path}` ? "text-blue-400 hover:text-blue-500" : "text-gray-400 hover:text-black",
+							)}
 						>
 							<Link href={`/${path}`}>
 								<a>{name}</a>
 							</Link>
-						</li>
+						</div>
 					);
 				})}
-			</ul>
+			</div>
 		</nav>
 	);
 };

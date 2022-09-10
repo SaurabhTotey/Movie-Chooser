@@ -1,14 +1,14 @@
-import axios from "axios";
-import { InferGetServerSidePropsType } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useState } from "react";
 import Footer from "../components/Footer";
+import Head from "next/head";
+import { InferGetServerSidePropsType } from "next";
+import Link from "next/link";
+import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
+import axios from "axios";
 import getAllUsersAsServerSideProp from "../helpers/GetAllUsersAsServerSideProp";
-import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
 import style from "../styles/add-movie.module.css";
+import { useState } from "react";
 
 function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof getAllUsersAsServerSideProp>) {
 	const [searchedMovies, setSearchedMovies] = useState<MovieApiMovieInformation[] | null>(null);
@@ -65,9 +65,11 @@ function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<type
 								🔍
 							</button>
 						</form>
+
 						<p aria-live="polite" id={style["searchStatus"]}>
 							Search results will be shown below.
 						</p>
+
 						<div aria-live="polite" id="movieListContainer">
 							{searchedMovies &&
 								searchedMovies.map((movie) => (

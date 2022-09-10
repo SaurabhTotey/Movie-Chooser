@@ -1,12 +1,3 @@
-button {
-	cursor: pointer;
-	border: 1px solid black;
-}
-
-input {
-	border: 1px solid black;
-}
-
-button:disabled {
-	cursor: not-allowed;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
