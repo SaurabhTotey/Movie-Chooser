@@ -138,6 +138,7 @@ function Statistics({
 			const allUsablePostedControversialities = allUserPostedEntries
 				.filter((watchedEntry) => watchedEntry.medianRating || watchedEntry.medianRating === 0)
 				.map((watchedEntry) => watchedEntry.highestRating! - watchedEntry.lowestRating!);
+			// TODO: all the "entry.medianRating?" may fail when the median rating is 0
 			return [
 				userId,
 				{
@@ -194,6 +195,14 @@ function Statistics({
 					mostControversialPostedEntries: getExtremeValues(
 						allUserPostedEntries,
 						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						ExtremeValue.MAX,
+					),
+					mostControversialWatchedRatings: getExtremeValues(
+						allUserWatchedEntries,
+						(entry) =>
+							entry.rating || entry.rating === 0
+								? entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!
+								: null,
 						ExtremeValue.MAX,
 					),
 				},
@@ -339,6 +348,19 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
+								{personInformation.allUsableWatchedRatings.length > 0 && <h5>Most controversial rating(s)</h5>}
+								{personInformation.mostControversialWatchedRatings.map((entry) => {
+									return (
+										<MovieCard
+											key={`mostControversialRatingFor${userId}Is${entry.movie.id}`}
+											movie={entry.movie}
+											titleHeadingLevel={6}
+										>
+											<p>User rating: {entry.rating}</p>
+											<p>Median Rating: {movieIdToWatchedInformation.get(entry.movie.id)!.medianRating}</p>
+										</MovieCard>
+									);
+								})}
 								{(personInformation.averageWatchedRating || personInformation.averageWatchedRating === 0) && (
 									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
 								)}
@@ -443,7 +465,6 @@ function Statistics({
 						</CollapsibleSection>
 					);
 				})}
-				TODO: show each person&apos;s most controversial rating (largest deviation from the median)
 			</main>
 			<Footer />
 		</>
