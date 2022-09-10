@@ -208,6 +208,12 @@ function Statistics({
 			<main>
 				<Navbar userClientInfo={userClientInfo} />
 				<h2>Movie Statistics</h2>
+				<p>
+					Yeah, I&apos;m just going to go ahead an apologize right now ahead of time. This is the probably the least
+					useful and ugliest page a person could dare to make. I apologize to your eyes for having to bear this
+					monstrosity. Its creation was necessitated in this hideous fashion due to time constraints. The code to make
+					this page is even more disgusting.
+				</p>
 				<h3>Highlights</h3>
 				<h4>
 					Most Enjoyed Movie(s) (

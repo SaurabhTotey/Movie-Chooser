@@ -33,10 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		create: {
 			movieId: req.body.id,
 			userId: user.id,
-			weight: req.body.weight,
+			weight: Math.max(req.body.weight, 0),
 		},
 		update: {
-			weight: req.body.weight,
+			weight: Math.max(req.body.weight, 0),
 		},
 		where: {
 			userId_movieId: {

@@ -71,7 +71,7 @@ function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<type
 						<div aria-live="polite" id="movieListContainer">
 							{searchedMovies &&
 								searchedMovies.map((movie) => (
-									<MovieCard key={movie.id} movie={movie}>
+									<MovieCard key={movie.id} isExpandedToBegin={true} movie={movie}>
 										<button
 											aria-controls={`movieCardFormSpaceFor${movie.id}`}
 											className={`${style["movieCardButton"]} ${style["addToWatchListButton"]}`}
