@@ -138,7 +138,6 @@ function Statistics({
 			const allUsablePostedControversialities = allUserPostedEntries
 				.filter((watchedEntry) => watchedEntry.medianRating || watchedEntry.medianRating === 0)
 				.map((watchedEntry) => watchedEntry.highestRating! - watchedEntry.lowestRating!);
-			// TODO: all the "entry.medianRating?" may fail when the median rating is 0
 			return [
 				userId,
 				{
@@ -168,7 +167,7 @@ function Statistics({
 						: null,
 					medianPostedControversialityEntries: getExtremeValues(
 						allUserPostedEntries,
-						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						(entry) => (entry.medianRating || entry.medianRating === 0 ? entry.highestRating! - entry.lowestRating! : null),
 						ExtremeValue.MEDIAN,
 					),
 					lowestRatedWatchedEntries: getExtremeValues(allUserWatchedEntries, (entry) => entry.rating, ExtremeValue.MIN),
@@ -189,12 +188,12 @@ function Statistics({
 					),
 					leastControversialPostedEntries: getExtremeValues(
 						allUserPostedEntries,
-						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						(entry) => (entry.medianRating || entry.medianRating === 0 ? entry.highestRating! - entry.lowestRating! : null),
 						ExtremeValue.MIN,
 					),
 					mostControversialPostedEntries: getExtremeValues(
 						allUserPostedEntries,
-						(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
+						(entry) => (entry.medianRating || entry.medianRating === 0 ? entry.highestRating! - entry.lowestRating! : null),
 						ExtremeValue.MAX,
 					),
 					mostControversialWatchedRatings: getExtremeValues(
