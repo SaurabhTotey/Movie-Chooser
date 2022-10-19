@@ -204,6 +204,14 @@ function Statistics({
 								: null,
 						ExtremeValue.MAX,
 					),
+					highestRater: null,
+					lowestRater: null,
+					mostControversialRater: null,
+					leastControversialRater: null,
+					bestPoster: null,
+					worstPoster: null,
+					mostControversialPoster: null,
+					leastControversialPoster: null,
 				},
 			];
 		}),
@@ -270,6 +278,7 @@ function Statistics({
 					</MovieCard>
 				))}
 				<h3>Statistics by Movie</h3>
+				TODO: it would be convenient if each entry here showed everyone's individual rating
 				{allWatchedMovieIds.length ? (
 					allWatchedMovieIds.map((movieId) => {
 						const entry = movieIdToWatchedInformation.get(movieId)!;
@@ -295,6 +304,10 @@ function Statistics({
 				TODO: person who has the highest average rating on their posted movies
 				<h4>Person Who Posts the Least Enjoyable Movies</h4>
 				TODO: person who has the lowest average rating on their posted movies
+				<h4>Person Who Rates Most Controversially</h4>
+				TODO: person who rates furthest from the median
+				<h4>Person Who Rates Least Controversially</h4>
+				TODO: person who rates closest to the median
 				<h4>Person Who Posts the Most Controversial Movies</h4>
 				TODO: person who has the highest rating range on average for their posted movies
 				<h4>Person Who Posts the Least Controversial Movies</h4>
