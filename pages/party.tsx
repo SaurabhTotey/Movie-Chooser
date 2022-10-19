@@ -29,7 +29,6 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 									<h2>Select Users Who Will Be Watching Movies</h2>
 									{allUsers.map((userInformation: any) => (
 										<div key={userInformation.id} className={style["userCheckBoxContainer"]}>
-											<label htmlFor={`checkboxFor${userInformation.id}`}>{userInformation.name}</label>
 											<input
 												defaultChecked={userClientInfo.email == userInformation.email}
 												disabled={userClientInfo.email == userInformation.email}
@@ -37,6 +36,7 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 												type="checkbox"
 												value={userInformation.id}
 											/>
+											<label htmlFor={`checkboxFor${userInformation.id}`}>{userInformation.name}</label>
 										</div>
 									))}
 								</div>

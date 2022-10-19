@@ -19,16 +19,21 @@
 	padding-bottom: 1rem;
 }
 
-.userCheckBoxContainer > label {
-	display: inline-block;
-	width: 85%;
-	margin-left: 5%;
+.userCheckBoxContainer:nth-child(even) {
+	background: lightgray;
 }
 
 .userCheckBoxContainer > input {
 	display: inline-block;
 	margin: 0;
+	margin-left: 1%;
 	max-width: calc(10% - 2px);
+}
+
+.userCheckBoxContainer > label {
+	display: inline-block;
+	width: 88%;
+	margin-left: 1%;
 }
 
 #movieChoosingStatus,
