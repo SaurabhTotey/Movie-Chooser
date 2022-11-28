@@ -68,7 +68,7 @@ function Home({ userClientInfo }: InferGetServerSidePropsType<typeof getUserAsSe
 				</p>
 				<p className={style["textParagraph"]}>
 					Statistics can be viewed on the{" "}
-					<Link href="./statistics.tsx">
+					<Link href="./statistics">
 						<a>stats page</a>
 					</Link>
 					. Statistics are purely for fun and are based off of movie ratings (so rate movies for fun statistics maybe).

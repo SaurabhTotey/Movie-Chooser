@@ -65,6 +65,12 @@ function Statistics({
 			const ratings: number[] = entries
 				.map((watchedEntry) => watchedEntry.rating)
 				.filter((rating) => rating || rating === 0);
+			const raterIds = entries
+				.filter((watchedEntry) => watchedEntry.rating || watchedEntry.rating === 0)
+				.map((watchedEntry) => watchedEntry.userId);
+			const originatorIds = entries
+				.filter((watchedEntry) => watchedEntry.rating || watchedEntry.rating === 0)
+				.map((watchedEntry) => watchedEntry.originatorId);
 			return [
 				movieId,
 				{
@@ -75,6 +81,8 @@ function Statistics({
 					medianRating: ratings.length ? median(ratings) : null,
 					movie: entries[0].movie,
 					ratings: ratings,
+					raterNames: raterIds.map((id) => allUserInformation[id].name),
+					originatorNames: originatorIds.map((id) => allUserInformation[id].name),
 				},
 			];
 		}),
@@ -281,7 +289,6 @@ function Statistics({
 					</MovieCard>
 				))}
 				<h3>Statistics by Movie</h3>
-				TODO: it would be convenient if each entry here showed everyone's individual rating
 				{allWatchedMovieIds.length ? (
 					allWatchedMovieIds.map((movieId) => {
 						const entry = movieIdToWatchedInformation.get(movieId)!;
@@ -291,6 +298,18 @@ function Statistics({
 								<p>Average Rating: {numericValueOrDefault(entry.averageRating, "no data")}</p>
 								<p>Highest Rating: {numericValueOrDefault(entry.highestRating, "no data")}</p>
 								<p>Lowest Rating: {numericValueOrDefault(entry.lowestRating, "no data")}</p>
+								<hr />
+								<div>
+									TODO: this should be a table
+									{[...Array(entry.raterNames.length).keys()].map((i) => {
+										return (
+											<p key={i}>
+												{entry.raterNames[i]} rated as {entry.ratings[i]}
+											</p>
+										);
+									})}
+								</div>
+								<p>From: {Array.from(new Set(entry.originatorNames)).join(", ")}</p>
 							</MovieCard>
 						);
 					})
