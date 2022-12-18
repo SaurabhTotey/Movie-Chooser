@@ -16,9 +16,10 @@
 
 ## TODO
 
-- Stats page
+- Finish statistics page
 - Ensure handling of IDs of 0 is consistent for both users and movies
 - Allow names to be changed and change the name of the Form component to something like AccountForm
+- See how much of the website can be migrated to use tables in place of CollapsibleSections of MovieCards
 - Documentation of EVERYTHING
 - This README
 - License
