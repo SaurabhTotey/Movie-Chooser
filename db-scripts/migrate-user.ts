@@ -36,7 +36,7 @@ fromUserPromise
 						originatorId: fromUser!.id,
 					},
 				});
-				const deletePromises = [
+				const batchPromises = [
 					prisma.toWatchEntry.deleteMany({
 						where: {
 							userId: fromUser!.id,
@@ -57,59 +57,46 @@ fromUserPromise
 							userId: fromUser!.id,
 						},
 					}),
+					prisma.user.delete({
+						where: {
+							id: fromUser!.id,
+						},
+					}),
+					prisma.toWatchEntry.createMany({
+						data: toWatchEntriesToUpdate.map((entry) => {
+							return {
+								...entry,
+								userId: toUser!.id,
+							};
+						}),
+						skipDuplicates: true,
+					}),
+					prisma.watchedEntry.createMany({
+						data: watchedEntriesToUpdate.map((entry) => {
+							return {
+								...entry,
+								userId: toUser!.id,
+							};
+						}),
+						skipDuplicates: true,
+					}),
+					prisma.watchedEntry.createMany({
+						data: originatedWatchedEntriesToUpdate.map((entry) => {
+							return {
+								...entry,
+								originatorId: toUser!.id,
+							};
+						}),
+						skipDuplicates: true,
+					}),
 				];
-				Promise.all(deletePromises)
-					.then(async () => {
-						await prisma.user.delete({
-							where: {
-								id: fromUser!.id,
-							},
-						});
-						console.log("The old user has been deleted.");
-						const insertPromises = [
-							prisma.toWatchEntry.createMany({
-								data: toWatchEntriesToUpdate.map((entry) => {
-									return {
-										...entry,
-										userId: toUser!.id,
-									};
-								}),
-								skipDuplicates: true,
-							}),
-							prisma.watchedEntry.createMany({
-								data: watchedEntriesToUpdate.map((entry) => {
-									return {
-										...entry,
-										userId: toUser!.id,
-									};
-								}),
-								skipDuplicates: true,
-							}),
-							prisma.watchedEntry.createMany({
-								data: originatedWatchedEntriesToUpdate.map((entry) => {
-									return {
-										...entry,
-										originatorId: toUser!.id,
-									};
-								}),
-								skipDuplicates: true,
-							}),
-						];
-						Promise.all(insertPromises)
-							.then(() => {
-								console.log("The old user's data has been inserted into the new user! The migration is complete!");
-							})
-							.catch((e) => {
-								console.log(
-									"Couldn't insert the old user's data. That's an issue, because it's now probably lost. Whoops!",
-								);
-								console.log(e);
-							});
+				prisma
+					.$transaction(batchPromises)
+					.then(() => {
+						console.log("Migration was successful!");
 					})
 					.catch((e) => {
-						console.log(
-							"There was an issue with deleting the old user account. Check the database and ensure things aren't too fucked up.",
-						);
+						console.log("There was an issue with migration. Check the databases to ensure that nothing is screwed up.");
 						console.log(e);
 					});
 			})
