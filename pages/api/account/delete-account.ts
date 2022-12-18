@@ -46,7 +46,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	});
 	const watchedEntryDeletionPromise = prisma.watchedEntry.deleteMany({
 		where: {
-			userId: userToDelete.id,
+			OR: [
+				{
+					userId: userToDelete.id,
+				},
+				{
+					originatorId: userToDelete.id,
+				},
+			],
 		},
 	});
 	const userDeletionPromise = prisma.user.delete({
