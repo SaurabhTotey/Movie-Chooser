@@ -9,7 +9,6 @@
 		"reload-prisma": "npx prisma db pull && npx prisma generate",
 		"migrate-user": "node --loader ts-node/esm db-scripts/migrate-user.ts"
 	},
-	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^4.2.1",
 		"axios": "^0.27.2",

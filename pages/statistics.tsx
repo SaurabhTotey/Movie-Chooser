@@ -108,9 +108,9 @@ function Statistics({
 		(entry) => (entry.medianRating ? entry.highestRating! - entry.lowestRating! : null),
 		ExtremeValue.MAX,
 	);
+	const allUserIds = Object.keys(allUserInformation).map((userIdAsString) => parseInt(userIdAsString));
 	const peopleInformation = new Map(
-		Object.keys(allUserInformation).map((userIdAsString) => {
-			const userId = parseInt(userIdAsString);
+		allUserIds.map((userId) => {
 			const allUserWatchedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.userId == userId);
 			const allPostedEntries = allWatchedEntries.filter((watchedEntry) => watchedEntry.originatorId == userId);
 			const allPostedMovieIds = Array.from(new Set(allPostedEntries.map((watchedEntry) => watchedEntry.movie.id)));
@@ -215,18 +215,26 @@ function Statistics({
 								: null,
 						ExtremeValue.MAX,
 					),
-					highestRater: null,
-					lowestRater: null,
-					mostControversialRater: null,
-					leastControversialRater: null,
-					bestPoster: null,
-					worstPoster: null,
-					mostControversialPoster: null,
-					leastControversialPoster: null,
 				},
 			];
 		}),
 	);
+	const highestRaterIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.averageWatchedRating,
+		ExtremeValue.MAX,
+	);
+	const lowestRaterIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.averageWatchedRating,
+		ExtremeValue.MIN,
+	);
+	const mostControversialRaterIds = null;
+	const leastControversialRaterIds = null;
+	const bestPosterIds = null;
+	const worstPosterIds = null;
+	const mostControversialPosterIds = null;
+	const leastControversialPosterIds = null;
 	return (
 		<>
 			<Head>
@@ -300,7 +308,6 @@ function Statistics({
 								<p>Lowest Rating: {numericValueOrDefault(entry.lowestRating, "no data")}</p>
 								<hr />
 								<div>
-									TODO: this should be a table
 									{[...Array(entry.raterNames.length).keys()].map((i) => {
 										return (
 											<p key={i}>
@@ -318,10 +325,24 @@ function Statistics({
 				)}
 				<h2>Person Statistics</h2>
 				<h3>Highlights</h3>
-				<h4>Person Who Enjoys Movies the Most</h4>
-				TODO: person who rates movies the highest on average
-				<h4>Person Who Enjoys Movies the Least</h4>
-				TODO: person who rates movies the lowest on average
+				<h4>
+					Person Who Enjoys Movies the Most (
+					{numericValueOrDefault(peopleInformation.get(highestRaterIds[0])?.averageWatchedRating, "?")})
+				</h4>
+				<ul>
+					{highestRaterIds.map((highestRaterId) => (
+						<li>{allUserInformation[highestRaterId].name}</li>
+					))}
+				</ul>
+				<h4>
+					Person Who Enjoys Movies the Least (
+					{numericValueOrDefault(peopleInformation.get(lowestRaterIds[0])?.averageWatchedRating, "?")})
+				</h4>
+				<ul>
+					{lowestRaterIds.map((lowestRaterId) => (
+						<li>{allUserInformation[lowestRaterId].name}</li>
+					))}
+				</ul>
 				<h4>Person Who Posts the Most Enjoyable Movies</h4>
 				TODO: person who has the highest average rating on their posted movies
 				<h4>Person Who Posts the Least Enjoyable Movies</h4>
