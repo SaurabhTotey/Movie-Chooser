@@ -211,7 +211,7 @@ function Statistics({
 						allUserWatchedEntries,
 						(entry) =>
 							entry.rating || entry.rating === 0
-								? entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!
+								? Math.abs(entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!)
 								: null,
 						ExtremeValue.MAX,
 					),
@@ -219,7 +219,7 @@ function Statistics({
 						allUserWatchedEntries,
 						(entry) =>
 							entry.rating || entry.rating === 0
-								? entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!
+								? Math.abs(entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!)
 								: null,
 						ExtremeValue.MEDIAN,
 					),
@@ -263,10 +263,26 @@ function Statistics({
 				: null,
 		ExtremeValue.MIN,
 	);
-	const bestPosterIds = null;
-	const worstPosterIds = null;
-	const mostControversialPosterIds = null;
-	const leastControversialPosterIds = null;
+	const bestPosterIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.averagePostedRating,
+		ExtremeValue.MAX,
+	);
+	const worstPosterIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.averagePostedRating,
+		ExtremeValue.MIN,
+	);
+	const mostControversialPosterIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.averagePostedControversiality,
+		ExtremeValue.MAX,
+	);
+	const leastControversialPosterIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.averagePostedControversiality,
+		ExtremeValue.MIN,
+	);
 	return (
 		<>
 			<Head>
@@ -375,17 +391,61 @@ function Statistics({
 						<li key={lowestRaterId}>{allUserInformation[lowestRaterId].name}</li>
 					))}
 				</ul>
-				<h4>Person Who Posts the Most Enjoyable Movies</h4>
-				TODO: person who has the highest average rating on their posted movies
-				<h4>Person Who Posts the Least Enjoyable Movies</h4>
-				TODO: person who has the lowest average rating on their posted movies
-				<h4>Person Who Rates Most Controversially</h4>
+				<h4>
+					Person Who Posts the Most Enjoyable Movies (
+					{numericValueOrDefault(peopleInformation.get(bestPosterIds[0])?.averagePostedRating, "?")})
+				</h4>
+				<ul>
+					{bestPosterIds.map((bestPosterId) => (
+						<li key={bestPosterId}>{allUserInformation[bestPosterId].name}</li>
+					))}
+				</ul>
+				<h4>
+					Person Who Posts the Least Enjoyable Movies (
+					{numericValueOrDefault(peopleInformation.get(worstPosterIds[0])?.averagePostedRating, "?")})
+				</h4>
+				<ul>
+					{worstPosterIds.map((worstPosterId) => (
+						<li key={worstPosterId}>{allUserInformation[worstPosterId].name}</li>
+					))}
+				</ul>
+				<h4>
+					Person Who Rates Most Controversially (
+					{numericValueOrDefault(
+						mostControversialRaterIds.length
+							? Math.abs(
+									peopleInformation.get(mostControversialRaterIds[0])!.medianWatchedControversialityEntries[0]!.rating -
+										movieIdToWatchedInformation.get(
+											peopleInformation.get(mostControversialRaterIds[0])!.medianWatchedControversialityEntries[0].movie
+												.id,
+										)!.medianRating!,
+							  )
+							: null,
+						"?",
+					)}
+					)
+				</h4>
 				<ul>
 					{mostControversialRaterIds.map((mostControversialRaterId) => (
 						<li key={mostControversialRaterId}>{allUserInformation[mostControversialRaterId].name}</li>
 					))}
 				</ul>
-				<h4>Person Who Rates Least Controversially</h4>
+				<h4>
+					Person Who Rates Least Controversially (
+					{numericValueOrDefault(
+						leastControversialRaterIds.length
+							? Math.abs(
+									peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0]!.rating -
+										movieIdToWatchedInformation.get(
+											peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0].movie
+												.id,
+										)!.medianRating!,
+							  )
+							: null,
+						"?",
+					)}
+					)
+				</h4>
 				<ul>
 					{leastControversialRaterIds.map((leastControversialRaterId) => (
 						<li key={leastControversialRaterId}>{allUserInformation[leastControversialRaterId].name}</li>
@@ -446,9 +506,11 @@ function Statistics({
 								{personInformation.allUsableWatchedRatings.length > 0 && (
 									<h5>
 										Most controversial rating(s) (
-										{personInformation.mostControversialWatchedRatings[0].rating -
-											movieIdToWatchedInformation.get(personInformation.mostControversialWatchedRatings[0].movie.id)!
-												.medianRating!}
+										{Math.abs(
+											personInformation.mostControversialWatchedRatings[0].rating -
+												movieIdToWatchedInformation.get(personInformation.mostControversialWatchedRatings[0].movie.id)!
+													.medianRating!,
+										)}
 										)
 									</h5>
 								)}
