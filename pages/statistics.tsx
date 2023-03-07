@@ -451,10 +451,18 @@ function Statistics({
 						<li key={leastControversialRaterId}>{allUserInformation[leastControversialRaterId].name}</li>
 					))}
 				</ul>
-				<h4>Person Who Posts the Most Controversial Movies</h4>
-				TODO: person who has the highest rating range on average for their posted movies
-				<h4>Person Who Posts the Least Controversial Movies</h4>
-				TODO: person who has the lowest rating range on average for their posted movies
+				<h4>Person Who Posts the Most Controversial Movies ({numericValueOrDefault(peopleInformation.get(mostControversialPosterIds[0])?.averagePostedControversiality, "?")})</h4>
+				<ul>
+					{mostControversialPosterIds.map((mostControversialPosterId) => (
+						<li key={mostControversialPosterId}>{allUserInformation[mostControversialPosterId].name}</li>
+					))}
+				</ul>
+				<h4>Person Who Posts the Least Controversial Movies ({numericValueOrDefault(peopleInformation.get(leastControversialPosterIds[0])?.averagePostedControversiality, "?")})</h4>
+				<ul>
+					{leastControversialPosterIds.map((leastControversialPosterId) => (
+						<li key={leastControversialPosterId}>{allUserInformation[leastControversialPosterId].name}</li>
+					))}
+				</ul>
 				<h3>Statistics by Person</h3>
 				{Array.from(peopleInformation.keys()).map((userId) => {
 					const personInformation = peopleInformation.get(userId)!;
