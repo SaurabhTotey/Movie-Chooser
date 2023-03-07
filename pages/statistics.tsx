@@ -443,7 +443,15 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
-								{personInformation.allUsableWatchedRatings.length > 0 && <h5>Most controversial rating(s)</h5>}
+								{personInformation.allUsableWatchedRatings.length > 0 && (
+									<h5>
+										Most controversial rating(s) (
+										{personInformation.mostControversialWatchedRatings[0].rating -
+											movieIdToWatchedInformation.get(personInformation.mostControversialWatchedRatings[0].movie.id)!
+												.medianRating!}
+										)
+									</h5>
+								)}
 								{personInformation.mostControversialWatchedRatings.map((entry) => {
 									return (
 										<MovieCard
