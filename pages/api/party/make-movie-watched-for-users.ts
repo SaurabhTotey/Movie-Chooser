@@ -5,7 +5,14 @@ import { prisma } from "../../../helpers/GetPrismaClient";
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	// Validate request.
 	const token = new Cookies(req.headers.cookie).get("session");
-	if (req.method != "POST" || !req.body.id || !req.body.userIds || !req.body.date || !req.body.originatorId || !token) {
+	if (
+		req.method != "POST" ||
+		(!req.body.id && req.body.id !== 0) ||
+		!req.body.userIds ||
+		!req.body.date ||
+		(!req.body.originatorId && req.body.originatorId !== 0) ||
+		!token
+	) {
 		res.status(400).json("Couldn't parse request.");
 		return;
 	}

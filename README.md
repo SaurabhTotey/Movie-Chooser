@@ -18,7 +18,6 @@
 
 ### Requirements for 1.0
 
-- Ensure handling of IDs of 0 is consistent for both users and movies
 - Make ratings, weights, and user name part of profile page state so that the page actually changes when the values are changed
 - Make a Dockerfile and set up a GitHub action to automatically deploy this
 - Documentation of EVERYTHING
