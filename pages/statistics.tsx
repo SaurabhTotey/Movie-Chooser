@@ -80,9 +80,9 @@ function Statistics({
 					lowestRating: ratings.length ? Math.min(...ratings) : null,
 					medianRating: ratings.length ? median(ratings) : null,
 					movie: entries[0].movie,
-					ratings: ratings,
-					raterNames: raterIds.map((id) => allUserInformation[id].name),
 					originatorNames: originatorIds.map((id) => allUserInformation[id].name),
+					raterNames: raterIds.map((id) => allUserInformation[id].name),
+					ratings: ratings,
 				},
 			];
 		}),
@@ -215,13 +215,14 @@ function Statistics({
 								: null,
 						ExtremeValue.MAX,
 					),
-					medianWatchedControversialityEntries: getExtremeValues(
-						allUserWatchedEntries,
-						(entry) =>
-							entry.rating || entry.rating === 0
-								? Math.abs(entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!)
-								: null,
-						ExtremeValue.MEDIAN,
+					averageWatchedControversiality: average(
+						allUserWatchedEntries
+							.map((entry) =>
+								entry.rating || entry.rating === 0
+									? Math.abs(entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!)
+									: null,
+							)
+							.filter((e) => e || e === 0) as number[],
 					),
 				},
 			];
@@ -239,28 +240,12 @@ function Statistics({
 	);
 	const mostControversialRaterIds = getExtremeValues(
 		allUserIds,
-		(userId) =>
-			peopleInformation.get(userId)!.medianWatchedControversialityEntries.length
-				? Math.abs(
-						peopleInformation.get(userId)!.medianWatchedControversialityEntries[0].rating -
-							movieIdToWatchedInformation.get(
-								peopleInformation.get(userId)!.medianWatchedControversialityEntries[0].movie.id,
-							)!.medianRating!,
-				  )
-				: null,
+		(userId) => peopleInformation.get(userId)!.averageWatchedControversiality,
 		ExtremeValue.MAX,
 	);
 	const leastControversialRaterIds = getExtremeValues(
 		allUserIds,
-		(userId) =>
-			peopleInformation.get(userId)!.medianWatchedControversialityEntries.length
-				? Math.abs(
-						peopleInformation.get(userId)!.medianWatchedControversialityEntries[0].rating -
-							movieIdToWatchedInformation.get(
-								peopleInformation.get(userId)!.medianWatchedControversialityEntries[0].movie.id,
-							)!.medianRating!,
-				  )
-				: null,
+		(userId) => peopleInformation.get(userId)!.averageWatchedControversiality,
 		ExtremeValue.MIN,
 	);
 	const bestPosterIds = getExtremeValues(
@@ -412,15 +397,7 @@ function Statistics({
 				<h4>
 					Person Who Rates Most Controversially (
 					{numericValueOrDefault(
-						mostControversialRaterIds.length
-							? Math.abs(
-									peopleInformation.get(mostControversialRaterIds[0])!.medianWatchedControversialityEntries[0]!.rating -
-										movieIdToWatchedInformation.get(
-											peopleInformation.get(mostControversialRaterIds[0])!.medianWatchedControversialityEntries[0].movie
-												.id,
-										)!.medianRating!,
-							  )
-							: null,
+						peopleInformation.get(mostControversialRaterIds[0])?.averageWatchedControversiality,
 						"?",
 					)}
 					)
@@ -433,16 +410,7 @@ function Statistics({
 				<h4>
 					Person Who Rates Least Controversially (
 					{numericValueOrDefault(
-						leastControversialRaterIds.length
-							? Math.abs(
-									peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0]!
-										.rating -
-										movieIdToWatchedInformation.get(
-											peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0]
-												.movie.id,
-										)!.medianRating!,
-							  )
-							: null,
+						peopleInformation.get(leastControversialRaterIds[0])?.averageWatchedControversiality,
 						"?",
 					)}
 					)
