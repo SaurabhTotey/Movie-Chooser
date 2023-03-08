@@ -150,49 +150,33 @@ function Statistics({
 				userId,
 				{
 					allPostedEntries: allPostedEntries,
+					allUsablePostedControversialities: allUsablePostedControversialities,
 					allUsablePostedRatings: allUsablePostedRatings,
 					allUsableWatchedRatings: allUsableWatchedRatings,
-					allUsablePostedControversialities: allUsablePostedControversialities,
-					allWatchedEntries: allUserWatchedEntries,
 					allUserPostedEntries: allUserPostedEntries,
-					averageWatchedRating: allUsableWatchedRatings.length ? average(allUsableWatchedRatings) : null,
-					averagePostedRating: allUsablePostedRatings.length ? average(allUsablePostedRatings) : null,
-					medianWatchedRatingEntries: getExtremeValues(
-						allUserWatchedEntries,
-						(entry) => entry.rating,
-						ExtremeValue.MEDIAN,
-					),
-					medianPostedRatingEntries: getExtremeValues(
-						allUserPostedEntries,
-						(entry) => entry.medianRating,
-						ExtremeValue.MEDIAN,
-					),
-					ratingControversiality: allUsableWatchedRatings.length
-						? Math.max(...allUsableWatchedRatings) - Math.min(...allUsableWatchedRatings)
-						: null,
+					allWatchedEntries: allUserWatchedEntries,
 					averagePostedControversiality: allUsablePostedControversialities.length
 						? average(allUsablePostedControversialities)
 						: null,
-					medianPostedControversialityEntries: getExtremeValues(
-						allUserPostedEntries,
-						(entry) =>
-							entry.medianRating || entry.medianRating === 0 ? entry.highestRating! - entry.lowestRating! : null,
-						ExtremeValue.MEDIAN,
+					averagePostedRating: allUsablePostedRatings.length ? average(allUsablePostedRatings) : null,
+					averageWatchedControversiality: average(
+						allUserWatchedEntries
+							.map((entry) =>
+								entry.rating || entry.rating === 0
+									? Math.abs(entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!)
+									: null,
+							)
+							.filter((e) => e || e === 0) as number[],
 					),
-					lowestRatedWatchedEntries: getExtremeValues(allUserWatchedEntries, (entry) => entry.rating, ExtremeValue.MIN),
-					highestRatedWatchedEntries: getExtremeValues(
-						allUserWatchedEntries,
-						(entry) => entry.rating,
-						ExtremeValue.MAX,
-					),
-					lowestRatedPostedEntries: getExtremeValues(
-						allUserPostedEntries,
-						(entry) => entry.medianRating,
-						ExtremeValue.MIN,
-					),
+					averageWatchedRating: allUsableWatchedRatings.length ? average(allUsableWatchedRatings) : null,
 					highestRatedPostedEntries: getExtremeValues(
 						allUserPostedEntries,
 						(entry) => entry.medianRating,
+						ExtremeValue.MAX,
+					),
+					highestRatedWatchedEntries: getExtremeValues(
+						allUserWatchedEntries,
+						(entry) => entry.rating,
 						ExtremeValue.MAX,
 					),
 					leastControversialPostedEntries: getExtremeValues(
@@ -200,6 +184,28 @@ function Statistics({
 						(entry) =>
 							entry.medianRating || entry.medianRating === 0 ? entry.highestRating! - entry.lowestRating! : null,
 						ExtremeValue.MIN,
+					),
+					lowestRatedPostedEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => entry.medianRating,
+						ExtremeValue.MIN,
+					),
+					lowestRatedWatchedEntries: getExtremeValues(allUserWatchedEntries, (entry) => entry.rating, ExtremeValue.MIN),
+					medianPostedControversialityEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) =>
+							entry.medianRating || entry.medianRating === 0 ? entry.highestRating! - entry.lowestRating! : null,
+						ExtremeValue.MEDIAN,
+					),
+					medianPostedRatingEntries: getExtremeValues(
+						allUserPostedEntries,
+						(entry) => entry.medianRating,
+						ExtremeValue.MEDIAN,
+					),
+					medianWatchedRatingEntries: getExtremeValues(
+						allUserWatchedEntries,
+						(entry) => entry.rating,
+						ExtremeValue.MEDIAN,
 					),
 					mostControversialPostedEntries: getExtremeValues(
 						allUserPostedEntries,
@@ -215,15 +221,9 @@ function Statistics({
 								: null,
 						ExtremeValue.MAX,
 					),
-					averageWatchedControversiality: average(
-						allUserWatchedEntries
-							.map((entry) =>
-								entry.rating || entry.rating === 0
-									? Math.abs(entry.rating - movieIdToWatchedInformation.get(entry.movie.id)!.medianRating!)
-									: null,
-							)
-							.filter((e) => e || e === 0) as number[],
-					),
+					ratingControversiality: allUsableWatchedRatings.length
+						? Math.max(...allUsableWatchedRatings) - Math.min(...allUsableWatchedRatings)
+						: null,
 				},
 			];
 		}),

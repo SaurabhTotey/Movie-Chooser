@@ -18,7 +18,6 @@
 
 ### Requirements for 1.0
 
-- Address lint warnings
 - Make a Dockerfile and set up a GitHub action to automatically deploy this
 - Documentation of EVERYTHING
 - This README
