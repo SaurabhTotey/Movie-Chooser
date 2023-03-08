@@ -4,8 +4,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
+import AccountForm from "../components/AccountForm";
 import Footer from "../components/Footer";
-import Form from "../components/Form";
 import Navbar from "../components/Navbar";
 import getUserAsServerSideProp from "../helpers/GetUserAsServerSideProp";
 
@@ -29,7 +29,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 					</p>
 				) : (
 					<>
-						<Form
+						<AccountForm
 							fieldNamesToFieldTypes={
 								new Map([
 									["Email", "email"],
@@ -71,7 +71,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 							}}
 							title="Log In"
 						/>
-						<Form
+						<AccountForm
 							fieldNamesToFieldTypes={
 								new Map([
 									["Name", "text"],

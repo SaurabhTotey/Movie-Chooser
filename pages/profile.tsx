@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Cookies, useCookies } from "react-cookie";
+import AccountForm from "../components/AccountForm";
 import CollapsibleSection from "../components/CollapsibleSection";
 import Footer from "../components/Footer";
-import Form from "../components/Form";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
 import deleteStaleSessions from "../helpers/DeleteStaleSessions";
@@ -264,7 +264,7 @@ function Profile({
 									</MovieCard>
 								))}
 						</CollapsibleSection>
-						<Form
+						<AccountForm
 							fieldNamesToFieldTypes={new Map()}
 							initialDirective="Press button to log out."
 							submitHandler={async (submitButton, updateTextContainer) => {
@@ -285,7 +285,45 @@ function Profile({
 							}}
 							title="Log Out"
 						/>
-						<Form
+						<AccountForm
+							fieldNamesToFieldTypes={
+								new Map([
+									["Name", "text"],
+									["Password", "password"],
+								])
+							}
+							initialDirective="Enter your new name and your password to change the name associated with your account."
+							submitHandler={async (submitButton, updateTextContainer, inputs) => {
+								submitButton.disabled = true;
+
+								const nameInput = inputs.get("Name")!;
+								if (!nameInput.value) {
+									updateTextContainer.textContent = "Cannot change name to an empty name.";
+									submitButton.disabled = false;
+									return;
+								}
+
+								const passwordInput = inputs.get("Password")!;
+								if (!passwordInput.value) {
+									updateTextContainer.textContent = "Cannot change user name without password.";
+									submitButton.disabled = false;
+									return;
+								}
+
+								axios
+									.post("/api/account/change-name", { name: nameInput.value, password: passwordInput.value })
+									.then((response) => {
+										updateTextContainer.textContent = "Your name has been changed!";
+										submitButton.disabled = false;
+									})
+									.catch((error) => {
+										updateTextContainer.textContent = `${error?.response?.data}`;
+										submitButton.disabled = false;
+									});
+							}}
+							title="Change Name"
+						/>
+						<AccountForm
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							initialDirective="Enter your password to delete your account."
 							submitHandler={async (submitButton, updateTextContainer, inputs) => {

@@ -435,10 +435,11 @@ function Statistics({
 					{numericValueOrDefault(
 						leastControversialRaterIds.length
 							? Math.abs(
-									peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0]!.rating -
+									peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0]!
+										.rating -
 										movieIdToWatchedInformation.get(
-											peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0].movie
-												.id,
+											peopleInformation.get(leastControversialRaterIds[0])!.medianWatchedControversialityEntries[0]
+												.movie.id,
 										)!.medianRating!,
 							  )
 							: null,
@@ -451,13 +452,27 @@ function Statistics({
 						<li key={leastControversialRaterId}>{allUserInformation[leastControversialRaterId].name}</li>
 					))}
 				</ul>
-				<h4>Person Who Posts the Most Controversial Movies ({numericValueOrDefault(peopleInformation.get(mostControversialPosterIds[0])?.averagePostedControversiality, "?")})</h4>
+				<h4>
+					Person Who Posts the Most Controversial Movies (
+					{numericValueOrDefault(
+						peopleInformation.get(mostControversialPosterIds[0])?.averagePostedControversiality,
+						"?",
+					)}
+					)
+				</h4>
 				<ul>
 					{mostControversialPosterIds.map((mostControversialPosterId) => (
 						<li key={mostControversialPosterId}>{allUserInformation[mostControversialPosterId].name}</li>
 					))}
 				</ul>
-				<h4>Person Who Posts the Least Controversial Movies ({numericValueOrDefault(peopleInformation.get(leastControversialPosterIds[0])?.averagePostedControversiality, "?")})</h4>
+				<h4>
+					Person Who Posts the Least Controversial Movies (
+					{numericValueOrDefault(
+						peopleInformation.get(leastControversialPosterIds[0])?.averagePostedControversiality,
+						"?",
+					)}
+					)
+				</h4>
 				<ul>
 					{leastControversialPosterIds.map((leastControversialPosterId) => (
 						<li key={leastControversialPosterId}>{allUserInformation[leastControversialPosterId].name}</li>

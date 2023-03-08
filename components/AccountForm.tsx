@@ -12,7 +12,7 @@ interface FormPropType {
 	) => void;
 }
 
-const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldTypes, submitHandler }) => {
+const AccountForm: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldTypes, submitHandler }) => {
 	const uniformifyName = (inputName: string) => inputName.toLowerCase().replaceAll(" ", "-");
 	const htmlValidFieldNameFor = (fieldName: string) =>
 		`${uniformifyName(fieldName)}-input-for-${uniformifyName(title)}-form`;
@@ -62,4 +62,4 @@ const Form: FC<FormPropType> = ({ title, initialDirective, fieldNamesToFieldType
 	);
 };
 
-export default Form;
+export default AccountForm;
