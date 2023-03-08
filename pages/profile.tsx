@@ -84,6 +84,7 @@ function Profile({
 	userAlreadyWatchedList,
 }: InferGetServerSidePropsType<typeof getUserAndListsServerSideProps>) {
 	const router = useRouter();
+	const [userName, setUserName] = useState(userClientInfo.name);
 	const [toWatchList, setToWatchList] = useState(userToWatchList);
 	const [alreadyWatchedList, setAlreadyWatchedList] = useState(userAlreadyWatchedList);
 	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
@@ -96,7 +97,7 @@ function Profile({
 				<Navbar userClientInfo={userClientInfo} />
 				{userClientInfo ? (
 					<>
-						<h2>Hello, {userClientInfo.name}</h2>
+						<h2>Hello, {userName}</h2>
 						<p>
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
@@ -138,6 +139,17 @@ function Profile({
 															.then((response) => {
 																weightInput.valueAsNumber = response.data;
 																formStatus.innerText = `Successfully set weight to ${response.data}.`;
+																setToWatchList(
+																	toWatchList.map((e: any) => {
+																		if (e.id == entry.id) {
+																			return {
+																				...e,
+																				weight: response.data,
+																			};
+																		}
+																		return e;
+																	}),
+																);
 																self.disabled = false;
 															})
 															.catch((error) => {
@@ -222,6 +234,17 @@ function Profile({
 															.then((response) => {
 																ratingInput.valueAsNumber = response.data;
 																formStatus.innerText = `Successfully set rating to ${response.data}.`;
+																setAlreadyWatchedList(
+																	alreadyWatchedList.map((e: any) => {
+																		if (e.id == entry.id) {
+																			return {
+																				...e,
+																				rating: response.data,
+																			};
+																		}
+																		return e;
+																	}),
+																);
 																self.disabled = false;
 															})
 															.catch((error) => {
@@ -314,6 +337,7 @@ function Profile({
 									.post("/api/account/change-name", { name: nameInput.value, password: passwordInput.value })
 									.then((response) => {
 										updateTextContainer.textContent = "Your name has been changed!";
+										setUserName(nameInput.value);
 										submitButton.disabled = false;
 									})
 									.catch((error) => {
