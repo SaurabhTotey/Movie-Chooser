@@ -61,9 +61,7 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 								(router.pathname == `/${path}` ? ` ${style["active"]}` : "")
 							}
 						>
-							<Link href={`/${path}`}>
-								<a>{name}</a>
-							</Link>
+							<Link href={`/${path}`}>{name}</Link>
 						</li>
 					);
 				})}

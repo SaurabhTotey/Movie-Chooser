@@ -21,11 +21,7 @@ function LogInOrCreateAccount({ userClientInfo }: InferGetServerSidePropsType<ty
 				<Navbar userClientInfo={userClientInfo} />
 				{userClientInfo ? (
 					<p>
-						You are signed in! Would you like to go to the{" "}
-						<Link href="./profile">
-							<a>profile page</a>
-						</Link>
-						?
+						You are signed in! Would you like to go to the <Link href="./profile">profile page</Link>?
 					</p>
 				) : (
 					<>

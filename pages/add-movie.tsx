@@ -235,10 +235,7 @@ function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<type
 				) : (
 					<p>
 						You are not logged in. You can log in or create an account{" "}
-						<Link href="./log-in-or-create-account">
-							<a>here</a>
-						</Link>
-						.
+						<Link href="./log-in-or-create-account">here</Link>.
 					</p>
 				)}
 			</main>
