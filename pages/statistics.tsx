@@ -268,6 +268,26 @@ function Statistics({
 		(userId) => peopleInformation.get(userId)!.averagePostedControversiality,
 		ExtremeValue.MIN,
 	);
+	const highestAttendingPersonIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.allWatchedEntries.length,
+		ExtremeValue.MAX,
+	);
+	const lowestAttendingPersonIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.allWatchedEntries.length,
+		ExtremeValue.MIN,
+	);
+	const mostPostingPersonIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.allUserPostedEntries.length,
+		ExtremeValue.MAX,
+	);
+	const leastPostingPersonIds = getExtremeValues(
+		allUserIds,
+		(userId) => peopleInformation.get(userId)!.allUserPostedEntries.length,
+		ExtremeValue.MIN,
+	);
 	return (
 		<>
 			<Head>
@@ -446,6 +466,42 @@ function Statistics({
 						<li key={leastControversialPosterId}>{allUserInformation[leastControversialPosterId].name}</li>
 					))}
 				</ul>
+				<h4>
+					Person Who Has Attended the Most Movies (
+					{numericValueOrDefault(peopleInformation.get(highestAttendingPersonIds[0])?.allWatchedEntries.length, "?")})
+				</h4>
+				<ul>
+					{highestAttendingPersonIds.map((highestAttendingPersonId) => (
+						<li key={highestAttendingPersonId}>{allUserInformation[highestAttendingPersonId].name}</li>
+					))}
+				</ul>
+				<h4>
+					Person Who Has Attended the Least Movies (
+					{numericValueOrDefault(peopleInformation.get(lowestAttendingPersonIds[0])?.allWatchedEntries.length, "?")})
+				</h4>
+				<ul>
+					{lowestAttendingPersonIds.map((lowestAttendingPersonId) => (
+						<li key={lowestAttendingPersonId}>{allUserInformation[lowestAttendingPersonId].name}</li>
+					))}
+				</ul>
+				<h4>
+					Person Who Has Had Their Movies Chosen The Most (
+					{numericValueOrDefault(peopleInformation.get(mostPostingPersonIds[0])?.allUserPostedEntries.length, "?")})
+				</h4>
+				<ul>
+					{mostPostingPersonIds.map((mostPostingPersonId) => (
+						<li key={mostPostingPersonId}>{allUserInformation[mostPostingPersonId].name}</li>
+					))}
+				</ul>
+				<h4>
+					Person Who Has Had Their Movies Chosen The Least (
+					{numericValueOrDefault(peopleInformation.get(leastPostingPersonIds[0])?.allUserPostedEntries.length, "?")})
+				</h4>
+				<ul>
+					{leastPostingPersonIds.map((leastPostingPersonId) => (
+						<li key={leastPostingPersonId}>{allUserInformation[leastPostingPersonId].name}</li>
+					))}
+				</ul>
 				<h3>Statistics by Person</h3>
 				{Array.from(peopleInformation.keys()).map((userId) => {
 					const personInformation = peopleInformation.get(userId)!;
@@ -519,6 +575,10 @@ function Statistics({
 								})}
 								{(personInformation.averageWatchedRating || personInformation.averageWatchedRating === 0) && (
 									<h5>Average Rating: {personInformation.averageWatchedRating}</h5>
+								)}
+								{(personInformation.averageWatchedControversiality ||
+									personInformation.averageWatchedControversiality === 0) && (
+									<h5>Average Rating Controversiality: {personInformation.averageWatchedControversiality}</h5>
 								)}
 								{personInformation.allUsablePostedRatings.length > 0 && (
 									<h5>Most Enjoyed Posted Movie(s) ({Math.max(...personInformation.allUsablePostedRatings)})</h5>
@@ -615,6 +675,10 @@ function Statistics({
 										</MovieCard>
 									);
 								})}
+								{(personInformation.averagePostedControversiality ||
+									personInformation.averagePostedControversiality === 0) && (
+									<h5>Average Posted Movie Controversiality: {personInformation.averagePostedControversiality}</h5>
+								)}
 								<h5>Number of watched movies: {personInformation.allWatchedEntries.length}</h5>
 								<h5>Number of chosen movies: {personInformation.allUserPostedEntries.length}</h5>
 							</>
