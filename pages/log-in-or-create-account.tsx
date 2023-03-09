@@ -30,7 +30,7 @@ const LoginForm = () => {
 			onSubmit={async (inputs) => {
 				setSubmitting(true);
 
-				const { email, password } = inputs;
+				const { Email: email, Password: password } = inputs;
 				if (!email || !password) {
 					setStatusText("Please fill out all fields");
 					setSubmitting(false);
@@ -84,7 +84,7 @@ const CreateAccountForm = () => {
 			onSubmit={async (inputs) => {
 				setSubmitting(true);
 
-				const { name, password, confirmPassword, email } = inputs;
+				const { Name: name, Password: password, "Confirm Password": confirmPassword, Email: email } = inputs;
 
 				if (!name || !password || !confirmPassword || !email) {
 					setStatusText("Please fill out all fields");
@@ -92,7 +92,7 @@ const CreateAccountForm = () => {
 					return;
 				}
 
-				if (password != confirmPassword) {
+				if (password !== confirmPassword) {
 					setStatusText("Passwords don't match.");
 					setSubmitting(false);
 					return;

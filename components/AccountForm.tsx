@@ -29,10 +29,7 @@ const AccountForm: FC<FormPropType> = ({ title, fieldNamesToFieldTypes, statusTe
 			<form
 				onSubmit={(event) => {
 					event.preventDefault();
-					const formattedValues = Object.fromEntries(
-						Object.entries(values).map(([key, value]) => [fieldNamesToFieldTypes.get(key), value]),
-					);
-					onSubmit(formattedValues);
+					onSubmit(values);
 				}}
 			>
 				{Array.from(fieldNamesToFieldTypes.entries()).map(([fieldName, fieldType]) => {
