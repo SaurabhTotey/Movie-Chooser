@@ -290,7 +290,7 @@ function Profile({
 						<AccountForm
 							fieldNamesToFieldTypes={new Map()}
 							initialDirective="Press button to log out."
-							submitHandler={async (submitButton, updateTextContainer) => {
+							onSubmit={async (submitButton, updateTextContainer) => {
 								submitButton.disabled = true;
 
 								axios
@@ -316,7 +316,7 @@ function Profile({
 								])
 							}
 							initialDirective="Enter your new name and your password to change the name associated with your account."
-							submitHandler={async (submitButton, updateTextContainer, inputs) => {
+							onSubmit={async (submitButton, updateTextContainer, inputs) => {
 								submitButton.disabled = true;
 
 								const nameInput = inputs.get("Name")!;
@@ -350,7 +350,7 @@ function Profile({
 						<AccountForm
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							initialDirective="Enter your password to delete your account."
-							submitHandler={async (submitButton, updateTextContainer, inputs) => {
+							onSubmit={async (submitButton, updateTextContainer, inputs) => {
 								submitButton.disabled = true;
 
 								const passwordInput = inputs.get("Password")!;
