@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Cookies, useCookies } from "react-cookie";
 import AccountForm from "../components/AccountForm";
 import CollapsibleSection from "../components/CollapsibleSection";
@@ -78,6 +78,248 @@ const getUserAndListsServerSideProps: GetServerSideProps = async (context) => {
 	};
 };
 
+const ToWatchMovie = ({
+	entry,
+	onUpdate,
+	onRemove,
+}: {
+	entry: any;
+	onUpdate: (values: any) => void;
+	onRemove: () => void;
+}) => {
+	const [weight, setWeight] = useState(entry.weight);
+	const [statusText, setStatusText] = useState("Submit New Weight");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
+
+	useEffect(() => {
+		setWeight(entry.weight);
+	}, [entry.weight]);
+
+	return (
+		<MovieCard movie={entry.movie}>
+			<div className={style["movieCardFormContainer"]}>
+				<form
+					onSubmit={(event) => {
+						event.preventDefault();
+						setIsSubmitting(true);
+
+						axios
+							.post("/api/movie/change-weight", {
+								id: entry.movie.id,
+								weight,
+							})
+							.then((response) => {
+								setStatusText(`Successfully set weight to ${response.data}.`);
+								onUpdate({ ...entry, weight: response.data });
+							})
+							.catch((error) => {
+								setStatusText(error.response.data);
+							})
+							.finally(() => {
+								setIsSubmitting(false);
+							});
+					}}
+				>
+					<label>Weight</label>
+					<input
+						aria-live="polite"
+						id={`weightInputFor${entry.movie.id}`}
+						min={0}
+						step={0.1}
+						type="number"
+						value={weight}
+						onChange={(event) => {
+							setWeight(event.target.valueAsNumber);
+						}}
+					/>
+					<button
+						aria-controls={`weightInputFor${entry.movie.id} formStatusForToWatchMovie${entry.movie.id}`}
+						id={`changeWeightButtonFor${entry.movie.id}`}
+						type="submit"
+						disabled={isSubmitting}
+					>
+						{statusText}
+					</button>
+				</form>
+
+				<button
+					aria-controls={`formStatusForToWatchMovie${entry.movie.id}`}
+					id={`deleteFromWatchListButtonFor${entry.movie.id}`}
+					type="submit"
+					disabled={isSubmittingDelete}
+					onClick={(event) => {
+						event.preventDefault();
+						setIsSubmittingDelete(true);
+
+						axios
+							.post("/api/movie/remove-from-watch-list", {
+								id: entry.movie.id,
+							})
+							.then(() => onRemove())
+							.catch((error) => {
+								setStatusText(error.response.data);
+							})
+							.finally(() => {
+								setIsSubmittingDelete(false);
+							});
+					}}
+				>
+					❌
+				</button>
+			</div>
+			<p aria-live="polite" id={`formStatusForToWatchMovie${entry.movie.id}`}></p>
+		</MovieCard>
+	);
+};
+
+const ToWatchList = ({ defaultToWatchList }: { defaultToWatchList: any[] }) => {
+	const [toWatchList, setToWatchList] = useState(defaultToWatchList);
+	return (
+		<>
+			{toWatchList.map((entry) => (
+				<ToWatchMovie
+					key={entry.movie.id}
+					entry={entry}
+					onUpdate={(values: any) => {
+						setToWatchList(
+							toWatchList.map((e: any) => {
+								if (e.id === entry.id) {
+									return values;
+								}
+								return e;
+							}),
+						);
+					}}
+					onRemove={() => {
+						setToWatchList(toWatchList.filter((e: any) => e.movie.id !== entry.movie.id));
+					}}
+				/>
+			))}
+		</>
+	);
+};
+
+const WatchedMovie = ({
+	entry,
+	onUpdate,
+	onRemove,
+}: {
+	entry: any;
+	onUpdate: (values: any) => void;
+	onRemove: () => void;
+}) => {
+	const [rating, setRating] = useState(entry.rating);
+	const [statusText, setStatusText] = useState("Submit New Rating");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
+
+	useEffect(() => {
+		setRating(entry.rating);
+	}, [entry.rating]);
+
+	return (
+		<MovieCard movie={entry.movie}>
+			<p>
+				Watched on {entry.date}. From the list of {entry.originatorName}.
+			</p>
+			<div className={style["movieCardFormContainer"]}>
+				<form
+					onSubmit={(event) => {
+						event.preventDefault();
+						setIsSubmitting(true);
+
+						axios
+							.post("/api/movie/change-rating", {
+								id: entry.id,
+								rating: rating,
+							})
+							.then((response) => {
+								setStatusText(`Successfully set rating to ${response.data}.`);
+								onUpdate({ ...entry, rating: response.data });
+							})
+							.catch((error) => {
+								setStatusText(error.response.data);
+							})
+							.finally(() => {
+								setIsSubmitting(false);
+							});
+					}}
+				>
+					<label>Rating</label>
+					<input aria-live="polite" id={`ratingInputFor${entry.id}`} max={10} min={0} step={0.1} type="number" />
+					<button
+						aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
+						id={`changeRatingButtonFor${entry.id}`}
+						type="submit"
+						disabled={isSubmitting}
+					>
+						Submit New Rating
+					</button>
+				</form>
+				<button
+					aria-controls={`formStatusForWatchedEntry${entry.id}`}
+					id={`deleteFromWatchedListButtonFor${entry.id}`}
+					type="submit"
+					onClick={(event) => {
+						event.preventDefault();
+						setIsSubmittingDelete(true);
+
+						axios
+							.post("/api/movie/remove-from-watched-list", {
+								id: entry.id,
+							})
+							.then(() => {
+								onRemove();
+							})
+							.catch((error) => {
+								setStatusText(error.response.data);
+							})
+							.finally(() => {
+								setIsSubmittingDelete(false);
+							});
+					}}
+				>
+					❌
+				</button>
+			</div>
+			<p aria-live="polite" id={`formStatusForWatchedEntry${entry.id}`}>
+				{statusText}
+			</p>
+		</MovieCard>
+	);
+};
+
+const WatchedList = ({ defaultWatchedList }: { defaultWatchedList: any[] }) => {
+	const [alreadyWatchedList, setAlreadyWatchedList] = useState(defaultWatchedList);
+
+	return (
+		<>
+			{alreadyWatchedList.map((entry: any) => (
+				<WatchedMovie
+					key={entry.id}
+					entry={entry}
+					onUpdate={(values) => {
+						setAlreadyWatchedList(
+							alreadyWatchedList.map((e: any) => {
+								if (e.id == entry.id) {
+									return values;
+								}
+								return e;
+							}),
+						);
+					}}
+					onRemove={() => {
+						setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
+					}}
+				/>
+			))}
+		</>
+	);
+};
+
 function Profile({
 	userClientInfo,
 	userToWatchList,
@@ -85,9 +327,19 @@ function Profile({
 }: InferGetServerSidePropsType<typeof getUserAndListsServerSideProps>) {
 	const router = useRouter();
 	const [userName, setUserName] = useState(userClientInfo.name);
-	const [toWatchList, setToWatchList] = useState(userToWatchList);
-	const [alreadyWatchedList, setAlreadyWatchedList] = useState(userAlreadyWatchedList);
 	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
+
+	const [logoutStatus, setLogoutStatus] = useState("Press button to log out.");
+	const [isSubmittingLogout, setIsSubmittingLogout] = useState(false);
+
+	const [changeNameStatus, setChangeNameStatus] = useState(
+		"Enter your new name and your password to change the name associated with your account.",
+	);
+	const [isSubmittingChangeName, setIsSubmittingChangeName] = useState(false);
+
+	const [deletePasswordStatus, setDeletePasswordStatus] = useState("Enter your password to delete your account.");
+	const [isSubmittingDeletePassword, setIsSubmittingDeletePassword] = useState(false);
+
 	return (
 		<>
 			<Head>
@@ -102,208 +354,30 @@ function Profile({
 							Email: <a href={`mailto:${userClientInfo.email}`}>{userClientInfo.email}</a>
 						</p>
 						<CollapsibleSection isExpandedToBegin={true} title="Watch List">
-							{toWatchList &&
-								toWatchList.map((entry: any) => (
-									<MovieCard key={entry.movie.id} movie={entry.movie}>
-										<div className={style["movieCardFormContainer"]}>
-											<form>
-												<label>Weight</label>
-												<input
-													aria-live="polite"
-													defaultValue={entry.weight}
-													id={`weightInputFor${entry.movie.id}`}
-													min={0}
-													step={0.1}
-													type="number"
-												/>
-												<button
-													aria-controls={`weightInputFor${entry.movie.id} formStatusForToWatchMovie${entry.movie.id}`}
-													id={`changeWeightButtonFor${entry.movie.id}`}
-													type="submit"
-													onClick={(event) => {
-														event.preventDefault();
-														const self = document.getElementById(
-															`changeWeightButtonFor${entry.movie.id}`,
-														) as HTMLButtonElement;
-														self.disabled = true;
-
-														const weightInput = document.getElementById(
-															`weightInputFor${entry.movie.id}`,
-														) as HTMLInputElement;
-														const formStatus = document.getElementById(`formStatusForToWatchMovie${entry.movie.id}`)!;
-														axios
-															.post("/api/movie/change-weight", {
-																id: entry.movie.id,
-																weight: weightInput.valueAsNumber,
-															})
-															.then((response) => {
-																weightInput.valueAsNumber = response.data;
-																formStatus.innerText = `Successfully set weight to ${response.data}.`;
-																setToWatchList(
-																	toWatchList.map((e: any) => {
-																		if (e.id == entry.id) {
-																			return {
-																				...e,
-																				weight: response.data,
-																			};
-																		}
-																		return e;
-																	}),
-																);
-																self.disabled = false;
-															})
-															.catch((error) => {
-																formStatus.innerText = error.response.data;
-																self.disabled = false;
-															});
-													}}
-												>
-													Submit New Weight
-												</button>
-											</form>
-											<button
-												aria-controls={`formStatusForToWatchMovie${entry.movie.id}`}
-												id={`deleteFromWatchListButtonFor${entry.movie.id}`}
-												type="submit"
-												onClick={(event) => {
-													event.preventDefault();
-													const self = document.getElementById(
-														`deleteFromWatchListButtonFor${entry.movie.id}`,
-													) as HTMLButtonElement;
-													self.disabled = true;
-
-													axios
-														.post("/api/movie/remove-from-watch-list", {
-															id: entry.movie.id,
-														})
-														.then(() => {
-															setToWatchList(toWatchList.filter((e: any) => e.movie.id != entry.movie.id));
-														})
-														.catch((error) => {
-															document.getElementById(`formStatusForToWatchMovie${entry.movie.id}`)!.innerText =
-																error.response.data;
-														});
-												}}
-											>
-												❌
-											</button>
-										</div>
-										<p aria-live="polite" id={`formStatusForToWatchMovie${entry.movie.id}`}></p>
-									</MovieCard>
-								))}
+							{userToWatchList && <ToWatchList defaultToWatchList={userToWatchList} />}
 						</CollapsibleSection>
 						<CollapsibleSection title="Already Watched List">
-							{alreadyWatchedList &&
-								alreadyWatchedList.map((entry: any) => (
-									<MovieCard key={entry.id} movie={entry.movie}>
-										<p>
-											Watched on {entry.date}. From the list of {entry.originatorName}.
-										</p>
-										<div className={style["movieCardFormContainer"]}>
-											<form>
-												<label>Rating</label>
-												<input
-													aria-live="polite"
-													defaultValue={entry.rating}
-													id={`ratingInputFor${entry.id}`}
-													max={10}
-													min={0}
-													step={0.1}
-													type="number"
-												/>
-												<button
-													aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
-													id={`changeRatingButtonFor${entry.id}`}
-													type="submit"
-													onClick={(event) => {
-														event.preventDefault();
-														const self = document.getElementById(
-															`changeRatingButtonFor${entry.id}`,
-														) as HTMLButtonElement;
-														self.disabled = true;
-
-														const ratingInput = document.getElementById(
-															`ratingInputFor${entry.id}`,
-														) as HTMLInputElement;
-														const formStatus = document.getElementById(`formStatusForWatchedEntry${entry.id}`)!;
-														axios
-															.post("/api/movie/change-rating", {
-																id: entry.id,
-																rating: ratingInput.valueAsNumber,
-															})
-															.then((response) => {
-																ratingInput.valueAsNumber = response.data;
-																formStatus.innerText = `Successfully set rating to ${response.data}.`;
-																setAlreadyWatchedList(
-																	alreadyWatchedList.map((e: any) => {
-																		if (e.id == entry.id) {
-																			return {
-																				...e,
-																				rating: response.data,
-																			};
-																		}
-																		return e;
-																	}),
-																);
-																self.disabled = false;
-															})
-															.catch((error) => {
-																formStatus.innerText = error.response.data;
-																self.disabled = false;
-															});
-													}}
-												>
-													Submit New Rating
-												</button>
-											</form>
-											<button
-												aria-controls={`formStatusForWatchedEntry${entry.id}`}
-												id={`deleteFromWatchedListButtonFor${entry.id}`}
-												type="submit"
-												onClick={(event) => {
-													event.preventDefault();
-													const self = document.getElementById(
-														`deleteFromWatchedListButtonFor${entry.id}`,
-													) as HTMLButtonElement;
-													self.disabled = true;
-
-													axios
-														.post("/api/movie/remove-from-watched-list", {
-															id: entry.id,
-														})
-														.then(() => {
-															setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
-														})
-														.catch((error) => {
-															document.getElementById(`formStatusForWatchedEntry${entry.id}`)!.innerText =
-																error.response.data;
-														});
-												}}
-											>
-												❌
-											</button>
-										</div>
-										<p aria-live="polite" id={`formStatusForWatchedEntry${entry.id}`}></p>
-									</MovieCard>
-								))}
+							{userAlreadyWatchedList && <WatchedList defaultWatchedList={userAlreadyWatchedList} />}
 						</CollapsibleSection>
 						<AccountForm
 							fieldNamesToFieldTypes={new Map()}
-							initialDirective="Press button to log out."
-							onSubmit={async (submitButton, updateTextContainer) => {
-								submitButton.disabled = true;
+							disabled={isSubmittingLogout}
+							statusText={logoutStatus}
+							onSubmit={async () => {
+								setIsSubmittingLogout(true);
 
 								axios
 									.post("/api/account/log-out")
 									.then((response) => {
 										removeCookie("session");
-										updateTextContainer.textContent =
-											"You have been signed out. You are being redirected to the account creation page.";
+										setLogoutStatus("You have been signed out. You are being redirected to the account creation page.");
 										router.push("/log-in-or-create-account");
 									})
 									.catch((error) => {
-										updateTextContainer.textContent = `${error?.response?.data}`;
-										submitButton.disabled = false;
+										setLogoutStatus(error.response.data);
+									})
+									.finally(() => {
+										setIsSubmittingLogout(false);
 									});
 							}}
 							title="Log Out"
@@ -315,62 +389,68 @@ function Profile({
 									["Password", "password"],
 								])
 							}
-							initialDirective="Enter your new name and your password to change the name associated with your account."
-							onSubmit={async (submitButton, updateTextContainer, inputs) => {
-								submitButton.disabled = true;
+							disabled={isSubmittingChangeName}
+							statusText={changeNameStatus}
+							onSubmit={async (inputs) => {
+								setIsSubmittingChangeName(true);
 
-								const nameInput = inputs.get("Name")!;
-								if (!nameInput.value) {
-									updateTextContainer.textContent = "Cannot change name to an empty name.";
-									submitButton.disabled = false;
+								const { Name: name, Password: password } = inputs;
+
+								if (!name) {
+									setChangeNameStatus("Cannot change name to an empty name.");
+									setIsSubmittingChangeName(false);
 									return;
 								}
 
-								const passwordInput = inputs.get("Password")!;
-								if (!passwordInput.value) {
-									updateTextContainer.textContent = "Cannot change user name without password.";
-									submitButton.disabled = false;
+								if (!password) {
+									setChangeNameStatus("Cannot change user name without password.");
+									setIsSubmittingChangeName(false);
 									return;
 								}
 
 								axios
-									.post("/api/account/change-name", { name: nameInput.value, password: passwordInput.value })
+									.post("/api/account/change-name", { name, password })
 									.then((response) => {
-										updateTextContainer.textContent = "Your name has been changed!";
-										setUserName(nameInput.value);
-										submitButton.disabled = false;
+										setChangeNameStatus("Your name has been changed!");
+										setUserName(name);
 									})
 									.catch((error) => {
-										updateTextContainer.textContent = `${error?.response?.data}`;
-										submitButton.disabled = false;
+										setChangeNameStatus(error.response.data);
+									})
+									.finally(() => {
+										setIsSubmittingChangeName(false);
 									});
 							}}
 							title="Change Name"
 						/>
 						<AccountForm
 							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
-							initialDirective="Enter your password to delete your account."
-							onSubmit={async (submitButton, updateTextContainer, inputs) => {
-								submitButton.disabled = true;
+							disabled={isSubmittingDeletePassword}
+							statusText={deletePasswordStatus}
+							onSubmit={async (inputs) => {
+								setIsSubmittingDeletePassword(true);
 
-								const passwordInput = inputs.get("Password")!;
-								if (!passwordInput.value) {
-									updateTextContainer.textContent = "Cannot delete an account without the password.";
-									submitButton.disabled = false;
+								const { Password: password } = inputs;
+								if (!password) {
+									setDeletePasswordStatus("Cannot delete an account without the password.");
+									setIsSubmittingDeletePassword(false);
 									return;
 								}
 
 								axios
-									.post("/api/account/delete-account", { password: passwordInput.value })
+									.post("/api/account/delete-account", { password })
 									.then((response) => {
 										removeCookie("session");
-										updateTextContainer.textContent =
-											"Account has been deleted. You are being redirected to the account creation page.";
+										setDeletePasswordStatus(
+											"Account has been deleted. You are being redirected to the account creation page.",
+										);
 										router.push("/log-in-or-create-account");
 									})
 									.catch((error) => {
-										updateTextContainer.textContent = `${error?.response?.data}`;
-										submitButton.disabled = false;
+										setDeletePasswordStatus(error.response.data);
+									})
+									.finally(() => {
+										setIsSubmittingDeletePassword(false);
 									});
 							}}
 							title="Delete Account"
