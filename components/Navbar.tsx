@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+import { useMobile } from "../helpers/use-mobile";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/Navbar.module.css";
 
@@ -22,35 +23,35 @@ const namesToPathsWhenNotLoggedIn = new Map([
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
+
+	const mobile = useMobile();
+	const [expanded, setExpanded] = useState(false);
+
+	useEffect(() => {
+		setExpanded(!mobile);
+	}, [mobile]);
+
 	return (
 		<nav aria-live="polite" id={style["navContainer"]}>
 			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
 			<button
 				aria-controls={style["navList"]}
-				aria-expanded="false"
+				aria-expanded={!expanded ? "true" : "false"}
 				id={style["mobileHamburgerButton"]}
 				type="button"
 				onClick={(event) => {
 					event.preventDefault();
-
-					const self = document.getElementById(style["mobileHamburgerButton"])!;
-					const isExpanded = self.getAttribute("aria-expanded");
-					self.setAttribute("aria-expanded", isExpanded == "true" ? "false" : "true");
-
-					const navListElement = document.getElementById(style["navList"])!;
-					const currentNavListMobileDisplay = window
-						.getComputedStyle(navListElement)
-						.getPropertyValue("--nav-mobile-display");
-					if (currentNavListMobileDisplay == "block") {
-						navListElement.style.setProperty("--nav-mobile-display", "none");
-					} else {
-						navListElement.style.setProperty("--nav-mobile-display", "block");
-					}
+					setExpanded(!expanded);
 				}}
 			>
 				☰
 			</button>
-			<ul id={style["navList"]}>
+			<ul
+				id={style["navList"]}
+				style={{
+					display: expanded ? "block" : "none",
+				}}
+			>
 				{Array.from(mappingToUse.keys()).map((name) => {
 					const path = mappingToUse.get(name);
 					return (
