@@ -124,11 +124,6 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 										.then((response) => {
 											const [selectedRandomMovie, originatorId] = response.data;
 											setMovieSelectionInformation([selectedUsers, selectionTime, selectedRandomMovie, originatorId]);
-											const markAsWatchedButton = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
-											if (markAsWatchedButton) {
-												markAsWatchedButton.disabled = false;
-											}
-
 											setStatusText("Selected movie is displayed below.");
 										})
 										.catch((error) => {

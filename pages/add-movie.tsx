@@ -15,6 +15,7 @@ const Movie = ({ movie, allUsers }: { movie: MovieApiMovieInformation; allUsers:
 
 	const [weight, setWeight] = useState(1);
 	const [date, setDate] = useState(new Date().toISOString().substring(0, 10));
+	const [originatorId, setOriginatorId] = useState(allUsers[0].id);
 
 	const [statusText, setStatusText] = useState("Submit to add movie.");
 	const [isSubmitting, setSubmitting] = useState(false);
@@ -102,7 +103,13 @@ const Movie = ({ movie, allUsers }: { movie: MovieApiMovieInformation; allUsers:
 							/>
 							<br />
 							<label htmlFor={`originatorIdSelectionFor${movie.id}`}>From Whose List</label>
-							<select id={`originatorIdSelectionFor${movie.id}`}>
+							<select
+								id={`originatorIdSelectionFor${movie.id}`}
+								value={originatorId}
+								onChange={(event) => {
+									setOriginatorId(parseInt(event.target.value));
+								}}
+							>
 								{allUsers.map((userInfo: any) => (
 									<option key={userInfo.id} value={userInfo.id}>
 										{userInfo.name} ({userInfo.email})
@@ -119,9 +126,7 @@ const Movie = ({ movie, allUsers }: { movie: MovieApiMovieInformation; allUsers:
 										.post("/api/movie/add-to-watched-list", {
 											date,
 											id: movie.id,
-											originatorId: parseInt(
-												(document.getElementById(`originatorIdSelectionFor${movie.id}`) as HTMLSelectElement).value,
-											),
+											originatorId,
 										})
 										.then((response) => {
 											setStatusText(
