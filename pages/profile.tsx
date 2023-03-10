@@ -136,9 +136,9 @@ const ToWatchMovie = ({
 					/>
 					<button
 						aria-controls={`weightInputFor${entry.movie.id} formStatusForToWatchMovie${entry.movie.id}`}
+						disabled={isSubmitting}
 						id={`changeWeightButtonFor${entry.movie.id}`}
 						type="submit"
-						disabled={isSubmitting}
 					>
 						{statusText}
 					</button>
@@ -146,9 +146,9 @@ const ToWatchMovie = ({
 
 				<button
 					aria-controls={`formStatusForToWatchMovie${entry.movie.id}`}
+					disabled={isSubmittingDelete}
 					id={`deleteFromWatchListButtonFor${entry.movie.id}`}
 					type="submit"
-					disabled={isSubmittingDelete}
 					onClick={(event) => {
 						event.preventDefault();
 						setIsSubmittingDelete(true);
@@ -182,6 +182,9 @@ const ToWatchList = ({ defaultToWatchList }: { defaultToWatchList: any[] }) => {
 				<ToWatchMovie
 					key={entry.movie.id}
 					entry={entry}
+					onRemove={() => {
+						setToWatchList(toWatchList.filter((e: any) => e.movie.id !== entry.movie.id));
+					}}
 					onUpdate={(values: any) => {
 						setToWatchList(
 							toWatchList.map((e: any) => {
@@ -191,9 +194,6 @@ const ToWatchList = ({ defaultToWatchList }: { defaultToWatchList: any[] }) => {
 								return e;
 							}),
 						);
-					}}
-					onRemove={() => {
-						setToWatchList(toWatchList.filter((e: any) => e.movie.id !== entry.movie.id));
 					}}
 				/>
 			))}
@@ -252,9 +252,9 @@ const WatchedMovie = ({
 					<input aria-live="polite" id={`ratingInputFor${entry.id}`} max={10} min={0} step={0.1} type="number" />
 					<button
 						aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
+						disabled={isSubmitting}
 						id={`changeRatingButtonFor${entry.id}`}
 						type="submit"
-						disabled={isSubmitting}
 					>
 						Submit New Rating
 					</button>
@@ -301,6 +301,9 @@ const WatchedList = ({ defaultWatchedList }: { defaultWatchedList: any[] }) => {
 				<WatchedMovie
 					key={entry.id}
 					entry={entry}
+					onRemove={() => {
+						setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
+					}}
 					onUpdate={(values) => {
 						setAlreadyWatchedList(
 							alreadyWatchedList.map((e: any) => {
@@ -310,9 +313,6 @@ const WatchedList = ({ defaultWatchedList }: { defaultWatchedList: any[] }) => {
 								return e;
 							}),
 						);
-					}}
-					onRemove={() => {
-						setAlreadyWatchedList(alreadyWatchedList.filter((e: any) => e.id != entry.id));
 					}}
 				/>
 			))}
@@ -360,9 +360,10 @@ function Profile({
 							{userAlreadyWatchedList && <WatchedList defaultWatchedList={userAlreadyWatchedList} />}
 						</CollapsibleSection>
 						<AccountForm
-							fieldNamesToFieldTypes={new Map()}
 							disabled={isSubmittingLogout}
+							fieldNamesToFieldTypes={new Map()}
 							statusText={logoutStatus}
+							title="Log Out"
 							onSubmit={async () => {
 								setIsSubmittingLogout(true);
 
@@ -380,17 +381,17 @@ function Profile({
 										setIsSubmittingLogout(false);
 									});
 							}}
-							title="Log Out"
 						/>
 						<AccountForm
+							disabled={isSubmittingChangeName}
 							fieldNamesToFieldTypes={
 								new Map([
 									["Name", "text"],
 									["Password", "password"],
 								])
 							}
-							disabled={isSubmittingChangeName}
 							statusText={changeNameStatus}
+							title="Change Name"
 							onSubmit={async (inputs) => {
 								setIsSubmittingChangeName(true);
 
@@ -421,12 +422,12 @@ function Profile({
 										setIsSubmittingChangeName(false);
 									});
 							}}
-							title="Change Name"
 						/>
 						<AccountForm
-							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							disabled={isSubmittingDeletePassword}
+							fieldNamesToFieldTypes={new Map([["Password", "password"]])}
 							statusText={deletePasswordStatus}
+							title="Delete Account"
 							onSubmit={async (inputs) => {
 								setIsSubmittingDeletePassword(true);
 
@@ -453,7 +454,6 @@ function Profile({
 										setIsSubmittingDeletePassword(false);
 									});
 							}}
-							title="Delete Account"
 						/>
 					</>
 				) : (

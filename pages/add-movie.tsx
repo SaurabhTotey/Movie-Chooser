@@ -50,18 +50,18 @@ const Movie = ({ movie, allUsers }: { movie: MovieApiMovieInformation; allUsers:
 							<input
 								className={style["movieCardWeightInput"]}
 								id={`weightWhenAdding${movie.id}ToWatchList`}
+								min={0}
+								step={0.1}
+								type="number"
 								value={weight}
 								onChange={(event) => {
 									setWeight(event.target.valueAsNumber);
 								}}
-								min={0}
-								step={0.1}
-								type="number"
 							/>
 							<button
+								disabled={isSubmitting}
 								id={`addToWatchListSubmitButtonFor${movie.id}`}
 								type="submit"
-								disabled={isSubmitting}
 								onClick={(event) => {
 									event.preventDefault();
 									setSubmitting(true);
@@ -95,11 +95,11 @@ const Movie = ({ movie, allUsers }: { movie: MovieApiMovieInformation; allUsers:
 							<label htmlFor={`dateWhenAdding${movie.id}ToWatchedList`}>Date Watched</label>
 							<input
 								id={`dateWhenAdding${movie.id}ToWatchedList`}
+								type="date"
 								value={date}
 								onChange={(event) => {
 									setDate(event.target.value);
 								}}
-								type="date"
 							/>
 							<br />
 							<label htmlFor={`originatorIdSelectionFor${movie.id}`}>From Whose List</label>
@@ -220,7 +220,7 @@ function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<type
 						</p>
 						<div aria-live="polite" id="movieListContainer">
 							{searchedMovies &&
-								searchedMovies.map((movie) => <Movie key={movie.id} movie={movie} allUsers={allUsers} />)}
+								searchedMovies.map((movie) => <Movie key={movie.id} allUsers={allUsers} movie={movie} />)}
 						</div>
 					</>
 				) : (

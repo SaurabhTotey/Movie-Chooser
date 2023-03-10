@@ -23,7 +23,7 @@ const SelectedMovie = ({
 	const [statusText, setStatusText] = useState(defaultStatusText);
 	const userName = useMemo(
 		() => allUsers.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name,
-		[movieSelectionInformation],
+		[allUsers, movieSelectionInformation],
 	);
 
 	useEffect(() => {
@@ -37,9 +37,9 @@ const SelectedMovie = ({
 			<div id={style["markAsWatchedButtonContainer"]}>
 				<button
 					aria-controls={style["markAsWatchedStatus"]}
+					disabled={isSubmitting}
 					id="markAsWatchedButton"
 					type="submit"
-					disabled={isSubmitting}
 					onClick={(event) => {
 						event.preventDefault();
 
@@ -162,9 +162,9 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 								</div>
 								<button
 									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
+									disabled={isSubmitting}
 									id="chooseMovieButton"
 									type="submit"
-									disabled={isSubmitting}
 								>
 									{finalStatusText}
 								</button>

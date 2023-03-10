@@ -19,6 +19,7 @@ const LoginForm = () => {
 
 	return (
 		<AccountForm
+			disabled={isSubmitting}
 			fieldNamesToFieldTypes={
 				new Map([
 					["Email", "email"],
@@ -26,7 +27,7 @@ const LoginForm = () => {
 				])
 			}
 			statusText={statusText}
-			disabled={isSubmitting}
+			title="Log In"
 			onSubmit={async (inputs) => {
 				setSubmitting(true);
 
@@ -57,7 +58,6 @@ const LoginForm = () => {
 						setSubmitting(false);
 					});
 			}}
-			title="Log In"
 		/>
 	);
 };
@@ -71,6 +71,7 @@ const CreateAccountForm = () => {
 
 	return (
 		<AccountForm
+			disabled={isSubmitting}
 			fieldNamesToFieldTypes={
 				new Map([
 					["Name", "text"],
@@ -80,7 +81,7 @@ const CreateAccountForm = () => {
 				])
 			}
 			statusText={statusText}
-			disabled={isSubmitting}
+			title="Create Account"
 			onSubmit={async (inputs) => {
 				setSubmitting(true);
 
@@ -121,7 +122,6 @@ const CreateAccountForm = () => {
 						setSubmitting(false);
 					});
 			}}
-			title="Create Account"
 		/>
 	);
 };

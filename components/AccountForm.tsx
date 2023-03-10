@@ -49,9 +49,9 @@ const AccountForm: FC<FormPropType> = ({ title, fieldNamesToFieldTypes, statusTe
 				<button
 					aria-controls={directiveParagraphName}
 					className={style["submitButton"]}
+					disabled={disabled}
 					id={submitButtonName}
 					type="submit"
-					disabled={disabled}
 				>
 					Submit
 				</button>
