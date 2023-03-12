@@ -88,7 +88,7 @@ const ToWatchMovie = ({
 	onRemove: () => void;
 }) => {
 	const [weight, setWeight] = useState(entry.weight);
-	const [statusText, setStatusText] = useState("Submit New Weight");
+	const [statusText, setStatusText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
@@ -140,7 +140,7 @@ const ToWatchMovie = ({
 						id={`changeWeightButtonFor${entry.movie.id}`}
 						type="submit"
 					>
-						{statusText}
+						Submit New Weight
 					</button>
 				</form>
 
@@ -169,7 +169,9 @@ const ToWatchMovie = ({
 					❌
 				</button>
 			</div>
-			<p aria-live="polite" id={`formStatusForToWatchMovie${entry.movie.id}`}></p>
+			<p aria-live="polite" id={`formStatusForToWatchMovie${entry.movie.id}`}>
+				{statusText}
+			</p>
 		</MovieCard>
 	);
 };
@@ -186,9 +188,9 @@ const ToWatchList = ({ defaultToWatchList }: { defaultToWatchList: any[] }) => {
 						setToWatchList(toWatchList.filter((e: any) => e.movie.id !== entry.movie.id));
 					}}
 					onUpdate={(values: any) => {
-						setToWatchList(
-							toWatchList.map((e: any) => {
-								if (e.id === entry.id) {
+						setToWatchList((prev) =>
+							prev.map((e: any) => {
+								if (e.movie.id === values.movie.id) {
 									return values;
 								}
 								return e;
@@ -211,7 +213,7 @@ const WatchedMovie = ({
 	onRemove: () => void;
 }) => {
 	const [rating, setRating] = useState(entry.rating);
-	const [statusText, setStatusText] = useState("Submit New Rating");
+	const [statusText, setStatusText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [isSubmittingDelete, setIsSubmittingDelete] = useState(false);
@@ -249,7 +251,16 @@ const WatchedMovie = ({
 					}}
 				>
 					<label>Rating</label>
-					<input aria-live="polite" id={`ratingInputFor${entry.id}`} max={10} min={0} step={0.1} type="number" />
+					<input
+						aria-live="polite"
+						id={`ratingInputFor${entry.id}`}
+						max={10}
+						min={0}
+						step={0.1}
+						type="number"
+						value={rating}
+						onChange={(e) => setRating(e.target.value)}
+					/>
 					<button
 						aria-controls={`ratingInputFor${entry.id} formStatusForWatchedEntry${entry.id}`}
 						disabled={isSubmitting}
@@ -307,7 +318,7 @@ const WatchedList = ({ defaultWatchedList }: { defaultWatchedList: any[] }) => {
 					onUpdate={(values) => {
 						setAlreadyWatchedList(
 							alreadyWatchedList.map((e: any) => {
-								if (e.id == entry.id) {
+								if (e.movie.id == entry.movie.id) {
 									return values;
 								}
 								return e;

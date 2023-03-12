@@ -205,6 +205,7 @@ function AddMovie({ allUsers, userClientInfo }: InferGetServerSidePropsType<type
 								id={style["movieSearchInput"]}
 								type="search"
 								value={searchTerm}
+								autoFocus
 								onChange={(e) => setSearchTerm(e.target.value)}
 							/>
 							<button

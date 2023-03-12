@@ -22,7 +22,7 @@ const LoginForm = () => {
 			disabled={isSubmitting}
 			fieldNamesToFieldTypes={
 				new Map([
-					["Email", "email"],
+					["Email", "text"],
 					["Password", "password"],
 				])
 			}
@@ -77,7 +77,7 @@ const CreateAccountForm = () => {
 					["Name", "text"],
 					["Password", "password"],
 					["Confirm Password", "password"],
-					["Email", "email"],
+					["Email", "text"],
 				])
 			}
 			statusText={statusText}

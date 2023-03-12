@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC, useEffect, useState } from "react";
-import { useMobile } from "../helpers/use-mobile";
+import { FC, useState } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/Navbar.module.css";
 
@@ -24,12 +23,7 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
 
-	const mobile = useMobile();
 	const [expanded, setExpanded] = useState(false);
-
-	useEffect(() => {
-		setExpanded(!mobile);
-	}, [mobile]);
 
 	return (
 		<nav aria-live="polite" id={style["navContainer"]}>
@@ -46,12 +40,33 @@ const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 			>
 				☰
 			</button>
+
+			{/* Mobile layout */}
 			<ul
+				className={style["mobile"]}
 				id={style["navList"]}
 				style={{
 					display: expanded ? "block" : "none",
 				}}
 			>
+				{Array.from(mappingToUse.keys()).map((name) => {
+					const path = mappingToUse.get(name);
+					return (
+						<li
+							key={name}
+							className={
+								style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"] +
+								(router.pathname == `/${path}` ? ` ${style["active"]}` : "")
+							}
+						>
+							<Link href={`/${path}`}>{name}</Link>
+						</li>
+					);
+				})}
+			</ul>
+
+			{/* Non mobile */}
+			<ul className={style["regular"]} id={style["navList"]}>
 				{Array.from(mappingToUse.keys()).map((name) => {
 					const path = mappingToUse.get(name);
 					return (
