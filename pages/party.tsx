@@ -2,7 +2,7 @@ import axios from "axios";
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
@@ -10,10 +10,89 @@ import getAllUsersAsServerSideProp from "../helpers/GetAllUsersAsServerSideProp"
 import { MovieApiMovieInformation } from "../helpers/MovieApiManager";
 import style from "../styles/party.module.css";
 
+const SelectedMovie = ({
+	allUsers,
+	movieSelectionInformation,
+}: {
+	allUsers: any;
+	movieSelectionInformation: [number[], Date, MovieApiMovieInformation, number];
+}) => {
+	const defaultStatusText = "Click the above button if y'all watched the movie.";
+
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [statusText, setStatusText] = useState(defaultStatusText);
+	const userName = useMemo(
+		() => allUsers.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name,
+		[allUsers, movieSelectionInformation],
+	);
+
+	useEffect(() => {
+		setIsSubmitting(false);
+		setStatusText(defaultStatusText);
+	}, [movieSelectionInformation]);
+
+	return (
+		<MovieCard isExpandedToBegin={true} movie={movieSelectionInformation[2]}>
+			<p id={style["originatorText"]}>From the list of {userName}.</p>
+			<div id={style["markAsWatchedButtonContainer"]}>
+				<button
+					aria-controls={style["markAsWatchedStatus"]}
+					disabled={isSubmitting}
+					id="markAsWatchedButton"
+					type="submit"
+					onClick={(event) => {
+						event.preventDefault();
+
+						setIsSubmitting(true);
+
+						setStatusText('Marking movie as watched."');
+
+						axios
+							.post("/api/party/make-movie-watched-for-users", {
+								date: movieSelectionInformation[1],
+								id: movieSelectionInformation[2].id,
+								originatorId: movieSelectionInformation[3],
+								userIds: movieSelectionInformation[0],
+							})
+							.then((response) => {
+								setStatusText(
+									"Movie has been marked as watched for all viewers! Each viewer can rate the movie on their profile page (once signed in)!",
+								);
+							})
+							.catch((error) => {
+								setStatusText(error.response.data);
+								setIsSubmitting(false);
+							});
+					}}
+				>
+					Mark as Watched for All Viewers
+				</button>
+			</div>
+			<p aria-live="polite" id={style["markAsWatchedStatus"]}>
+				{statusText}
+			</p>
+		</MovieCard>
+	);
+};
+
 function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof getAllUsersAsServerSideProp>) {
 	const [movieSelectionInformation, setMovieSelectionInformation] = useState<
 		[number[], Date, MovieApiMovieInformation, number] | null
 	>(null);
+
+	const [selectedUsers, setSelectedUsers] = useState<number[]>(() =>
+		userClientInfo ? [allUsers.find((userInfo: any) => userInfo.email == userClientInfo.email).id] : [],
+	);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [statusText, setStatusText] = useState("");
+
+	const finalStatusText = useMemo(() => {
+		if (statusText) {
+			return statusText;
+		}
+		return movieSelectionInformation ? "CHOOSE ANOTHER MOVIE!!!" : "CHOOSE MOVIE!!!";
+	}, [movieSelectionInformation, statusText]);
+
 	return (
 		<>
 			<Head>
@@ -24,7 +103,37 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 				{userClientInfo ? (
 					<>
 						<div id={style["userSelectionFormContainer"]}>
-							<form id={style["userSelectionForm"]}>
+							<form
+								id={style["userSelectionForm"]}
+								onSubmit={(event) => {
+									event.preventDefault();
+									setIsSubmitting(true);
+									setStatusText("Choosing a movie...");
+
+									const selectionTime = new Date();
+
+									if (selectedUsers.length === 0) {
+										setStatusText("You must select at least one user to choose a movie for.");
+										return;
+									}
+
+									axios
+										.post("/api/party/select-random-movie", {
+											userIds: selectedUsers,
+										})
+										.then((response) => {
+											const [selectedRandomMovie, originatorId] = response.data;
+											setMovieSelectionInformation([selectedUsers, selectionTime, selectedRandomMovie, originatorId]);
+											setStatusText("Selected movie is displayed below.");
+										})
+										.catch((error) => {
+											setStatusText(error.response.data);
+										})
+										.finally(() => {
+											setIsSubmitting(false);
+										});
+								}}
+							>
 								<div>
 									<h2>Select Users Who Will Be Watching Movies</h2>
 									{allUsers.map((userInformation: any) => (
@@ -35,6 +144,17 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 												id={`checkboxFor${userInformation.id}`}
 												type="checkbox"
 												value={userInformation.id}
+												onChange={(event) => {
+													if (userClientInfo.email === userInformation.email) {
+														return;
+													}
+
+													if (event.target.checked) {
+														setSelectedUsers([...selectedUsers, userInformation.id]);
+													} else {
+														setSelectedUsers((prev) => prev.filter((id) => id != userInformation.id));
+													}
+												}}
 											/>
 											<label htmlFor={`checkboxFor${userInformation.id}`}>{userInformation.name}</label>
 										</div>
@@ -42,45 +162,11 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 								</div>
 								<button
 									aria-controls={`${style["movieChoosingStatus"]} movieCardContainer`}
+									disabled={isSubmitting}
 									id="chooseMovieButton"
 									type="submit"
-									onClick={(event) => {
-										event.preventDefault();
-										const self = document.getElementById("chooseMovieButton") as HTMLButtonElement;
-										self.disabled = true;
-										const movieChoosingStatusElement = document.getElementById(style["movieChoosingStatus"])!;
-										movieChoosingStatusElement.innerText = "Choosing a movie...";
-
-										const selectionTime = new Date();
-
-										const userSelectionCheckboxes = Array.from(
-											document.getElementById(style["userSelectionForm"])!.getElementsByTagName("input"),
-										);
-										const selectedIds = userSelectionCheckboxes
-											.filter((checkbox) => checkbox.checked)
-											.map((checkbox) => parseInt(checkbox.value));
-
-										axios
-											.post("/api/party/select-random-movie", {
-												userIds: selectedIds,
-											})
-											.then((response) => {
-												const [selectedRandomMovie, originatorId] = response.data;
-												setMovieSelectionInformation([selectedIds, selectionTime, selectedRandomMovie, originatorId]);
-												const markAsWatchedButton = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
-												if (markAsWatchedButton) {
-													markAsWatchedButton.disabled = false;
-												}
-												movieChoosingStatusElement.innerText = "Selected movie is displayed below.";
-												self.disabled = false;
-											})
-											.catch((error) => {
-												movieChoosingStatusElement.innerText = error.response.data;
-												self.disabled = false;
-											});
-									}}
 								>
-									{movieSelectionInformation ? "CHOOSE ANOTHER MOVIE!!!" : "CHOOSE MOVIE!!!"}
+									{finalStatusText}
 								</button>
 							</form>
 						</div>
@@ -89,47 +175,7 @@ function Party({ allUsers, userClientInfo }: InferGetServerSidePropsType<typeof 
 						</p>
 						<div aria-live="polite" id="movieCardContainer">
 							{movieSelectionInformation && (
-								<MovieCard isExpandedToBegin={true} movie={movieSelectionInformation[2]}>
-									<p id={style["originatorText"]}>
-										From the list of{" "}
-										{allUsers.find((userInfo: any) => userInfo.id == movieSelectionInformation[3]).name}.
-									</p>
-									<div id={style["markAsWatchedButtonContainer"]}>
-										<button
-											aria-controls={style["markAsWatchedStatus"]}
-											id="markAsWatchedButton"
-											type="submit"
-											onClick={(event) => {
-												event.preventDefault();
-												const self = document.getElementById("markAsWatchedButton") as HTMLButtonElement;
-												self.disabled = true;
-												const markAsWatchedStatusElement = document.getElementById(style["markAsWatchedStatus"])!;
-												markAsWatchedStatusElement.innerText = "Marking movie as watched.";
-
-												axios
-													.post("/api/party/make-movie-watched-for-users", {
-														date: movieSelectionInformation[1],
-														id: movieSelectionInformation[2].id,
-														originatorId: movieSelectionInformation[3],
-														userIds: movieSelectionInformation[0],
-													})
-													.then((response) => {
-														markAsWatchedStatusElement.innerText =
-															"Movie has been marked as watched for all viewers! Each viewer can rate the movie on their profile page (once signed in)!";
-													})
-													.catch((error) => {
-														markAsWatchedStatusElement.innerText = error.response.data;
-														self.disabled = false;
-													});
-											}}
-										>
-											Mark as Watched for All Viewers
-										</button>
-									</div>
-									<p aria-live="polite" id={style["markAsWatchedStatus"]}>
-										Click the above button if y&apos;all watched the movie.
-									</p>
-								</MovieCard>
+								<SelectedMovie allUsers={allUsers} movieSelectionInformation={movieSelectionInformation} />
 							)}
 						</div>
 					</>

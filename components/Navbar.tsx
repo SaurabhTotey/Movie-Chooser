@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC } from "react";
+import { FC, useState } from "react";
 import UserClientInfo from "../helpers/UserClientInfo";
 import style from "../styles/Navbar.module.css";
 
@@ -22,35 +22,51 @@ const namesToPathsWhenNotLoggedIn = new Map([
 const Navbar: FC<{ userClientInfo: UserClientInfo }> = ({ userClientInfo }) => {
 	const router = useRouter();
 	const mappingToUse = userClientInfo ? namesToPathsWhenLoggedIn : namesToPathsWhenNotLoggedIn;
+
+	const [expanded, setExpanded] = useState(false);
+
 	return (
 		<nav aria-live="polite" id={style["navContainer"]}>
 			<h1 id={style["logo"]}>MOVIE CHOOSER</h1>
 			<button
 				aria-controls={style["navList"]}
-				aria-expanded="false"
+				aria-expanded={!expanded ? "true" : "false"}
 				id={style["mobileHamburgerButton"]}
 				type="button"
 				onClick={(event) => {
 					event.preventDefault();
-
-					const self = document.getElementById(style["mobileHamburgerButton"])!;
-					const isExpanded = self.getAttribute("aria-expanded");
-					self.setAttribute("aria-expanded", isExpanded == "true" ? "false" : "true");
-
-					const navListElement = document.getElementById(style["navList"])!;
-					const currentNavListMobileDisplay = window
-						.getComputedStyle(navListElement)
-						.getPropertyValue("--nav-mobile-display");
-					if (currentNavListMobileDisplay == "block") {
-						navListElement.style.setProperty("--nav-mobile-display", "none");
-					} else {
-						navListElement.style.setProperty("--nav-mobile-display", "block");
-					}
+					setExpanded(!expanded);
 				}}
 			>
 				☰
 			</button>
-			<ul id={style["navList"]}>
+
+			{/* Mobile layout */}
+			<ul
+				className={style["mobile"]}
+				id={style["navList"]}
+				style={{
+					display: expanded ? "block" : "none",
+				}}
+			>
+				{Array.from(mappingToUse.keys()).map((name) => {
+					const path = mappingToUse.get(name);
+					return (
+						<li
+							key={name}
+							className={
+								style[userClientInfo ? "navListItemLoggedIn" : "navListItemNotLoggedIn"] +
+								(router.pathname == `/${path}` ? ` ${style["active"]}` : "")
+							}
+						>
+							<Link href={`/${path}`}>{name}</Link>
+						</li>
+					);
+				})}
+			</ul>
+
+			{/* Non mobile */}
+			<ul className={style["regular"]} id={style["navList"]}>
 				{Array.from(mappingToUse.keys()).map((name) => {
 					const path = mappingToUse.get(name);
 					return (
