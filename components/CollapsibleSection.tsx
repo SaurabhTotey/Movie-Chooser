@@ -4,6 +4,28 @@ import style from "../styles/CollapsibleSection.module.css";
 const expandedSymbol = "▲";
 const collapsedSymbol = "▼";
 
+const Header: React.FC<{ type: string; children: any } & React.HTMLAttributes<HTMLHeadingElement>> = ({
+	type,
+	children,
+	...rest
+}) => {
+	switch (type) {
+		case "h1":
+			return <h1 {...rest}>{children}</h1>;
+		case "h2":
+			return <h2 {...rest}>{children}</h2>;
+		case "h3":
+			return <h3 {...rest}>{children}</h3>;
+		case "h4":
+			return <h4 {...rest}>{children}</h4>;
+		case "h5":
+			return <h5 {...rest}>{children}</h5>;
+		case "h6":
+			return <h6 {...rest}>{children}</h6>;
+	}
+	return <p>Unknown</p>;
+};
+
 interface CollapsibleSectionPropType {
 	title: string;
 	isExpandedToBegin?: boolean;
@@ -19,7 +41,6 @@ const CollapsibleSection: FC<CollapsibleSectionPropType> = ({
 }) => {
 	const [isExpanded, setIsExpanded] = useState(isExpandedToBegin);
 	const htmlValidFieldNameFor = (inputName: string) => inputName.toLowerCase().replaceAll(" ", "-");
-	const TitleTag = `h${titleHeadingLevel}`;
 	return (
 		<div className={style["collapsibleSection"]}>
 			<button
@@ -32,7 +53,9 @@ const CollapsibleSection: FC<CollapsibleSectionPropType> = ({
 					setIsExpanded(!isExpanded);
 				}}
 			>
-				<TitleTag className={style["titleTag"]}>{title}</TitleTag>
+				<Header className={style["titleTag"]} type={`h${titleHeadingLevel}`}>
+					{title}
+				</Header>
 				<p id={`expandSymbolFor${htmlValidFieldNameFor(title)}`}>{isExpanded ? expandedSymbol : collapsedSymbol}</p>
 			</button>
 			<div aria-live="polite" className={style["content"]} id={`contentFor${htmlValidFieldNameFor(title)}`}>

@@ -26,7 +26,7 @@ const getExtremeValues = <T,>(values: T[], key: (_: T) => number | null, extreme
 		return [];
 	}
 
-	let bingoValues: number[] = [];
+	let bingoValues: (number | null)[] = [];
 	if (extremeValueType == ExtremeValue.MAX) {
 		bingoValues = [Math.max(...valueKeys)];
 	} else if (extremeValueType == ExtremeValue.MIN) {
@@ -361,7 +361,7 @@ function Statistics({
 								<p>Lowest Rating: {numericValueOrDefault(entry.lowestRating, "no data")}</p>
 								<hr />
 								<div>
-									{[...Array(entry.raterNames.length).keys()].map((i) => {
+									{Array.from(Array(entry.raterNames.length).keys()).map((i) => {
 										return (
 											<p key={i}>
 												{entry.raterNames[i]} rated as {entry.ratings[i]}
