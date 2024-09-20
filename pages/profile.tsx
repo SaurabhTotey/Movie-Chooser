@@ -337,7 +337,7 @@ function Profile({
 	userAlreadyWatchedList,
 }: InferGetServerSidePropsType<typeof getUserAndListsServerSideProps>) {
 	const router = useRouter();
-	const [userName, setUserName] = useState(userClientInfo.name);
+	const [userName, setUserName] = useState(userClientInfo?.name);
 	const [cookie, setCookie, removeCookie] = useCookies(["session"]);
 
 	const [logoutStatus, setLogoutStatus] = useState("Press button to log out.");
